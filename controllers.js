@@ -63,12 +63,43 @@ $scope.createUser =function(event){
 })
 
 .controller("mainCtrl", function($scope, $localStorage){
-	// $localStorage is equivalent to using local storage in conjunction with 
-	// angular. 
+	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+
+	function addKind(){
+		var selected = Math.floor(Math.random()*kindness.length);
+		console.log(selected);
+		return kindness[selected];
+	}
+
 	console.log("in main");
 	$scope.title = "MAIN PAGE";
 
-	$localStorage.todos = ["test1", "test2", "test3"];
+	$scope.addTask = function(){
+		console.log("adding a new todo item")
+	}
 
-	$scope.todos = $localStorage.todos;
+		$scope.editTask = function(){
+		console.log("editing a task")
+	}
+
+	$scope.deleteTask = function(){
+		console.log("deleting a task")
+		//add sweet alert to confirm before deleting
+	}
+
+	// convert into mongoose
+	$localStorage.dailys = [{name: "test1", description: "descrip1", done: true }, {name: "test2", description: "descrip2", done: false }, {name: "kindness", description: addKind(), done: false}];
+	$scope.dailys = $localStorage.dailys;
+
+	$scope.checkOff = function(){
+		console.log("check box touched")
+	}
+})
+
+.controller("addCtrl", function($scope){
+	$scope.test = "IN ADD CTRL";
+})
+
+.controller("editCtrl", function($scope){
+	$scope.test = "IN EDIT CTRL";
 })

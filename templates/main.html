@@ -1,21 +1,40 @@
 
 <div class="container">
-	<h1>{{title}}</h1>
-</div>
-
-<div class="container">
 	<div class="row">
-		<div class="col-sm-5">
-			<ul class="dailyUL">
-				<li class="dailyLI" ng-repeat="item in todos">
-					<span class="col-sm-3">{{item}} </span><i class="fa fa-trash col-sm-3"></i><i class="fa fa-pencil col-sm-3"></i> <div class="checkbox col-sm-3">
-  <label><input type="checkbox" value="">Option 1</label>
-</div>
-
-				</li>
-			</ul>
+		<div class="col-sm-12">
+			<h1>{{title}}</h1>
+		</div>
+	</div>	
+	<div class="row">
+		<div class="col-sm-12">
+			<a class=" btn btn-success add-button" ui-sref="main.add">Add New Task</a>
+			<div ui-view></div>
 		</div>
 	</div>
+</div>
 
+<div class="container daily-cont">
+	<h3>Daily</h3>
+		<div class="col-sm-6 daily">
+			<div class="row daily-row">
+				<table class="table table-bordered table-striped daily-table">
+					<tr>
+						<th class="col-sm-3"> Task</th>
+						<th class="col-sm-3"> Description</th>
+						<th class="col-sm-3"> Completed</th>
+						<th class="col-sm-3"> Edit/Delete</th>
+					</tr>
+					<tr class="dailytr" ng-repeat="item in dailys">
+						<td class="col-sm-3 dailytd">{{item.name}} </td>
+							<td class="col-sm-3">{{item.description}}</td>
+							<td class="col-sm-3">
+		  					<input ng-model="checkBox" ng-change="checkOff()" type="checkbox" />
+							</td>
+							<td class="table-icons">
+								<i class="fa fa-pencil" ng-click="editTask()"></i> 
+								<i class="fa fa-trash" ng-click="deleteTask()"></i>
+						</td>
+					</tr>
+		</table>
 </div>
 
