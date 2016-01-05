@@ -78,12 +78,12 @@ $scope.createUser =function(event){
 		console.log("adding a new todo item")
 	}
 
-		$scope.editTask = function(){
-		console.log("editing a task")
+		$scope.editTask = function(item){
+		console.log("item to edit", item)
 	}
 
-	$scope.deleteTask = function(){
-		console.log("deleting a task")
+	$scope.deleteTask = function(item){
+		console.log("item to delete",item.name)
 		//add sweet alert to confirm before deleting
 	}
 
@@ -91,10 +91,19 @@ $scope.createUser =function(event){
 	$localStorage.dailys = [{name: "test1", description: "descrip1", done: true }, {name: "test2", description: "descrip2", done: false }, {name: "kindness", description: addKind(), done: false}];
 	$scope.dailys = $localStorage.dailys;
 
-	$scope.checkOff = function(){
-		console.log("check box touched")
+	$scope.checkOff = function(item){
+		$scope.selected = item;
+		console.log("from within checkOff item.name is", item.name);
+		// set up removal of item
 	}
-})
+
+//details about why I used this http://jsfiddle.net/pkozlowski_opensource/WXJ3p/15/
+// 	$scope.isSelected = function(item){
+// 		// if (this.checked === true)
+// 		console.log("$scope.selected", $scope.selected)
+// 		return $scope.selected === item;
+// 	}
+ })
 
 .controller("addCtrl", function($scope){
 	$scope.test = "IN ADD CTRL";

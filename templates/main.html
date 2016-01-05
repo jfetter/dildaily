@@ -2,13 +2,13 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<h1>{{title}}</h1>
+			<h1 class="title">{{title}}</h1>
 		</div>
 	</div>	
 	<div class="row">
 		<div class="col-sm-12">
 			<a class=" btn btn-success add-button" ui-sref="main.add">Add New Task</a>
-			<div ui-view></div>
+			<div ui-view class="add-edit-view"></div>
 		</div>
 	</div>
 </div>
@@ -24,15 +24,16 @@
 						<th class="col-sm-3"> Completed</th>
 						<th class="col-sm-3"> Edit/Delete</th>
 					</tr>
-					<tr class="dailytr" ng-repeat="item in dailys">
+					<!-- need to set up to track by item._id !!!! -->
+					<tr class="dailytr {active : isSelected(item)}" ng-repeat="item in dailys track by $index">
 						<td class="col-sm-3 dailytd">{{item.name}} </td>
 							<td class="col-sm-3">{{item.description}}</td>
 							<td class="col-sm-3">
-		  					<input ng-model="checkBox" ng-change="checkOff()" type="checkbox" />
+		  					<input ng-model="checkBox" ng-change="checkOff(item)" type="checkbox" />
 							</td>
 							<td class="table-icons">
-								<i class="fa fa-pencil" ng-click="editTask()"></i> 
-								<i class="fa fa-trash" ng-click="deleteTask()"></i>
+								<i class="fa fa-pencil" ng-click="editTask(item)"></i> 
+								<i class="fa fa-trash" ng-click="deleteTask(item)"></i>
 						</td>
 					</tr>
 		</table>
