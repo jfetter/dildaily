@@ -10,6 +10,23 @@
     "angular-route": "~1.4.0",
     "angular-loader": "~1.4.0",
     "angular-mocks": "~1.4.0",
-    "html5-boilerplate": "~5.2.0"
-  }
+    "html5-boilerplate": "~5.2.0",
+    "angular-ui-router": "~0.2.15",
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.6",
+    "ngstorage": "~0.3.10"
+  },
+  "authors": [
+    "Jillian Fetter <jillian.fetter@gmail.com>"
+  ],
+  "main": "",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
 }

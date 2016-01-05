@@ -1,10 +1,9 @@
 angular.module("myApp")
 
 
-
 //firebaseObject is a service that stores data that will be
 //shared between the scope, the server (firebase) and the app
-.controller("homeCtrl", function($scope, $firebaseObject, $firebaseAuth, $firebaseArray){
+.controller("homeCtrl", function($scope, $firebaseObject, $firebaseAuth){
 	$scope.user = {};
 	var email = $scope.user.email;
 	var password = $scope.user.password;
@@ -38,7 +37,7 @@ angular.module("myApp")
 })
 
 
-.controller("registerCtrl", function($scope){
+.controller("registerCtrl", function($scope, $firebaseObject, $firebaseAuth){
 	event.preventDefault();
 	console.log("in register")
 
@@ -50,8 +49,8 @@ angular.module("myApp")
 $scope.createUser =function(event){
 	var ref = new Firebase("https://dildaily.firebaseio.com");
 	ref.createUser({
-	  email    : {type: "string", value: email},
-	  password : {type: "string", value: password}
+	  email    : email,
+	  password : password
 	}, function(error, userData) {
 	  if (error) {
 	    console.log("Error creating user:", error);
@@ -61,4 +60,15 @@ $scope.createUser =function(event){
 	});
 }
 
+})
+
+.controller("mainCtrl", function($scope, $localStorage){
+	// $localStorage is equivalent to using local storage in conjunction with 
+	// angular. 
+	console.log("in main");
+	$scope.title = "MAIN PAGE";
+
+	$localStorage.todos = ["test1", "test2", "test3"];
+
+	$scope.todos = $localStorage.todos;
 })
