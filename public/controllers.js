@@ -1,65 +1,33 @@
 angular.module("myApp")
 
+.controller("navCtrl", function($scope){
+
+})
 
 //firebaseObject is a service that stores data that will be
 //shared between the scope, the server (firebase) and the app
-.controller("homeCtrl", function($scope, $firebaseObject, $firebaseAuth){
-	$scope.user = {};
-	var email = $scope.user.email;
-	var password = $scope.user.password;
+.controller("AuthCtrl", function($scope, $state, $auth){
+	console.log("in auth ctrl")
 
-	var ref = new Firebase("https://dildaily.firebaseio.com");
-	var syncObject = $firebaseObject(ref);
-	var auth = $firebaseAuth(ref);
+///// stuff for satelizer oauth login /////
+	$scope.authenticate = function(provider){
+		$auth.authenticate(provider)
+			.then(function(res){
+				console.log(res);
+			})
+			.catch(function(err){
+				console.error(err);
+			});
+	};
+//// end stuff for satellizer oauth /////
 
-	//login existing user
-	$scope.login = function(event){
-		event.preventDefault();
+
+	//login with email and password
+	$scope.login = function(provider){
+	//prevent form from autosubmitting
+		//event.preventDefault();
 		console.log("in login")
-
-	auth.$authWithPassword({
-		email: email,
-		password: password
-	}).then(function(user) {
-    console.log('Authentication successful');
-     }, function(error) {
-     console.log('Authentication failure');
-   	});
-}
-
-	$scope.fblogin =function(){
-		  auth.$authWithOAuthPopup("facebook").then(function(authData) {
-	    console.log("Logged in as:", authData.uid);
-	  }).catch(function(error) {
-	    console.log("Authentication failed:", error);
-	  });
 	}
-})
-
-
-.controller("registerCtrl", function($scope, $firebaseObject, $firebaseAuth){
-	event.preventDefault();
-	console.log("in register")
-
-	$scope.user = {};
-	var email = $scope.user.email;
-	var password = $scope.user.password;
-
-//create user account
-$scope.createUser =function(event){
-	var ref = new Firebase("https://dildaily.firebaseio.com");
-	ref.createUser({
-	  email    : email,
-	  password : password
-	}, function(error, userData) {
-	  if (error) {
-	    console.log("Error creating user:", error);
-	  } else {
-	    console.log("Successfully created user account with uid:", userData.uid);
-	  }
-	});
-}
-
 })
 
 .controller("mainCtrl", function($scope, $localStorage){

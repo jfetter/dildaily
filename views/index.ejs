@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+ <html lang="en" ng-app="myApp" class="no-js"> 
+<head>
+  
+  <title>Dil Daily</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+    <title><% title %></title>
+ 
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/app.css">
+  
+</head>
+<body>
+
+  <div class ="container well" ng-controller="navCtrl">
+      <a ui-sref="home" class="btn">Home</a>
+
+<!--  need to set up login logout hide show to actually mean something -->
+      <a ng-hide="login" ui-sref="home" class="btn">login</a>
+      <a ng-show="login" ng-click="logOut" class="btn">logOut</a>
+<!-- ! -->
+
+      <a ui-sref="main" class="btn">My Tasks</a>
+    </div>
+
+  </div>
+
+  <div ui-view></div>
+
+ 
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/ngstorage/ngstorage.min.js"></script>
+  <script src="bower_components/satellizer/satellizer.min.js">
+  </script>
+  <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+
+  <script src="app.js"></script>
+  <script src="controllers.js"></script>
+ 
+</body>
+</html>
