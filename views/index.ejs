@@ -19,8 +19,8 @@
       <a ui-sref="home" class="btn">Home</a>
 
 <!--  need to set up login logout hide show to actually mean something -->
-      <a ng-hide="login" ui-sref="home" class="btn">login</a>
-      <a ng-show="login" ng-click="logOut" class="btn">logOut</a>
+      <a ng-hide="hasToken()" ui-sref="home" class="btn">login</a>
+      <a ng-show="hasToken()" ng-click="logOut()" class="btn">logOut</a>
 <!-- ! -->
 
       <a ui-sref="main" class="btn">My Tasks</a>

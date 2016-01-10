@@ -24,7 +24,8 @@ app.use(express.static('public'));
 
 app.use("/", require('./routes/index'));
 app.use("/users", require("./routes/users"));
-app.use("/tasks", require("./routes/tasks"));
+app.use("/tasks", require("./routes/tasks"))
+app.use("/auth", require("./routes/auth"));
 
 app.use(function(req, res){
 	res.status(404).render('404')

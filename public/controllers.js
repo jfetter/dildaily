@@ -1,7 +1,19 @@
 angular.module("myApp")
 
-.controller("navCtrl", function($scope){
+.controller("navCtrl", function($scope, $state){
+	console.log(localStorage.satellizer_token)
+	$scope.hasToken = function(){
+		if (localStorage.satellizer_token){
+			return true;
+		}
+		return false; 
+	}
 
+	$scope.logout = function(){
+		console.log($localStorage.satllizer_token)
+		$localStorage.removeItem(satellizer_token);
+		$state.go('home');
+	};
 })
 
 //firebaseObject is a service that stores data that will be
@@ -13,7 +25,11 @@ angular.module("myApp")
 	$scope.authenticate = function(provider){
 		$auth.authenticate(provider)
 			.then(function(res){
-				console.log(res);
+				console.log(localStorage.satellizer_token);
+				if (localStorage.satellizer_token){
+					console.log("logged in")
+					$state.go("main")
+				}
 			})
 			.catch(function(err){
 				console.error(err);
@@ -27,15 +43,20 @@ angular.module("myApp")
 	//prevent form from autosubmitting
 		//event.preventDefault();
 		console.log("in login")
+		if (localStorage.statellizer_token){
+			console.log("logged in")
+			$state.go("main")
+		}
 	}
 })
 
 .controller("mainCtrl", function($scope, $localStorage){
+
 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
 
 	function addKind(){
 		var selected = Math.floor(Math.random()*kindness.length);
-		console.log(selected);
+		console.log("ADD KIND INDEX", selected);
 		return kindness[selected];
 	}
 
