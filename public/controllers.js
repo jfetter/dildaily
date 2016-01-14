@@ -77,6 +77,8 @@ angular.module("myApp")
 	}
 
 	// convert into mongoose
+ 
+
 	$localStorage.dailys = [{name: "test1", description: "descrip1", done: true }, {name: "test2", description: "descrip2", done: false }, {name: "kindness", description: addKind(), done: false}];
 	$scope.dailys = $localStorage.dailys;
 
