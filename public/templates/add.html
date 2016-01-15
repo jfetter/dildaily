@@ -4,28 +4,28 @@
 			<tbody>
 			<tr class="add-task-row ">
 				<td class="add-task-task">
-					<label for="description">description</label>
+					<label for="Taskname">task name</label>
 					<input ng-model="task_name" type="text" placeholder="input new task" class="input-task">
 				</td>
 				<td class="add-task-descript">
-					<label for="Taskname">task name</label>
+					<label for="description">description</label>
 					<input ng-model="task_description" type="text" placeholder="desciprtion" class="input-descript">
 				</td>
 				<td class="add-task-completeBy">
 					<label ng-hide="!todo" for="complete_by">Complete By</label>
 					<label ng-hide="todo" for="complete_by">Appt Date</label>
-					<input ng-model="task_completeBy" type="date" placeholder="complete By" class="input-descript">
+					<input ng-model="completeBy" type="date" placeholder="complete By" class="input-descript">
 				</td>
 				<td class="add-task-recurrence">
 					<label for="selectFreq">frequency</label>
-					<select ng-model="task_frequency" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
+					<select ng-model="frequency" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
 						<option value="weekly">weekly</option><option value="daily">daily</option>
 						<option value="other">other</option>
 					</select>
 				</td>
-					<td class="add-task-recurrence">
+					<td class="add-task-reminder">
 					<label for="selectFreq">email reminder</label>
-					<select ng-model="task_email_reminder" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
+					<select ng-model="email_reminder" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
 						<option value="none">none</option><option value="dayB4">week Before</option>
 						<option value="weekB4">Day Before</option>
 						<option value="hourB4">Hour Before</option>

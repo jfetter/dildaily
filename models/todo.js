@@ -7,14 +7,14 @@ var Todo;
 
 var todoSchema = Schema({
 	user_id: {type: String, required: true},
-	todo_name: {type: String}, 
-	todo_description: {type: String},
-	todo_frequency: {type: String},
-	todo_completeBy: {type: Date},
-	task_type: {type: String},
-	todo_email_reminder: {type: String},
-	todo_additional_info: {type: String},
-	todo_completed: {type: Boolean, required: true, default: false}
+	task_name: {type: String, required: true, default: " "}, 
+	task_description: {type: String, required: true, default: " "},
+	frequency: {type: String, required: true, default: " "},
+	completeBy: {type: Date, required: true, default: " "},
+	email_reminder: {type: String, required: true, default: " "},
+	additional_info: {type: String, required: true, default: " "},
+	completed: {type: Boolean, required: true, default: false},
+	task_type: {type: String, required: true, default: "todo"}
 })
 
 Todo = mongoose.model("Todo", todoSchema);

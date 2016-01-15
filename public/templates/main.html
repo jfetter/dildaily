@@ -22,18 +22,19 @@
 			<div class="row daily-row">
 				<table class="table table-bordered table-striped daily-table">
 					<tr>
-						<th class="col-sm-2"> Task Name</th>
-						<th class="col-sm-2"> Type</th>
+						<th class="col-sm-2"> Task</th>
+						<th class="col-sm-2"> Description</th>
 						<th class="col-sm-2"> frequency </th>
-						<th class="col-sm-2"> CompleteBy </th>
+						<th class="col-sm-3"> Complete By </th>
 						<th class="col-sm-2"> Edit/Delete</th>
-						<th class="col-sm-2"> Completed</th>
+						<th class="col-sm-1"> Completed</th>
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
-					<tr class="dailytr {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
-						<td class="col-sm-2 dailytd">{{item.name}} </td>
-							<td class="col-sm-2">{{item.description}}</td>
-							<td class="col-sm-2">{{item.completeBy}}</td>
+					<tr ng-click="viewDetails()" class="dailytr {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
+						<td class="col-sm-2 dailytd">{{item.task_name}} </td>
+							<td class="col-sm-2">{{item.task_description}}</td>
+							<td class="col-sm-2">{{item.frequency}}</td>
+							<td class="col-sm-2">{{item.completeBy | amDateFormat:'ll'}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
 							<td class="col-sm-2 text-center"> 
 								<i class="fa fa-pencil" ng-click="editTask(item)"></i> 

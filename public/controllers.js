@@ -66,7 +66,7 @@ angular.module("myApp")
 	$http.get(`users/login/${localStorage.dd_id}`)
 		.then(function(res){
 		console.log("RES BODY IN MAIN CTRL",  res.data.todos)
-		$scope.tasks = res.data.todos;
+		$rootScope.tasks = res.data.todos;
 	}, function(err){ console.log(err)})
 
 	function addKind(){
@@ -122,29 +122,31 @@ $scope.addAppt = function(){
 
 
 $scope.createNewTodo = function(){
-  //$rootScope.todos = [];
+  
 	var task = {};
 	$scope.todo = true;
 	task.user_id = localStorage.dd_id;
-	task.todo_name = $scope.task_name;
-	task.todo_description = $scope.task_description;
-	task.todo_frequency = $scope.task_frequency;
-	task.todo_compelteBy = $scope.task_completeBy;
-	task.todo_email_reminder = $scope.task_email_reminder;
-	task.todo_additional_info = $scope.task_additional_info;
-	task_type = "todo";
-	//$rootScope.todos.push(task);
+	task.task_name = $scope.task_name;
+	task.task_description = $scope.task_description;
+	task.frequency = $scope.frequency;
+	task.completeBy = $scope.completeBy;
+	task.email_reminder = $scope.task_email_reminder;
+	task.additional_info = $scope.task_additional_info;
+	task.completed = false;
+	task.task_type = "todo";
 	$http.post("/tasks/newtodo", task )
 	.then(function(res){
 		console.log("LOOK WHAT I BROUGHT BACK",res)
+		$rootScope.tasks = [];
+		$rootScope.tasks.push(task);
 },function(err){
 		console.log(err);
 	})
 }
 
-// $scope.viewDetails =function(){
-// 	console.log("figure out how to pull and displa")
-// }
+$scope.viewDetails =function(){
+	console.log("figure out how to pull and displa")
+}
 
 $scope.createNewAppt = function(){
 	console.log("create new appt")
