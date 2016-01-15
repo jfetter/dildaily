@@ -60,24 +60,20 @@ angular.module("myApp")
 })
 
 .controller("mainCtrl", function($scope, $rootScope, $localStorage, $state, UtilityService, $http){
-	/// if user is not logged in, kick them back to login page
-	//if (!localStorage.satellizer_token)
-		//$state.go("home")
+	 if (!localStorage.satellizer_token)
+		$state.go("home")
   
-  //get user ID and stored somewhere useable
-  // access it every time they log in
-
 	$http.get(`users/login/${localStorage.dd_id}`)
 		.then(function(res){
-		console.log("RES BODY IN MAIN CTRL",  res.body)
-	})
-
-	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+		console.log("RES BODY IN MAIN CTRL",  res.data.todos)
+		$scope.tasks = res.data.todos;
+	}, function(err){ console.log(err)})
 
 	function addKind(){
-		var selected = Math.floor(Math.random()*kindness.length);
-		console.log("ADD KIND INDEX", selected);
-		return kindness[selected];
+	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+		var selection = Math.floor(Math.random()*kindness.length);
+		console.log("ADD KIND INDEX", selection);
+		return kindness[selection];
 	}
 
 	console.log("in main");
@@ -108,12 +104,6 @@ angular.module("myApp")
 		// set up removal of item
 	}
 
-//details about why I used this http://jsfiddle.net/pkozlowski_opensource/WXJ3p/15/
-// 	$scope.isSelected = function(item){
-// 		// if (this.checked === true)
-// 		console.log("$scope.selected", $scope.selected)
-// 		return $scope.selected === item;
-// 	}
  })
 
 .controller("addCtrl", function($scope, $rootScope, $state, $http){
@@ -142,32 +132,26 @@ $scope.createNewTodo = function(){
 	task.todo_compelteBy = $scope.task_completeBy;
 	task.todo_email_reminder = $scope.task_email_reminder;
 	task.todo_additional_info = $scope.task_additional_info;
+	task_type = "todo";
 	//$rootScope.todos.push(task);
 	$http.post("/tasks/newtodo", task )
 	.then(function(res){
 		console.log("LOOK WHAT I BROUGHT BACK",res)
-		//populate task in user
-		// var userTask = {};
-		// userTask.taskId = res.body;
-		// userTask.userId = task.user_id;
-		// console.log(userTask)
-	//  	$http.put("/users/newtask", userTask)
-	//  	.then(function(res){
-	//  		console.log("RES 2", res)
-	//  	}, function(err){
-	//  	console.log(err)
-	// })
 },function(err){
 		console.log(err);
 	})
 }
+
+// $scope.viewDetails =function(){
+// 	console.log("figure out how to pull and displa")
+// }
 
 $scope.createNewAppt = function(){
 	console.log("create new appt")
 }
 
 /// create an id to add to task object
-	function generageTaskId(){
+	function generateTaskId(){
 	var task_id = Date.now() + Math.floor(Math.random()*100)
 	console.log("task_id")
 	return task_id;
