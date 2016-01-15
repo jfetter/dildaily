@@ -145,9 +145,20 @@ $scope.createNewTodo = function(){
 	//$rootScope.todos.push(task);
 	$http.post("/tasks/newtodo", task )
 	.then(function(res){
-		console.log(res)
-	}, function(err){
-		console.log(err)
+		console.log("LOOK WHAT I BROUGHT BACK",res)
+		//populate task in user
+		// var userTask = {};
+		// userTask.taskId = res.body;
+		// userTask.userId = task.user_id;
+		// console.log(userTask)
+	//  	$http.put("/users/newtask", userTask)
+	//  	.then(function(res){
+	//  		console.log("RES 2", res)
+	//  	}, function(err){
+	//  	console.log(err)
+	// })
+},function(err){
+		console.log(err);
 	})
 }
 

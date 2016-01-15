@@ -11,7 +11,8 @@ var User;
 var userSchema = Schema({
 	username: {type: String},
 	password: {type: String}, 
-	todos: { type: Schema.Types.ObjectId, ref: 'Todo' },
+	// link the ids saved in this array to the array of todos
+	todos: [{ type: Schema.Types.ObjectId, ref: 'Todo' }],
 	appointments: { type: Schema.Types.ObjectId, ref: 'Appointment' },
 	contacts: {type: Array},
 	github: String,
