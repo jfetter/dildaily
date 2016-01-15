@@ -62,7 +62,7 @@ router.post('/github', function(req, res) {
         User.findOne({ github: profile.id }, function(err, existingUser) {
           if (existingUser) {
             var token = existingUser.createJWT();
-            return res.send({ token: token });
+            return res.send({ token: token, user:existingUser._id });
           }
           var user = new User();
           user.github = profile.id;
@@ -70,7 +70,7 @@ router.post('/github', function(req, res) {
           user.displayName = profile.name;
           user.save(function() {
             var token = user.createJWT();
-            res.send({ token: token });
+            res.send({ token: token , user:user._id});
           });
         });
       }

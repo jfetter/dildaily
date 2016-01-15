@@ -16,20 +16,20 @@
 <body>
 
   <div class ="container well" ng-controller="navCtrl">
-      <a ui-sref="home" class="btn">Home</a>
+      <a ng-sref="home" class="btn">Home</a>
 
 <!--  need to set up login logout hide show to actually mean something -->
-      <a ng-hide="hasToken()" ui-sref="home" class="btn">login</a>
-      <a ng-show="hasToken()" ng-click="logOut()" class="btn">logOut</a>
+      <a ng-hide="loginButton()" ui-sref="home" class="btn">login</a>
+      <a ng-show="loginButton()" ng-click="logOut()" class="btn">logOut</a>
 <!-- ! -->
 
-      <a ui-sref="main" class="btn">My Tasks</a>
+      <a ui-sref="main" ng-click="goToMyTasks()" class="btn">My Tasks</a>
     </div>
 
-  </div>
+  
 
   <div ui-view></div>
-
+</div>
  
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
@@ -40,6 +40,7 @@
 
   <script src="app.js"></script>
   <script src="controllers.js"></script>
+  <script src="services.js"></script>
  
 </body>
 </html>
