@@ -4,6 +4,8 @@ var express = require('express');
 var router = express.Router();
 
 var User = require('../models/user');
+//var Todo = require("../models/todo");
+//var Appointment = require("../models/appointment");
 
 router.post("/", function(req, res){
 	console.log("req.body from user router post", req.body)

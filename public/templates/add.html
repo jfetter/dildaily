@@ -1,27 +1,47 @@
 <div class="container add-task-cont">
 	<div class="row">
 		<table class="table table-bordered add-task-table">
-			<tr class="add-task-row">
+			<tbody>
+			<tr class="add-task-row ">
 				<td class="add-task-task">
-					<input type="text" placeholder="input new task" class="input-task">
+					<label for="description">description</label>
+					<input ng-model="task_name" type="text" placeholder="input new task" class="input-task">
 				</td>
 				<td class="add-task-descript">
-					<input type="text" placeholder="desciprtion" class="input-descript">
+					<label for="Taskname">task name</label>
+					<input ng-model="task_description" type="text" placeholder="desciprtion" class="input-descript">
+				</td>
+				<td class="add-task-completeBy">
+					<label ng-hide="!todo" for="complete_by">Complete By</label>
+					<label ng-hide="todo" for="complete_by">Appt Date</label>
+					<input ng-model="task_completeBy" type="date" placeholder="complete By" class="input-descript">
 				</td>
 				<td class="add-task-recurrence">
 					<label for="selectFreq">frequency</label>
-					<select id="selectFreq" placeholder="desciprtion" class="input-recurrence">
+					<select ng-model="task_frequency" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
 						<option value="weekly">weekly</option><option value="daily">daily</option>
 						<option value="other">other</option>
 					</select>
 				</td>
+					<td class="add-task-recurrence">
+					<label for="selectFreq">email reminder</label>
+					<select ng-model="task_email_reminder" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
+						<option value="none">none</option><option value="dayB4">week Before</option>
+						<option value="weekB4">Day Before</option>
+						<option value="hourB4">Hour Before</option>
+					</select>
+				</td>
 				<td class="add-task-butt" >
-					<button class="add-task-btn btn">Add</button>
+					<button ng-click="createNewTodo()" class="add-task-btn btn">Add</button>
 				</td>	
 				<td class="cancel-add-butt" >
-					<button class="cancel-add-btn btn">cancel</button>
+					<button ng-click="cancelAdd()" class="cancel-add-btn btn">cancel</button>
 				</td>
 			</tr>
+				<tr>
+				<input type="text" ng-model="tas_additional_info" class="input-lg col-sm-12" placeholder="additional details">
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </div>

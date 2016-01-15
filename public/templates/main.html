@@ -7,8 +7,11 @@
 	</div>	
 	<div class="row">
 		<div class="col-sm-12">
-			<a class=" btn btn-success add-button" ui-sref="main.add">Add New Task</a>
+			<a class=" btn btn-info add-button"  ui-sref="main.add">Add New Todo</a>
+		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
+
 			<div ui-view class="add-edit-view"></div>
+		
 		</div>
 	</div>
 </div>
@@ -19,10 +22,12 @@
 			<div class="row daily-row">
 				<table class="table table-bordered table-striped daily-table">
 					<tr>
-						<th class="col-sm-3"> Task</th>
-						<th class="col-sm-3"> Description</th>
-						<th class="col-sm-3"> Completed</th>
-						<th class="col-sm-3"> Edit/Delete</th>
+						<th class="col-sm-2"> Task Name</th>
+						<th class="col-sm-2"> Type</th>
+						<th class="col-sm-2"> frequency </th>
+						<th class="col-sm-2"> CompleteBy </th>
+						<th class="col-sm-2"> Edit/Delete</th>
+						<th class="col-sm-2"> Completed</th>
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
 					<tr class="dailytr {active : isSelected(item)}" ng-repeat="item in dailys track by $index">

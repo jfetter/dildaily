@@ -11,7 +11,9 @@ var User;
 var userSchema = Schema({
 	username: {type: String},
 	password: {type: String}, 
-	tasks: {type: Array},
+	todos: { type: Schema.Types.ObjectId, ref: 'Todo' },
+	appointments: { type: Schema.Types.ObjectId, ref: 'Appointment' },
+	contacts: {type: Array},
 	github: String,
 	facebook: String
 })

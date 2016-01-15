@@ -116,8 +116,51 @@ angular.module("myApp")
 // 	}
  })
 
-.controller("addCtrl", function($scope){
-	$scope.test = "IN ADD CTRL";
+.controller("addCtrl", function($scope, $rootScope, $state, $http){
+console.log("IN ADD CTRL"); 
+$scope.todo = true; 
+
+$scope.cancelAdd = function(){
+	$state.go("main")
+}
+
+$scope.addAppt = function(){
+	console.log("add meeting")
+	$scope.todo = false; 
+	//$state.go("main.add")
+}
+
+
+$scope.createNewTodo = function(){
+  //$rootScope.todos = [];
+	var task = {};
+	$scope.todo = true;
+	task.user_id = localStorage.dd_id;
+	task.todo_name = $scope.task_name;
+	task.todo_description = $scope.task_description;
+	task.todo_frequency = $scope.task_frequency;
+	task.todo_compelteBy = $scope.task_completeBy;
+	task.todo_email_reminder = $scope.task_email_reminder;
+	task.todo_additional_info = $scope.task_additional_info;
+	//$rootScope.todos.push(task);
+	$http.post("/tasks/newtodo", task )
+	.then(function(res){
+		console.log(res)
+	}, function(err){
+		console.log(err)
+	})
+}
+
+$scope.createNewAppt = function(){
+	console.log("create new appt")
+}
+
+/// create an id to add to task object
+	function generageTaskId(){
+	var task_id = Date.now() + Math.floor(Math.random()*100)
+	console.log("task_id")
+	return task_id;
+	}
 })
 
 .controller("editCtrl", function($scope){
