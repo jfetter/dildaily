@@ -1,6 +1,6 @@
-<div class="container add-task-cont">
+<div class="container task-form-cont">
 	<div class="row">
-		<table class="table table-bordered add-task-table">
+		<table class="col-sm-12 table table-bordered add-task-table">
 			<tbody>
 			<tr class="add-task-row ">
 				<td class="add-task-task">
@@ -26,20 +26,22 @@
 					<td class="add-task-reminder">
 					<label for="selectFreq">email reminder</label>
 					<select ng-model="email_reminder" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
-						<option value="none">none</option><option value="dayB4">week Before</option>
-						<option value="weekB4">Day Before</option>
-						<option value="hourB4">Hour Before</option>
+						<option value="none">none</option><option value="day before">week Before</option>
+						<option value="week before">Day Before</option>
+						<option value="hour before">Hour Before</option>
 					</select>
 				</td>
 				<td class="add-task-butt" >
-					<button ng-click="createNewTodo()" class="add-task-btn btn">Add</button>
+					<button ng-click="createNewTodo()" class="add-task-btn btn btn-success">Sumbit</button>
 				</td>	
 				<td class="cancel-add-butt" >
-					<button ng-click="cancelAdd()" class="cancel-add-btn btn">cancel</button>
+					<button ng-click="cancelAdd()" class="cancel-add-btn btn btn-danger">cancel</button>
 				</td>
 			</tr>
-				<tr>
-				<input type="text" ng-model="tas_additional_info" class="input-lg col-sm-12" placeholder="additional details">
+				<tr class="row">
+					<td class="col-sm-12" colspan="8">
+				<input id="addl-info" type="text" ng-model="additional_info" class="input-lg col-sm-12" placeholder="additional details">
+					</td>
 				</tr>
 			</tbody>
 		</table>

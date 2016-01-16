@@ -1,7 +1,7 @@
 'use strict';
 
 //take out nganimate and ngstorage if I dont end up using them in final product
-angular.module("myApp", ["ui.router", "satellizer", "ngStorage", "ngAnimate", "angularMoment"])
+angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngStorage", "ngAnimate", "angularMoment"])
 
 ///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
@@ -21,8 +21,8 @@ angular.module("myApp", ["ui.router", "satellizer", "ngStorage", "ngAnimate", "a
 	.state("register", {url:"/register", templateUrl:"templates/register.html", controller:"AuthCtrl", authenticate: false})
 	
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
-	.state("main.edit", {url:"/edit", templateUrl:"templates/edit.html", controller:"editCtrl"})
-	.state("main.add", {url:"/add", templateUrl:"templates/add.html", controller:"addCtrl"})
+	//.state("main.edit", {url:"/edit", templateUrl:"templates/edit.html", controller:"editCtrl"})
+	.state("main.add", {url:"/add", templateUrl:"templates/task-form.html", controller:"addCtrl"})
 
 	.state("sample", {url: "/sample", templateUrl:"sample.html", controller:"sampleCtrl"})
 	

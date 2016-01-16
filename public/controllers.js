@@ -19,8 +19,9 @@ angular.module("myApp")
 
 	$scope.logOut = function(){
 		console.log("log out clicked");
-		localStorage.removeItem("satellizer_token");
-		localStorage.removeItem("dd_id");
+		//localStorage.removeItem("satellizer_token");
+		//localStorage.removeItem("dd_id");
+		localStorage.clear();
 		$state.go('home');
 	};
 })
@@ -37,7 +38,6 @@ angular.module("myApp")
 					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
 					localStorage.dd_id = res.data.user;
 					$state.go("main")
-
 				} // if satellizer token in local storage
 			})
 			.catch(function(err){
@@ -59,15 +59,20 @@ angular.module("myApp")
 	}
 })
 
-.controller("mainCtrl", function($scope, $rootScope, $localStorage, $state, UtilityService, $http){
+.controller("mainCtrl", function($scope, $rootScope, $localStorage, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token)
 		$state.go("home")
+
+	$scope.title = "DAILY DILIGENCE";
   
-	$http.get(`users/login/${localStorage.dd_id}`)
-		.then(function(res){
-		console.log("RES BODY IN MAIN CTRL",  res.data.todos)
-		$rootScope.tasks = res.data.todos;
-	}, function(err){ console.log(err)})
+  function loadUserTasks(){	
+		$http.get(`users/login/${localStorage.dd_id}`)
+			.then(function(res){
+			console.log("RES BODY IN MAIN CTRL",  res.data.todos)
+			$rootScope.tasks = res.data.todos;
+		}, function(err){ console.log(err)})
+  } 
+loadUserTasks();
 
 	function addKind(){
 	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
@@ -77,19 +82,52 @@ angular.module("myApp")
 	}
 
 	console.log("in main");
-	$scope.title = "MAIN PAGE";
 
 	$scope.addTask = function(){
 		console.log("adding a new todo item")
 	}
 
-		$scope.editTask = function(item){
-		console.log("item to edit", item)
-	}
+	$scope.openModal = function(item, size){
+		$rootScope.item_id = item.item_id;
+		$rootScope.user_id = item.user_item_id;
 
+    var modalInstance = $uibModal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'templates/modal.html',
+      controller: 'ModalInstanceCtrl',
+      size: size
+    });
+
+    modalInstance.result.then(function() {
+    	console.log("In modal function")
+
+    }, function() {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+	};
+
+   $scope.editTask = function(){
+    var taskId = $rootScope.item_id;
+		var userId = $rootScope.item_user_id;
+		console.log("item to edit", item)
+		$http.put("/tasks/edit", {taskId: taskId})
+		.then(function(res){
+			console.log(res);
+			loadUserTasks();
+			}, function(err){console.log(err)})
+		}
+	
 	$scope.deleteTask = function(item){
-		console.log("item to delete",item.name)
+		console.log("item to delete", item._id)
+		var taskId = item._id;
+		var userId = item.user_id; 
+		$http.post("/tasks/delete", {taskId: taskId}) 
+		.then(function(res){
+			console.log("RESPONSE FROM DELETE REQ", res.data);
+			loadUserTasks();
+		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
+
 	}
 
 	// convert into mongoose
@@ -122,7 +160,6 @@ $scope.addAppt = function(){
 
 
 $scope.createNewTodo = function(){
-  
 	var task = {};
 	$scope.todo = true;
 	task.user_id = localStorage.dd_id;
@@ -134,10 +171,11 @@ $scope.createNewTodo = function(){
 	task.additional_info = $scope.task_additional_info;
 	task.completed = false;
 	task.task_type = "todo";
+  if (!$rootScope.tasks) $rootScope.tasks = [];
 	$http.post("/tasks/newtodo", task )
+
 	.then(function(res){
 		console.log("LOOK WHAT I BROUGHT BACK",res)
-		$rootScope.tasks = [];
 		$rootScope.tasks.push(task);
 },function(err){
 		console.log(err);
@@ -153,13 +191,73 @@ $scope.createNewAppt = function(){
 }
 
 /// create an id to add to task object
-	function generateTaskId(){
-	var task_id = Date.now() + Math.floor(Math.random()*100)
-	console.log("task_id")
-	return task_id;
-	}
+// 	function generateTaskId(){
+// 	var task_id = Date.now() + Math.floor(Math.random()*100)
+// 	console.log("task_id")
+// 	return task_id;
+// 	}
+ })
+
+
+
+.controller("modalCtrl", function($scope, $state, $uibModalInstance){
+
+ $scope.animationsEnabled = true;
+
+  // $scope.open = function(size) {
+
+  //   var modalInstance = $uibModal.open({
+  //     animation: $scope.animationsEnabled,
+  //     templateUrl: 'template/modal.html',
+  //     controller: 'ModalInstanceCtrl',
+  //     size: size,
+  //   });
+
+  //   modalInstance.result.then(function() {
+
+  //   }, function() {
+  //     $log.info('Modal dismissed at: ' + new Date());
+  //   });
+  // };
+
+  $scope.toggleAnimation = function() {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
 })
 
-.controller("editCtrl", function($scope){
-	$scope.test = "IN EDIT CTRL";
+// $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+.controller('ModalInstanceCtrl', function($scope, $uibModalInstance) {
+  // $scope.login = false;
+  // $scope.register = false;
+  // $scope.errors = false;
+
+  // $scope.showError = function(err){
+  // 	$scope.errors = true;
+  //   $scope.errorMessages = err;
+  // }
+
+  // $scope.showLogin = function() {
+  //   $scope.login = !$scope.login;
+  //   $scope.register = false;
+  // }
+
+  // $scope.showReg = function() {
+  //   $scope.register = !$scope.register;
+  //   $scope.login = false;
+  // }
+
+
+  $scope.cancel = function() {
+    console.log("cancel clicked")
+    $uibModalInstance.dismiss('cancel');
+  };
 })
+
+
+.directive('taskModal', function(){
+  return{
+    templateUrl: "partials/task-modal.html"
+  }
+})
+

@@ -13,18 +13,38 @@ router.post("/newtodo", function(req, res){
 		if (err)res.status(400).send(err.message);
 		var taskId = savedTask._id
 	console.log("USER ID", userId)
-//find the user and add the id
-// of the todo to their todo 	
 		User.findByIdAndUpdate(userId, {$push: {todos: taskId}} ,function(err, foundUser){
 			if (err) res.status(400).send(err.message);
-			// foundUser.todos.push(taskId);
 			console.log("FOUND USER TODOS!!!!!!!!", foundUser.todos)
 			console.log("FOUND USER:", foundUser, "TASK ID", taskId)
 		res.status(err ? 400 : 200).send(err || "task Added")
 		})
-})
+	})
 })
 
+router.post("/delete", function(req, res){
+	console.log("delete req body !!!!!!",req.body.taskId)
+		Todo.findByIdAndRemove(req.body.taskId, function (err, task ){
+    res.status(err ? 400 : 200).send(err || "task deleted!!");
+  
+	})
+})
+
+router.put("/edit", (req, res) =>{
+	console.log("EDIT REQ BODY !!!!!", req.body.taskId)
+	Todo.findByIdAndUpdate(req.body.taskId, {
+		$set:{ task_name: req.body.task_name ,
+		task_description: req.body.task_description, 
+		frequency: req.body.frequency,
+		 completeBy: req.body.completeBy, 
+		 email_reminder: req.body.email_reminder, 
+		 additional_info: req.body.additional_info, 
+		 completed: req.body.completed } 
+	},function(err, task){
+		console.log("TASK  IN EDIT", task)
+		res.status(err ? 400 : 200).send(err || `task ${task} edited`);
+	})
+})
 
 router.get("/", function(req, res){
 	console.log("req.body from TASK router get", req);

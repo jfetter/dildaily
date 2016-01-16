@@ -2,20 +2,14 @@
 
 angular.module("myApp")
 
-.directive("dailyTasks",function){
+.directive("addTask",function){
 	return{
-		templateUrl: "directives/daily-tasks.html"
+		templateUrl: "templates/add.html"
 	}
 })
 
-.directive("weeklyTasks",function){
-	return{
-		templateUrl: "directives/weekly-tasks.html"
-	}
-})
-
-.directive("otherTasks",function){
-	return{
-		templateUrl: "directives/other-tasks.html"
-	}
+.directive('taskForm', function(){
+  return{
+    templateUrl: "templates/task-form.html"
+  }
 })

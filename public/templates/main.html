@@ -37,7 +37,7 @@
 							<td class="col-sm-2">{{item.completeBy | amDateFormat:'ll'}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
 							<td class="col-sm-2 text-center"> 
-								<i class="fa fa-pencil" ng-click="editTask(item)"></i> 
+								<i class="fa fa-pencil modal-button" ng-click="openModal(item, lg)"></i> 
 								<i class="fa fa-trash" ng-click="deleteTask(item)"></i>
 							</td>
 							<td class="table-icons text-center">
