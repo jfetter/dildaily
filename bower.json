@@ -21,7 +21,8 @@
     "satellizer": "~0.13.3",
     "moment": "~2.11.1",
     "angular-moment": "~0.10.3",
-    "angular-bootstrap": "~1.0.3"
+    "angular-bootstrap": "~1.0.3",
+    "Favicon JS": "favicon#~0.0.3"
   },
   "authors": [
     "Jillian Fetter <jillian.fetter@gmail.com>"

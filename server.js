@@ -10,7 +10,7 @@ var morgan = require("morgan");
 var mongoose = require("mongoose");
 mongoose.connect(MONGO_URL, function(err){
 	if(err) return console.log(err);
-	console.log("MongoDB connected to ${MONGO_URL");
+	console.log(`MongoDB connected to ${MONGO_URL}`);
 });
 
 var app = express();
