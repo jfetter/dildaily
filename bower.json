@@ -6,9 +6,6 @@
   "license": "na",
   "dependencies": {
     "angular": "~1.4.8",
-    "angular-route": "~1.4.0",
-    "angular-loader": "~1.4.0",
-    "angular-mocks": "~1.4.0",
     "angular-ui-router": "~0.2.15",
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.6",
