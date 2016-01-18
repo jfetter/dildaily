@@ -6,7 +6,6 @@
   "author": "Jillian Fetter",
   "scripts": {
     "start": "node server.js",
-    "postinstall":"bower install"
   },
   "engines": {
     "node": "4.2.3"
