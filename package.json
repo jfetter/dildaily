@@ -5,8 +5,7 @@
   "main": "server.js",
   "author": "Jillian Fetter",
   "scripts": {
-    "start": "node server.js",
-    "postinstall": "bower install"
+    "start": "node server.js"
   },
   "engines": {
     "node": "4.2.3"
