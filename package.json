@@ -6,6 +6,7 @@
   "author": "Jillian Fetter",
   "scripts": {
     "start": "node server.js",
+    "setup": "npm install",
   },
   "engines": {
     "node": "4.2.3"
