@@ -59,11 +59,11 @@ angular.module("myApp")
 	}
 })
 
-.controller("mainCtrl", function($scope, $rootScope, $localStorage, $state, UtilityService, $http, $uibModal, $log){
+.controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token)
 		$state.go("home")
 
-	$scope.title = "DAILY DILIGENCE";
+	$scope.title = "DILIGENCE";
   
   function loadUserTasks(){	
 		$http.get(`users/login/${localStorage.dd_id}`)
@@ -134,7 +134,7 @@ loadUserTasks();
  
 
 	//$localStorage.dailys = [{name: "test1", description: "descrip1", done: true }, {name: "test2", description: "descrip2", done: false }, {name: "kindness", description: addKind(), done: false}];
-	$scope.dailys = $localStorage.dailys;
+	//$scope.dailys = $localStorage.dailys;
 
 	$scope.checkOff = function(item){
 		$scope.selected = item;
