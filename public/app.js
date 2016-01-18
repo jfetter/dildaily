@@ -23,8 +23,6 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngStorage",
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
 	//.state("main.edit", {url:"/edit", templateUrl:"templates/edit.html", controller:"editCtrl"})
 	.state("main.add", {url:"/add", templateUrl:"templates/task-form.html", controller:"addCtrl"})
-
-	.state("sample", {url: "/sample", templateUrl:"sample.html", controller:"sampleCtrl"})
 	
 })
 
