@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.14.2",
-    "bower": "^1.7.2",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "jwt-simple": "^0.4.0",
