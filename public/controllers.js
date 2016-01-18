@@ -138,8 +138,8 @@ loadUserTasks();
 
 	$scope.checkOff = function(item){
 		$scope.selected = item;
-		console.log("from within checkOff item.name is", item.name);
-		// set up removal of item
+		console.log("from within checkOff item._id is", item._id);
+ 			
 	}
 
  })

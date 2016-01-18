@@ -10,7 +10,7 @@
   margin-bottom: 2em;
 }
 
-.title{
-
+.strike{
+	text-decoraction: line-through;
 }
 
