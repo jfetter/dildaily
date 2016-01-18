@@ -9,7 +9,7 @@
     "postinstall": "bower install"
   },
   "engines": {
-    "node": "5.2.0"
+    "node": "4.2.3"
   },
   "license": "ISC",
   "dependencies": {
