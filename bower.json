@@ -1,34 +1,32 @@
 {
   "name": "dildaily",
-  "description": "daily checklist",
-  "version": "0.0.0",
-  "homepage": "https://github.com/jfetter/dildaily.git",
-  "license": "na",
-  "dependencies": {
-    "angular": "~1.4.8",
-    "angular-ui-router": "~0.2.15",
-    "jquery": "~2.1.4",
-    "bootstrap": "~3.3.6",
-    "ngstorage": "~0.3.10",
-    "font-awesome": "fontawesome#~4.5.0",
-    "angular-animate": "~1.4.8",
-    "sweetalert": "~1.1.3",
-    "satellizer": "~0.13.3",
-    "moment": "~2.11.1",
-    "angular-moment": "~0.10.3",
-    "angular-bootstrap": "~1.0.3",
-  },
+  "description": "",
+  "main": "server.js",
   "authors": [
-    "Jillian Fetter <jillian.fetter@gmail.com>"
+    "Jillian Fetter"
   ],
-  "main": "",
+  "license": "ISC",
+  "homepage": "https://github.com/jfetter/dildaily",
   "moduleType": [],
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "app/bower_components",
+    "public/bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "angular-ui-router": "~0.2.15",
+    "jquery": "~2.2.0",
+    "bootstrap": "~3.3.6",
+    "angular-bootstrap": "~1.0.3",
+    "angular-moment": "~0.10.3",
+    "moment": "~2.11.1",
+    "satellizer": "~0.13.4",
+    "angular-animate": "~1.4.8",
+    "font-awesome": "~4.5.0",
+    "ngstorage": "~0.3.10"
+  }
 }
