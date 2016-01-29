@@ -5,14 +5,15 @@
         </div>
 
         <form   name="myform" class="form-signin" role="form" novalidate>
-            <input ng-hide="true" ng-model="email" type="email" class="form-control" placeholder="Email address" autofocus="">
-            <input ng-hide="true" ng-model="password" type="password" class="form-control" placeholder="Password" >
-            <a ng-hide="true" ui-sref="register"> Register</a>
+            <input ng-model="logEmail" type="email" class="form-control" placeholder="Email address" autofocus="">
+            <br>
+            <input ng-model="logPassword" type="password" class="form-control" placeholder="Password" >
             <br>
         
-            <!-- <button ng-click="pwlogin()" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> -->
+            <button ng-click="pwlogin()" class="btn btn-lg btn-primary btn-block" type="submit">Sign in with email</button>
             <!-- <button ng-click="authenticate('facebook')" class="btn btn-lg btn-primary btn-block" type="submit">Login with Facebook</button> -->
-            <button ng-click="authenticate('github')" class="btn btn-lg btn-primary btn-block" type="submit">Login with Git Hub</button>
+           <!--  <button ng-click="authenticate('github')" class="btn btn-lg btn-primary btn-block" type="submit">Login with Git Hub</button> -->
+            <a ui-sref="register" class="text-right"> Register</a>
       </form>
  
     </div>

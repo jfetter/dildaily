@@ -30,6 +30,10 @@ angular.module("myApp")
 .controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http){
 
 ///// stuff for satelizer oauth login /////
+
+
+
+
 	$scope.authenticate = function(provider){
 		$auth.authenticate(provider)
 			.then(function(res){
@@ -44,26 +48,76 @@ angular.module("myApp")
 				console.error(err);
 			});
 	};
-//// end stuff for satellizer oauth /////
+
+///registesr with email and password
 
 
-	//login with email and password
+$scope.signup = function(){
+	var password2 = $scope.password2; 
+	var user = {
+	  userName: $scope.userName,
+	  email: $scope.email,
+	  password: $scope.password
+	};
+
+	if (user.password === password2){
+		console.log(user);
+		$http.post("auth/signup", user)
+	  .then(function(res) {
+	  	console.log(res)
+	  	$state.go('home');
+	    // Redirect user here to login page or perhaps some other intermediate page
+	    // that requires email address verification before any other part of the site
+	    // can be accessed.
+	  })
+	  .catch(function(err) {
+	    console.error(err);
+	  });
+	} else {
+		console.log("passwords don't match")
+	}
+}
+
+	$scope.pwlogin = function(){
+		var user = {
+	  email: $scope.logEmail,
+	  password: $scope.logPassword
+	};
+
+$http.post('/auth/pwLogin', user)
+	.then(function(res){
+		console.log(res);
+		localStorage.setItem('satellizer_token', res.data)
+		$state.go('main')
+	}).catch(function(err){
+		console.error(err);
+	});
+
+
+}
+
+	//oauth login
 	$scope.login = function(provider){
+		var user = {
+	  userName: $scope.userName,
+	  password: $scope.password
+	};
 	//prevent form from autosubmitting
 		//event.preventDefault();
 		console.log("in login")
 		if (localStorage.statellizer_token){
 			console.log("logged in")
-			$state.go("main")
+			$state.go("main");
 		}
 	}
 })
 
 .controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
-	 if (!localStorage.satellizer_token)
-		$state.go("home")
+	 if (!localStorage.satellizer_token){
+			$state.go("home");
+	 }
 
-	$scope.title = "DILIGENCE";
+	 $scope.title = "DILIGENCE";
   
   function loadUserTasks(){	
 		$http.get(`users/login/${localStorage.dd_id}`)
@@ -72,7 +126,7 @@ angular.module("myApp")
 			$rootScope.tasks = res.data.todos;
 		}, function(err){ console.log(err)})
   } 
-loadUserTasks();
+//loadUserTasks();
 
 	function addKind(){
 	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];

@@ -9,7 +9,36 @@ var request = require('request');
 
 var User = require('../models/user');
 
+
+
 // AUTH
+
+/*
+ |--------------------------------------------------------------------------
+ | Login with EMail and Password
+ |--------------------------------------------------------------------------
+ */
+router.post('/signup', function(req, res){
+  console.log("SIGNUP REQ.BODY",  req.body);
+  var user = new User();
+    user.username = req.body.userName 
+    user.email = req.body.email
+    user.save(function() {
+      var token = user.createJWT();
+      res.send({ token: token , user:user._id});
+    });
+})
+
+router.post('/pwLogin', function(req, res){
+  console.log("PWLOGIN REQ.BODY",  req.body);
+  User.findOne({email: req.body.email},  function(err, user){
+    console.log(user);
+    var token = user.createJWT();
+    res.send(token);
+  })
+})
+
+
 
 /*
  |--------------------------------------------------------------------------

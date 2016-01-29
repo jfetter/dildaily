@@ -10,6 +10,7 @@ var User;
 
 var userSchema = Schema({
 	username: {type: String},
+	email: {type: String},
 	password: {type: String}, 
 	// link the ids saved in this array to the array of todos
 	todos: [{ type: Schema.Types.ObjectId, ref: 'Todo' }],

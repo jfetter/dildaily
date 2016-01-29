@@ -1,17 +1,22 @@
 <div class="container">
     <form class="form-signin" name="regForm">
         <div class="form-group" ng-class="{ 'has-error' : regForm.email.$invalid }">
+            <label>User Name</label>
+            <input type="text" class="form-control" ng-model="userName">
             <label>Email</label>
-            <input type="email" name="email" class="form-control" ng-model="user.email">
+            <input type="email" name="email" class="form-control" ng-model="email">
             <p class="help-block" ng-show="regForm.email.$invalid">Enter a valid email.</p>
         </div>
          
         <div class="form-group" ng-class="{ 'has-error' : regForm.password.$invalid }">
             <label>Password</label>
-            <input type="password" name="password" class="form-control" ng-model="user.password" ng-minlength="8">
-            <p class="help-block" ng-show="regForm.password.$error.minlength">Min password length is 8 characters.</p>
+            <input type="password" name="password" class="form-control" ng-model="password" > <br>
+             <input type="password" placeholder="re-type Password" name="password" class="form-control" ng-model="password2" > 
+            <!-- ng-minlength="8" -->
+            <p ng-show="password2 != password"> Passwords Don't Match! </p>
+            <!-- <p class="help-block" ng-show="regForm.password.$error.minlength">Min password length is 8 characters.</p> -->
         </div>
-        <button ng-disabled="!user.email || !user.password" type="button" ng-click="createUser()" class="btn btn-lg btn-primary btn-block">Register</button>
+        <button ng-disabled="!email || !password || !userName || password2 != password" type="button" ng-click="signup()" class="btn btn-lg btn-primary btn-block">Register</button>
 
     </form>
 </div>
