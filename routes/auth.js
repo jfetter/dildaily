@@ -19,11 +19,13 @@ var User = require('../models/user');
  |--------------------------------------------------------------------------
  */
 router.post('/signup', function(req, res){
+  //need to add middleware to check if email is already used
   console.log("SIGNUP REQ.BODY",  req.body);
   var user = new User();
     user.username = req.body.userName 
     user.email = req.body.email
-    user.save(function() {
+    user.save(function(err, user) {
+      if (err)res.status(400).send("User Not Found");
       var token = user.createJWT();
       res.send({ token: token , user:user._id});
     });
@@ -34,7 +36,7 @@ router.post('/pwLogin', function(req, res){
   User.findOne({email: req.body.email},  function(err, user){
     console.log(user);
     var token = user.createJWT();
-    res.send(token);
+    res.send({token: token , user:user._id});
   })
 })
 

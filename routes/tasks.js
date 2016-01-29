@@ -9,10 +9,11 @@ var Todo = require('../models/todo');
 router.post("/newtodo", function(req, res){
 	var userId = req.body.user_id
 	var todo = new Todo(req.body)
+	console.log(todo)
 	todo.save((err, savedTask) => {
+		console.log("savedTask", savedTask)
 		if (err)res.status(400).send(err.message);
-		var taskId = savedTask._id
-	console.log("USER ID", userId)
+		var taskId = savedTask._id;
 		User.findByIdAndUpdate(userId, {$push: {todos: taskId}} ,function(err, foundUser){
 			if (err) res.status(400).send(err.message);
 			console.log("FOUND USER TODOS!!!!!!!!", foundUser.todos)

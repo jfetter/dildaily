@@ -85,8 +85,9 @@ $scope.signup = function(){
 
 $http.post('/auth/pwLogin', user)
 	.then(function(res){
-		console.log(res);
-		localStorage.setItem('satellizer_token', res.data)
+		console.log("RES AFTER LOGIN",res);
+		localStorage.setItem('satellizer_token', res.data.token)
+		localStorage.setItem('dd_id', res.data.user)
 		$state.go('main')
 	}).catch(function(err){
 		console.error(err);
@@ -114,7 +115,8 @@ $http.post('/auth/pwLogin', user)
 .controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
-	 }
+			return;
+	 } 
 
 	 $scope.title = "DILIGENCE";
   
@@ -125,7 +127,7 @@ $http.post('/auth/pwLogin', user)
 			$rootScope.tasks = res.data.todos;
 		}, function(err){ console.log(err)})
   } 
-//loadUserTasks();
+loadUserTasks();
 
 	function addKind(){
 	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
