@@ -61,7 +61,6 @@ $scope.signup = function(){
 	};
 
 	if (user.password === password2){
-		console.log(user);
 		$http.post("auth/signup", user)
 	  .then(function(res) {
 	  	console.log(res)
