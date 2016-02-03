@@ -27,90 +27,6 @@ angular.module("myApp")
 })
 
 
-.controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http){
-
-///// stuff for satelizer oauth login /////
-
-
-
-
-	$scope.authenticate = function(provider){
-		$auth.authenticate(provider)
-			.then(function(res){
-				if (localStorage.satellizer_token){
-					console.log(res.data, "logged in")
-					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
-					localStorage.dd_id = res.data.user;
-					$state.go("main")
-				} // if satellizer token in local storage
-			})
-			.catch(function(err){
-				console.error(err);
-			});
-	};
-
-///registesr with email and password
-
-
-$scope.signup = function(){
-	var password2 = $scope.password2; 
-	var user = {
-	  userName: $scope.userName,
-	  email: $scope.email,
-	  password: $scope.password
-	};
-
-	if (user.password === password2){
-		$http.post("auth/signup", user)
-	  .then(function(res) {
-	  	console.log(res)
-	  	$state.go('home');
-	    // Redirect user here to login page or perhaps some other intermediate page
-	    // that requires email address verification before any other part of the site
-	    // can be accessed.
-	  })
-	  .catch(function(err) {
-	    console.error(err);
-	  });
-	} else {
-		console.log("passwords don't match")
-	}
-}
-
-	$scope.pwlogin = function(){
-		var user = {
-	  email: $scope.logEmail,
-	  password: $scope.logPassword
-	};
-
-$http.post('/auth/pwLogin', user)
-	.then(function(res){
-		console.log("RES AFTER LOGIN",res);
-		localStorage.setItem('satellizer_token', res.data.token)
-		localStorage.setItem('dd_id', res.data.user)
-		$state.go('main')
-	}).catch(function(err){
-		console.error(err);
-	});
-
-
-}
-
-	//oauth login
-	$scope.login = function(provider){
-		var user = {
-	  userName: $scope.userName,
-	  password: $scope.password
-	};
-	//prevent form from autosubmitting
-		//event.preventDefault();
-		console.log("in login")
-		if (localStorage.statellizer_token){
-			console.log("logged in")
-			$state.go("main");
-		}
-	}
-})
 
 .controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token){
@@ -119,6 +35,10 @@ $http.post('/auth/pwLogin', user)
 	 } 
 
 	 $scope.title = "DILIGENCE";
+
+	$scope.viewDetails = function(){
+		console.log("make a directive to show details")
+	}
   
   function loadUserTasks(){	
 		$http.get(`users/login/${localStorage.dd_id}`)
@@ -135,42 +55,6 @@ loadUserTasks();
 		console.log("ADD KIND INDEX", selection);
 		return kindness[selection];
 	}
-
-	console.log("in main");
-
-	$scope.addTask = function(){
-		console.log("adding a new todo item")
-	}
-
-	$scope.openModal = function(item, size){
-		$rootScope.item_id = item.item_id;
-		$rootScope.user_id = item.user_item_id;
-
-    var modalInstance = $uibModal.open({
-      animation: $scope.animationsEnabled,
-      templateUrl: 'templates/modal.html',
-      controller: 'ModalInstanceCtrl',
-      size: size
-    });
-
-    modalInstance.result.then(function() {
-    	console.log("In modal function")
-
-    }, function() {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-	};
-
-   $scope.editTask = function(){
-    var taskId = $rootScope.item_id;
-		var userId = $rootScope.item_user_id;
-		console.log("item to edit", item)
-		$http.put("/tasks/edit", {taskId: taskId})
-		.then(function(res){
-			console.log(res);
-			loadUserTasks();
-			}, function(err){console.log(err)})
-		}
 	
 	$scope.deleteTask = function(item){
 		console.log("item to delete", item._id)
@@ -197,11 +81,18 @@ loadUserTasks();
  			
 	}
 
+	$scope.goToEdit = function(item){
+		console.log("ITEM", item)
+		$rootScope.editThis = item;
+	  $state.go("main.edit");
+	}
+
  })
 
 .controller("addCtrl", function($scope, $rootScope, $state, $http){
 console.log("IN ADD CTRL"); 
 $scope.todo = true; 
+console.log($scope.addEdit);
 
 $scope.cancelAdd = function(){
 	$state.go("main")
@@ -212,7 +103,6 @@ $scope.addAppt = function(){
 	$scope.todo = false; 
 	//$state.go("main.add")
 }
-
 
 $scope.createNewTodo = function(){
 	var task = {};
@@ -232,25 +122,16 @@ $scope.createNewTodo = function(){
 	.then(function(res){
 		console.log("LOOK WHAT I BROUGHT BACK",res)
 		$rootScope.tasks.push(task);
+		$state.go('main')
 },function(err){
 		console.log(err);
 	})
-}
-
-$scope.viewDetails =function(){
-	console.log("figure out how to pull and displa")
 }
 
 $scope.createNewAppt = function(){
 	console.log("create new appt")
 }
 
-/// create an id to add to task object
-// 	function generateTaskId(){
-// 	var task_id = Date.now() + Math.floor(Math.random()*100)
-// 	console.log("task_id")
-// 	return task_id;
-// 	}
  })
 
 
@@ -280,39 +161,4 @@ $scope.createNewAppt = function(){
   };
 })
 
-// $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $uibModal service used above.
-.controller('ModalInstanceCtrl', function($scope, $uibModalInstance) {
-  // $scope.login = false;
-  // $scope.register = false;
-  // $scope.errors = false;
-
-  // $scope.showError = function(err){
-  // 	$scope.errors = true;
-  //   $scope.errorMessages = err;
-  // }
-
-  // $scope.showLogin = function() {
-  //   $scope.login = !$scope.login;
-  //   $scope.register = false;
-  // }
-
-  // $scope.showReg = function() {
-  //   $scope.register = !$scope.register;
-  //   $scope.login = false;
-  // }
-
-
-  $scope.cancel = function() {
-    console.log("cancel clicked")
-    $uibModalInstance.dismiss('cancel');
-  };
-})
-
-
-.directive('taskModal', function(){
-  return{
-    templateUrl: "partials/task-modal.html"
-  }
-})
 

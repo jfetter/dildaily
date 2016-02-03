@@ -11,6 +11,18 @@
 }
 
 .strike{
-	text-decoraction: line-through;
+	text-decoration: line-through;
 }
 
+.add-task-cont{
+}
+
+.add-task-table{
+	border-radius: 7px;
+	color: black;
+	background-color: #99bbff;
+}
+
+.details{
+	display: inline;
+}

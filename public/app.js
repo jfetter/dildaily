@@ -19,11 +19,15 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	$stateProvider
 	.state("home", {url: "/home", templateUrl:"templates/home.html" , controller:"AuthCtrl", authenticate: false})
 	.state("register", {url:"/register", templateUrl:"templates/register.html", controller:"AuthCtrl", authenticate: false})
-	
+	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl", authenticate: false})
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
-	//.state("main.edit", {url:"/edit", templateUrl:"templates/edit.html", controller:"editCtrl"})
+	.state("main.completed", {url:"/completed", templateUrl:"templates/completed.html", controller:"mainCtrl"})	
+	.state("main.edit", {url:"/edit", templateUrl:"templates/task-form.html", controller:"editCtrl"})
 	.state("main.add", {url:"/add", templateUrl:"templates/task-form.html", controller:"addCtrl"})
-	
+	//for error messages etc
+	.state("main.alert", {url:"/alert", templateUrl:"templates/alert.html", controller:"alertCtrl"})
+	// to display addl details 
+	.state("main.details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})	
 })
 
 ////NEED TO LEARN MORE AND SET UP LOGIN STUFF

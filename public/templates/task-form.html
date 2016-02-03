@@ -1,8 +1,8 @@
 <div class="container task-form-cont">
 	<div class="row">
-		<table class="col-sm-12 table table-bordered add-task-table">
+		<table class="col-sm-12 table add-task-table">
 			<tbody>
-			<tr class="add-task-row ">
+			<tr class="add-task-row row">
 				<td class="add-task-task">
 					<label for="Taskname">task name</label>
 					<input ng-model="task_name" type="text" placeholder="input new task" class="input-task">
@@ -31,15 +31,13 @@
 						<option value="hour before">Hour Before</option>
 					</select>
 				</td>
-				<td class="add-task-butt" >
-					<button ng-click="createNewTodo()" class="add-task-btn btn btn-success">Sumbit</button>
-				</td>	
-				<td class="cancel-add-butt" >
-					<button ng-click="cancelAdd()" class="cancel-add-btn btn btn-danger">cancel</button>
+				<td class="addCancel-task-butt" >
+					<button ng-click="createNewTodo()" class="add-task-btn btn btn-sm btn-info">Sumbit</button>
+					<button ng-click="cancelAdd()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
 				</td>
 			</tr>
 				<tr class="row">
-					<td class="col-sm-12" colspan="8">
+					<td class="col-sm-12" colspan="5">
 				<input id="addl-info" type="text" ng-model="additional_info" class="input-lg col-sm-12" placeholder="additional details">
 					</td>
 				</tr>
