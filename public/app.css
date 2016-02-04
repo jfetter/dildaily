@@ -15,9 +15,15 @@
 }
 
 .search-results{
+	border-radius: 7px;
 	margin-top: 3%;
 	background: lightgray;
 	color: #99bbff;
+}
+
+.s-result:hover{
+	cursor: pointer;
+	font-size:1.5em;
 }
 
 .search-opt{
