@@ -2,24 +2,32 @@
 
 angular.module("myApp")
 
-.controller('editCtrl', function($scope, $rootScope) {
+.controller('editCtrl', function($scope, $rootScope, $state, $http) {
+	if (!$rootScope.editThis){
+		$state.go('main');
+	}
 	// hide or show modal
 	$scope.addEdit = true;
 	console.log("ADDEDIT", $scope.addEdit)
 
-	console.log("$rootScope.editThis", $rootScope.editThis);
-  $scope.task_name = "test";
-  $scope.task_description = "test";
-  //$scope.completeBy = "test";
-  $scope.frequency = "weekly";
-  $scope.additional_info = "test";
+	$scope.closePopUp = function(){
+		$state.go('main')
+	}
 
-  $scope.editTask = function(){
-    var taskId = $rootScope.editThis._id;
-		var userId = $rootScope.editThis.user_id;
-		console.log("item to edit", item)
+
+
+	console.log("$rootScope.editThis", $rootScope.editThis);
+  $scope.task_name = $rootScope.editThis.task_name;
+  $scope.task_description = $rootScope.editThis.task_description;
+  //$scope.completeBy = $rootScope.editThis.completeBy;
+  $scope.frequency = $rootScope.editThis.frequency;
+  $scope.additional_info = $rootScope.editThis.additional_info;
+
+  $scope.submitTask = function(){
+		console.log("item to edit", $rootScope.editThis)
 			var task = {};
 			$scope.todo = true;
+			task.taskId = $rootScope.editThis._id;
 			task.user_id = localStorage.dd_id;
 			task.task_name = $scope.task_name;
 			task.task_description = $scope.task_description;
@@ -30,26 +38,24 @@ angular.module("myApp")
 			task.completed = false;
 			task.task_type = "todo";
 
-		$http.put("/tasks/edit", {taskId: taskId, userId: userId, newInfo: task})
+		$http.put("/tasks/edit", task)
 		.then(function(res){
 			console.log(res);
-			$scope.$parent.loadUserTasks();
+			//$scope.$parent.loadUserTasks();
 			// clear $rootScope.editThis?
-			console.log("RES BODY IN EDIT", res.body);
-			console.log("RES BODY JSON IN EDIT", JSON.parse(res.body));
-			//$rootScope.tasks = res.body
+			console.log("RES BODY IN EDIT", res.data);
+			location.reload();
+			//$rootScope.tasks = res.data
 			$state.go('main');
-			}, function(err){console.log(err)})
+			}, function(err){
+				console.log(err)
+			})
 		}
 
   $scope.submit = function(){
   	console.log("you clicked submit");
   }
 
-  $scope.cancel = function() {
-    console.log("cancel clicked")
-    $uibModalInstance.dismiss('cancel');
-  };
 })
 
 

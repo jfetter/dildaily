@@ -18,16 +18,16 @@
 
 <div class="container daily-cont">
 	<h3>Tasks</h3>
-	<p>double click item for details</p>
+	<p>double click task name for details</p>
 		<div class="col-sm-6 daily">
 			<div class="row daily-row">
 				</div>
 				<table class="table table-bordered table-striped daily-table">
 					<tr>
-						<th class="col-sm-2"> Task</th>
+						<th class="col-sm-2" ng-click=sortTasks('name')> Task <span>&nbsp;</span><span ng-hide="!sorted"class="glyphicon glyphicon-chevron-down"></span><span ng-hide="sorted" class="glyphicon glyphicon-chevron-up"></span> </th>
 						<th class="col-sm-2"> Description</th>
 						<th class="col-sm-2"> Frequency </th>
-						<th class="col-sm-2"> Complete By </th>
+						<th class="col-sm-2" ng-click="sortTasks('date')" >Complete By <span>&nbsp;</span><span ng-hide="!sorted2"class="glyphicon glyphicon-chevron-down"></span><span ng-hide="sorted2" class="glyphicon glyphicon-chevron-up"></span> </th>
 						<th class="col-sm-2"> Edit/Delete</th>
 
 						<th class="col-sm-2 text-center"> 
@@ -40,10 +40,12 @@
 						</th>
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
-					<tr  ng-click="viewDetails()" class=" {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
-						<td  class="col-sm-2 dailytd"><span ng-class="{strike: strike}">{{item.task_name}} </span></td>
+					<tr ng-class="{strike: strike}" class=" {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
+						<td  ng-click="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
 							<td class="col-sm-2">{{item.task_description}}</td>
 							<td class="col-sm-2">{{item.frequency}}</td>
+							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
+							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
 							<td class="col-sm-2">{{item.completeBy | amDateFormat:'ll'}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
 							<td class="col-sm-2 text-center"> 

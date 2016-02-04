@@ -87,14 +87,39 @@ loadUserTasks();
 	  $state.go("main.edit");
 	}
 
- })
+// sort
+	$scope.sortTasks = function(col){
+		//toggle up down carrots
+		if(!$rootScope.tasks){
+			return;
+		}
+		if (col === "date"){
+			$scope.sorted2 = !$scope.sorted2;
+			$rootScope.tasks.sort(function(a,b){
+				if (!$scope.sorted2){
+					return new Date(a.completeBy) - new Date(b.completeBy);
+				}
+	  	return new Date(b.completeBy) - new Date(a.completeBy);
+		});
+		} else if(col === "name") {
+		console.log($rootScope.tasks[0])
+			$scope.sorted = !$scope.sorted;
+				$rootScope.tasks.sort(function(a,b){
+					return b.task_name > a.task_name
+				})
+				if(!$scope.sorted){
+					$rootScope.tasks.reverse();
+				}
+			}
+		}
+})
 
 .controller("addCtrl", function($scope, $rootScope, $state, $http){
 console.log("IN ADD CTRL"); 
 $scope.todo = true; 
 console.log($scope.addEdit);
 
-$scope.cancelAdd = function(){
+$scope.closePopUp = function(){
 	$state.go("main")
 }
 
@@ -104,7 +129,7 @@ $scope.addAppt = function(){
 	//$state.go("main.add")
 }
 
-$scope.createNewTodo = function(){
+$scope.submitTask = function(){
 	var task = {};
 	$scope.todo = true;
 	task.user_id = localStorage.dd_id;

@@ -14,7 +14,7 @@
 				<td class="add-task-completeBy">
 					<label ng-hide="!todo" for="complete_by">Complete By</label>
 					<label ng-hide="todo" for="complete_by">Appt Date</label>
-					<input ng-model="completeBy" type="date" placeholder="complete By" class="input-descript">
+					<input required ng-model="completeBy" type="date" placeholder="complete By" class="input-descript">
 				</td>
 				<td class="add-task-recurrence">
 					<label for="selectFreq">frequency</label>
@@ -32,8 +32,8 @@
 					</select>
 				</td>
 				<td class="addCancel-task-butt" >
-					<button ng-click="createNewTodo()" class="add-task-btn btn btn-sm btn-info">Sumbit</button>
-					<button ng-click="cancelAdd()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
+					<button ng-click="submitTask()" class="add-task-btn btn btn-sm btn-info">Sumbit</button>
+					<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
 				</td>
 			</tr>
 				<tr class="row">

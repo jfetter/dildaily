@@ -33,16 +33,17 @@ router.post("/delete", function(req, res){
 
 router.put("/edit", (req, res) =>{
 	console.log("EDIT REQ BODY !!!!!", req.body.taskId)
+	var task = req.body;
 	Todo.findByIdAndUpdate(req.body.taskId, {
-		$set:{ task_name: req.body.task_name ,
-		task_description: req.body.task_description, 
-		frequency: req.body.frequency,
-		 completeBy: req.body.completeBy, 
-		 email_reminder: req.body.email_reminder, 
-		 additional_info: req.body.additional_info, 
-		 completed: req.body.completed } 
+		$set:{ task_name: task.task_name ,
+		task_description: task.task_description, 
+		frequency: task.frequency,
+		 completeBy: task.completeBy, 
+		 email_reminder: task.email_reminder, 
+		 additional_info: task.additional_info, 
+		 completed: task.completed } 
 	},function(err, task){
-		console.log("TASK  IN EDIT", task)
+		console.log("TASK IN EDIT", task)
 		res.status(err ? 400 : 200).send(err || `task ${task} edited`);
 	})
 })
