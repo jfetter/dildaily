@@ -16,16 +16,34 @@
 <body>
 
   <div class ="container well" ng-controller="navCtrl">
-      <a ng-sref="home" class="btn">Home</a>
+      <a ng-sref="home" class="btn col-sm-1">Home</a>
 
 <!--  need to set up login logout hide show to actually mean something -->
-      <a ng-hide="loginButton()" ui-sref="home" class="btn">login</a>
-      <a ng-show="loginButton()" ng-click="logOut()" class="btn">logOut</a>
+      <a ng-hide="loginButton()" ui-sref="home" class="btn col-sm-1">Log in</a>
+      <a ng-show="loginButton()" ng-click="logOut()" class="btn col-sm-1">Log Out</a>
 <!-- ! -->
+      <a ui-sref="main" ng-click="goToMyTasks()" class="btn col-sm-1">My Tasks</a>
+      <span class="searchBar pull-right col-sm-6">
+          <select ng-model="searchCat" class="dropdown-toggle select-search input-sm col-sm-2" name="searchCat" id="searchCat">
+            <option ng-disabled="true" class="search-opt" value="archives">archives</option>
+            <option class="search-opt" value="tasks">tasks</option>
+            <option class="search-opt" value="contacts">contacts</option>
+            <option class="search-opt" value="tools">tools</option>
+          </select>
+       <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-6">
+        <a ng-click="searchTasks()" href="" class="col-sm-2 btn btn-info">Search</a href="">
+      </span>
+    
+ 
+      <div class="row">
+        <div class="col-sm-12">
+          <span ng-show="searchCat"  class="search-results col-sm-6 col-sm-offset-6">TEST</span>
+        </div>
+      </div>
+   
+</div>
 
-      <a ui-sref="main" ng-click="goToMyTasks()" class="btn">My Tasks</a>
-    </div>
-
+  
   
 
   <div ui-view></div>

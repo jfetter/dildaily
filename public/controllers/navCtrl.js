@@ -4,6 +4,11 @@ angular.module("myApp")
 
 .controller("navCtrl", function($scope, $state, UtilityService){
 	// hide login or logout button
+
+		function twoWaySearch(catergory){
+
+		}
+
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
 	} 
@@ -24,4 +29,14 @@ angular.module("myApp")
 		localStorage.clear();
 		$state.go('home');
 	};
+
+		console.log("cat", $scope.searchCat);
+
+	$scope.searchTasks = function(){
+		console.log("TASK", $scope.searchFor);
+		console.log("cat", $scope.searchCat);
+		twoWaySearch($scope.searchCat);
+
+	}
+
 })

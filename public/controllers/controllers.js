@@ -77,8 +77,15 @@ loadUserTasks();
 
 	$scope.checkOff = function(item){
 		$scope.selected = item;
-		console.log("from within checkOff item._id is", item._id);
- 			
+		console.log("from within checkOff item._id is", item._id); 			
+	}
+
+	$scope.archive = function(){
+		console.log("send selected items to an array on the back end")
+	}
+
+	$scope.unarchive = function(){
+		console.log("move an item from archive list back into todos")
 	}
 
 	$scope.goToEdit = function(item){
@@ -102,7 +109,6 @@ loadUserTasks();
 	  	return new Date(b.completeBy) - new Date(a.completeBy);
 		});
 		} else if(col === "name") {
-		console.log($rootScope.tasks[0])
 			$scope.sorted = !$scope.sorted;
 				$rootScope.tasks.sort(function(a,b){
 					return b.task_name > a.task_name

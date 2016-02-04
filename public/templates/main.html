@@ -9,7 +9,7 @@
 		<div class="col-sm-12">
 			<a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add">Add New Todo</a>
 		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
-
+			
 			<div ui-view class="add-edit-view"></div>
 		
 		</div>
@@ -17,8 +17,11 @@
 </div>
 
 <div class="container daily-cont">
-	<h3>Tasks</h3>
-	<p>double click task name for details</p>
+	<h3 class="row">Tasks</h3>
+	<div class="row">
+		<p class= "col-sm-4">double click task name for details</p>
+		
+	</div>
 		<div class="col-sm-6 daily">
 			<div class="row daily-row">
 				</div>
@@ -41,7 +44,7 @@
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
 					<tr ng-class="{strike: strike}" class=" {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
-						<td  ng-click="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
+						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
 							<td class="col-sm-2">{{item.task_description}}</td>
 							<td class="col-sm-2">{{item.frequency}}</td>
 							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
@@ -56,9 +59,12 @@
 		  					<input ng-model="strike" ng-change="checkOff(item)" type="checkbox" />
 						</td>
 					</tr>
+					
 		</table>
 		<div class="row">
 			<tools />
+			<searchDisplay />
+			<archives />
 		</div>
 </div>
 

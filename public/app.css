@@ -1,6 +1,29 @@
 /*.task-form-cont{
 	border: 3px solid white;
 }*/
+.task-search{
+	margin-top: 1%;
+	margin-left: 3%;
+	margin-right: 3%;
+}
+
+.select-search{
+	margin-top: 1%;
+	margin-left: 3%;
+	color: lightblue;
+	background-color: white;
+}
+
+.search-results{
+	margin-top: 3%;
+	background: lightgray;
+	color: #99bbff;
+}
+
+.search-opt{
+	font-size: 20px;
+	background-color:white;
+}
 
 #addl-info{
 	width: 100%;
