@@ -38,7 +38,7 @@
       <div class="row">
         <div class="col-sm-12">
           <span ng-show="cat"  class="search-results col-sm-6 col-sm-offset-6">
-            <div ng-repeat="result in searchArray | filter:searchFor">
+            <div ng-repeat="result in searchArray | filter:searchFor track by $index">
               <p class="s-result" ng-click="showDetails(result)" >{{result}}</p></span>
             </div>
         </div>
