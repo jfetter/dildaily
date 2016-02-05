@@ -10,7 +10,7 @@ var todoSchema = Schema({
 	task_name: {type: String, required: true, default: " "}, 
 	task_description: {type: String, required: true, default: " "},
 	frequency: {type: String, required: true, default: " "},
-	completeBy: {type: Date, required: true, default: " "},
+	completeBy: {type: Date},
 	email_reminder: {type: String, required: true, default: " "},
 	additional_info: {type: String, required: true, default: " "},
 	completed: {type: Boolean, required: true, default: false},

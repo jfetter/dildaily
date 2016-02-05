@@ -8,7 +8,7 @@
  
     <title><% title %></title>
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="bower_components/bootswatch-slate.css">
+    <link rel="stylesheet" href="templates/bootswatch-slate.css">
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/app.css">
   
@@ -22,8 +22,9 @@
       <a ng-hide="loginButton()" ui-sref="home" class="btn col-sm-1">Log in</a>
       <a ng-show="loginButton()" ng-click="logOut()" class="btn col-sm-1">Log Out</a>
 <!-- ! -->
+<div ng-if="loginButton()">
       <a ui-sref="main" ng-click="goToMyTasks()" class="btn col-sm-1">My Tasks</a>
-      <span class="searchBar pull-right col-sm-6">
+      <!-- <span class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">
             <option ng-disabled="true" class="search-opt" value="archives">archives</option>
             <option class="search-opt" value="tasks">tasks</option>
@@ -33,7 +34,7 @@
        <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-6">
         <a ng-click="searchTasks()" href="" class="col-sm-2 btn btn-info">Search</a href="">
       </span>
-    
+    </div>
  
       <div class="row">
         <div class="col-sm-12">
@@ -42,7 +43,7 @@
               <p class="s-result" ng-click="showDetails(result)" >{{result}}</p></span>
             </div>
         </div>
-      </div>
+      </div> -->
    
 </div>
 
