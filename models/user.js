@@ -26,7 +26,10 @@ userSchema.methods.createJWT = function(){
 		iat: moment().unix(),
 		exp: moment().add(1, 'days').unix()
 	};
-	return jwt.encode(payload, process.env.JWT_SECRET);
+	console.log("this", this)
+	var token = jwt.encode(payload, process.env.JWT_SECRET);
+	console.log("token", token);
+	return token;
 }
 
 
