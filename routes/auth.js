@@ -24,6 +24,7 @@ router.post('/signup', function(req, res){
   var user = new User();
     user.username = req.body.userName 
     user.email = req.body.email
+    console.log("USER BEFORE SAVE", user)
     user.save(function(err, user) {
       if (err)return res.status(400).send("User Not Found");
       console.log("USER", user)
