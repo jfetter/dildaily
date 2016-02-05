@@ -26,6 +26,7 @@ router.post('/signup', function(req, res){
     user.email = req.body.email
     user.save(function(err, user) {
       if (err)return res.status(400).send("User Not Found");
+      console.log("USER", user)
       var token = user.createJWT();
       res.send({ token: token , user:user._id});
     });
