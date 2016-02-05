@@ -36,6 +36,7 @@ router.post('/signup', function(req, res){
 router.post('/pwLogin', function(req, res){
   console.log("PWLOGIN REQ.BODY",  req.body);
   User.findOne({email: req.body.email},  function(err, user){
+    if (err)return console.log(err);
     console.log(user);
     var token = user.createJWT();
     res.send({token: token , user:user._id});
