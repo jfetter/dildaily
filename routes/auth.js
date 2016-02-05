@@ -27,8 +27,7 @@ router.post('/signup', function(req, res){
   User.create(req.body, function(err, savedUser){
     console.log("USER BEFORE SAVE", savedUser)
     //user.save(function(err, user) {
-      if (err)return res.status(400).send("User Not Found");
-      console.log("USER", user)
+      if (err)return {res.status(400).send("User Not Found")}
       var token = savedUser.createJWT();
       res.send({ token: token , user:savedUser._id});
     });
