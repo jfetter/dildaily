@@ -25,10 +25,10 @@ angular.module("myApp")
 		localStorage.clear();
 		$state.go('home');
 	};
-
-$scope.data = {
+//change="predictiveSearch()"
+$rootScope.data = {
 	repeatSelect: null,
-	category:[
+	categories:[
 	{id: 0, name: ""},
 	{id: 1, name: "tasks"},
 	{id: 2, name: "contacts"},
@@ -69,9 +69,9 @@ var searchThis = function(category){
 		return {searchArr: searchArray, searchTerm: searchTerm};
 }
 
-console.log("here kitty cat", $scope.cat)
+console.log("here kitty cat", $rootScope.data.repeatSelect)
 $scope.predictiveSearch = function(){
-	var cat = $scope.cat;
+	var cat = $rootScope.data.repeatSelect;
 	console.log("Cat", cat)		
 	var searchObject = searchThis(cat);
 	var searchA = searchObject.searchArr;

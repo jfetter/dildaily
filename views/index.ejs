@@ -26,8 +26,8 @@
       <a ui-sref="main" ng-click="goToMyTasks()" class="btn col-sm-1">My Tasks</a>
       <span  ng-if="loggedIn" class="searchBar pull-right col-sm-6">
         <form name="searching">
-          <select ng-model="data.repeatSelect" ng-change="predictiveSearch()" class="dropdown-toggle select-search input-sm col-sm-2" name="repeatSelect" id="repeatSelect">
-            <option ng-repeat"option in data.catergories" class="search-opt" value="category.id">{{category.id}}
+          <select name="repeatSelect" id="repeatSelect" ng-model="data.repeatSelect" class="dropdown-toggle select-search input-sm col-sm-2">
+            <option ng-repeat"category in data.categories" class="search-opt" value="category.name">{{category.name}}
             </option>
             <p>{{data.repeatSelect}}</p>
           </select>
@@ -41,8 +41,9 @@
         <div class="col-sm-12">
           <span ng-show="cat"  class="search-results col-sm-6 col-sm-offset-6">
             <div ng-repeat="result in searchArray | filter:searchFor track by $index">
-              <p class="s-result" ng-click="showDetails(result)" >{{result}}</p></span>
             </div>
+              <p class="s-result" ng-click="showDetails(result)" >{{result}}</p>
+          </span>
         </div>
       </div>
    
