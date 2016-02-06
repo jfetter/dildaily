@@ -2,29 +2,29 @@
 
 angular.module("myApp")
 
-.controller("navCtrl", function($scope, $state, UtilityService){
-	// hide login or logout button
-	$scope.loginButton = function(){
-		return UtilityService.loggedIn();
-	} 
+// .controller("navCtrl", function($scope, $state, UtilityService){
+// 	// hide login or logout button
+// 	$scope.loginButton = function(){
+// 		return UtilityService.loggedIn();
+// 	} 
 
-	$scope.goToMyTasks =function(){
-		console.log("my tasks button clicked")
-		if (localStorage.satellizer_token){
-			$state.go("main");
-		} else {
-			console.log("login or register modal coming soon")
-		}
-	}
+// 	$scope.goToMyTasks =function(){
+// 		console.log("my tasks button clicked")
+// 		if (localStorage.satellizer_token){
+// 			$state.go("main");
+// 		} else {
+// 			console.log("login or register modal coming soon")
+// 		}
+// 	}
 
-	$scope.logOut = function(){
-		console.log("log out clicked");
-		//localStorage.removeItem("satellizer_token");
-		//localStorage.removeItem("dd_id");
-		localStorage.clear();
-		$state.go('home');
-	};
-})
+// 	$scope.logOut = function(){
+// 		console.log("log out clicked");
+// 		//localStorage.removeItem("satellizer_token");
+// 		//localStorage.removeItem("dd_id");
+// 		localStorage.clear();
+// 		$state.go('home');
+// 	};
+// })
 
 
 
@@ -151,7 +151,8 @@ $scope.submitTask = function(){
 	$http.post("/tasks/newtodo", task )
 
 	.then(function(res){
-		console.log("LOOK WHAT I BROUGHT BACK",res)
+		console.log("LOOK WHAT I BROUGHT BACK",res.data);
+		task.taskId = res.data;
 		$rootScope.tasks.push(task);
 		$state.go('main')
 },function(err){

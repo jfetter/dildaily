@@ -21,15 +21,15 @@ var User = require('../models/user');
 router.post('/signup', function(req, res){
   //need to add middleware to check if email is already used
   console.log("SIGNUP REQ.BODY",  req.body);
-  // var user = new User();
-  //   user.username = req.body.userName 
-  //   user.email = req.body.email
-  User.create(req.body, function(err, savedUser){
-    console.log("USER BEFORE SAVE", savedUser)
-    //user.save(function(err, user) {
+  var user = new User();
+    user.username = req.body.userName 
+    user.email = req.body.email
+  //User.create(req.body, function(err, savedUser){
+    console.log("USER BEFORE SAVE", user)
+    user.save(function(err, user) {
       if (err)return res.status(400).send("User Not Found")
-      var token = savedUser.createJWT();
-      res.send({ token: token , user:savedUser._id});
+      var token = user.createJWT();
+      res.send({ token: token , user:user._id});
     });
 })
 

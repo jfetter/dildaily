@@ -11,7 +11,7 @@ angular.module("myApp")
 	console.log("ADDEDIT", $scope.addEdit)
 
 	$scope.closePopUp = function(){
-		$state.go('main')
+		$state.go('main');
 	}
 
 
@@ -28,33 +28,27 @@ angular.module("myApp")
 			var task = {};
 			$scope.todo = true;
 			task.taskId = $rootScope.editThis._id;
-			task.user_id = localStorage.dd_id;
-			task.task_name = $scope.task_name;
-			task.task_description = $scope.task_description;
-			task.frequency = $scope.frequency;
-			task.completeBy = $scope.completeBy;
-			task.email_reminder = $scope.task_email_reminder;
-			task.additional_info = $scope.task_additional_info;
+			task.user_id = localStorage.dd_id || "";
+			task.task_name = $scope.task_name || "";
+			task.task_description = $scope.task_description || "";
+			task.frequency = $scope.frequency || "";
+			task.completeBy = $scope.completeBy || "";
+			task.email_reminder = $scope.task_email_reminder || "";
+			task.additional_info = $scope.task_additional_info || "";
 			task.completed = false;
 			task.task_type = "todo";
 
 		$http.put("/tasks/edit", task)
 		.then(function(res){
-			console.log(res);
-			//$scope.$parent.loadUserTasks();
-			// clear $rootScope.editThis?
 			console.log("RES BODY IN EDIT", res.data);
-			location.reload();
-			//$rootScope.tasks = res.data
 			$state.go('main');
+			location.reload();
 			}, function(err){
-				console.log(err)
+				console.log(err);
 			})
 		}
 
-  $scope.submit = function(){
-  	console.log("you clicked submit");
-  }
+
 
 })
 

@@ -18,7 +18,7 @@ router.post("/newtodo", function(req, res){
 			if (err) res.status(400).send(err.message);
 			console.log("FOUND USER TODOS!!!!!!!!", foundUser.todos)
 			console.log("FOUND USER:", foundUser, "TASK ID", taskId)
-		res.status(err ? 400 : 200).send(err || "task Added")
+		res.status(err ? 400 : 200).send(err || taskId)
 		})
 	})
 })
