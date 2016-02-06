@@ -23,80 +23,85 @@ angular.module("myApp")
 		//localStorage.removeItem("satellizer_token");
 		//localStorage.removeItem("dd_id");
 		localStorage.clear();
+		UtilityService.loggedIn();
 		$state.go('home');
 	};
 
-var	assembleSearch = function(searchArray, searchTerm){
-	searchArray.forEach(function(item){
-		$scope.searchArray.push(item[searchTerm])
-	})
-}
-
-$scope.$watch("cat", function(cat, oldCat){
-		console.log("NEW CAT", cat)
-		var searchTerm;
-		var searchArray = [];
-		$scope.searchArray = [];
-		if (cat === 'tasks'){
-			searchArray = $rootScope.tasks;
-			searchTerm = "task_name";
-		} else if (cat === 'archives'){
-			searchArray = $rootScope.archives
-			searchTerm;
-			console.log("archives coming soon")
-		}else if (cat === 'contacts'){
-			searchArray = $rootScope.contacts
-			searchTerm;
-			console.log("contacts coming soon")
-		}else if (cat === 'tools'){
-			searchArray = $rootScope.contacts
-			searchTerm;
-			console.log("prolly be a while til I have tools")
-		}
-			assembleSearch(searchArray, searchTerm)
-			//console.log($scope.searchFor);
-			//$scope.searchArray = searchArray[searchTerm];
-			//console.log($scope.searchArray);
-		})
-
-		console.log("cat", $scope.cat);
-
-	// $scope.searchTasks = function(){
-	// 	console.log("TASK", $scope.searchFor);
-	// 	console.log("cat", $scope.searchCat);
-	// 	var cat;
-	// 	var searchTerm;
-	// 	$scope.searchResults = [];
-	// 	if ($scope.searchCat === 'tasks'){
-	// 		cat = $rootScope.tasks;
-	// 		searchTerm = "task_name";
-	// 	} else if ($scope.searchCat === 'archives'){
-	// 		cat = $rootScope.archives
-	// 		searchTerm;
-	// 		console.log("archives coming soon")
-	// 	}else if ($scope.searchCat === 'contacts'){
-	// 		cat = $rootScope.contacts
-	// 		searchTerm;
-	// 		console.log("contacts coming soon")
-	// 	}else if ($scope.searchCat === 'tools'){
-	// 		cat = $rootScope.contacts
-	// 		searchTerm;
-	// 		console.log("prolly be a while til I have tools")
-	// 	}
-	// 		cat.forEach(function(item){
-	// 			if (item[searchTerm].match($scope.searchFor))
-	// 			$scope.searchResults.push(item[searchTerm])
-	// 		})
-	// 		console.log($scope.searchFor);
-	// }
-
-// 			$scope.$watch("searchFor", function(newVal){
-// 			$searchResults = newVal;
-// 		})
+	console.log("cat", $scope.cat);
 
 
 	
+	//if ($scope.searchArray.length){$scope.searchArray.sort()};
+function assembleSearch(searchArray, searchTerm){
+	// $timeout(function(){
+		if (!searchArray || !searchTerm) return;
+		$scope.searchArray = [];
+		searchArray.forEach(function(item){
+			$scope.searchArray.push(item[searchTerm])	
+	// },10)
+		
+	})
+}
 
+var searchCases = function(cat){
+		if (cat === 'tasks'){
+			var searchArray = $rootScope.tasks;
+			var searchTerm = "task_name";
+		} else if (cat === 'archives'){
+			var searchArray = $rootScope.archives
+			var searchTerm;
+			console.log("archives coming soon")
+		}else if (cat === 'contacts'){
+			var searchArray = $rootScope.contacts
+			var searchTerm;
+			console.log("contacts coming soon")
+		}else if (cat === 'tools'){
+			var searchArray = $rootScope.tools
+			var searchTerm;
+			console.log("prolly be a while til I have tools")
+		}
+		return {searchArray: searchArray, searchTerm: searchTerm}
+}
+var searchAllCats = function(){
+		console.log("when there are more categories set up this function")
+		// console.log("combine all arrays for search")
+		// ["tasks", "archives", "contacts", "tools"].forEach(function(category){
+		// var cat = category;
+		// var searchObject = searchCases(cat);
+		// var searchArray = searchObject.searchArray;
+		// var searchTerm = searchObject.searchTerm;
+		// assembleSearch(searchArray, searchTerm);
+		//})
+	}
+
+$scope.$watch("searchFor", function(oldS, newS){
+	console.log("change")
+	if ($scope.cat){
+		var cat = $scope.cat;
+		var searchObject = searchCases(cat);
+		var searchArray = searchObject.searchArray;
+		var searchTerm = searchObject.searchTerm; 
+		assembleSearch(searchArray, searchTerm)
+		//console.log($scope.searchFor);
+		//$scope.searchArray = searchArray[searchTerm];
+		//console.log($scope.searchArray);
+	} else {
+		searchAllCats();
+	}
+		})
+
+
+$scope.searchAllCats = function(){
+	searchAllCats();
+}
+
+	$scope.clearSearch = function(){
+		if (!$scope.searchFor){		
+			console.log("CAT BEFORE", $scope.cat)
+			$scope.searchArray = [];
+			console.log("CAT AFTER", $scope.cat)
+		}
+	}
 
 	$scope.showDetails=function(result){
 		//$state.go(detailsPage);
