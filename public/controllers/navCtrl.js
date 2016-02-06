@@ -103,6 +103,7 @@ $scope.searchAllCats = function(){
 		}
 	}
 
+
 	$scope.showDetails=function(result){
 		//$state.go(detailsPage);
 		console.log("build details view")

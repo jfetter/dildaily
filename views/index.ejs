@@ -25,7 +25,7 @@
       <a ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn btn col-sm-1">My Tasks</a>
       <span ng-show="loginButton()" class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">
-            <option class="search-opt" value="">&nbsp:</option> 
+            <option class="search-opt" value="">&nbsp;</option> 
              <option ng-disabled="true" class="search-opt" value="archives">archives</option>
             <option class="search-opt" value="tasks">tasks</option>
             <option class="search-opt" value="contacts">contacts</option>
@@ -34,7 +34,7 @@
        <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-6">
         <a ng-click="searchAllCats()" href="" class="search-all col-sm-2 btn btn-info">Search <br>all</a href="">
       </span>
-    </div>
+    
  
       <div class="row" ng-mouseleave="clearSearch()">
         <div class="col-sm-12">
@@ -45,7 +45,7 @@
           </span>
         </div>
       </div> 
-   
+   </div>
 </div>
 
   
