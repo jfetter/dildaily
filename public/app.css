@@ -62,8 +62,13 @@
 ADD/EDIT FORM
 
 -------------*/
+.t-form-input{
+
+}
+
 #addl-info{
-	width: 100%;
+
+	width: 50%;
 }
 
 .add-button{

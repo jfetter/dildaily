@@ -40,6 +40,14 @@ $scope.signup = function(){
 	  	$state.go('home');
 	  })
 	  .catch(function(err) {
+	  	swal({
+   title: "email already used",
+   text: "Please register a different email address!",
+   type: "warning",
+   showCancelButton: false,
+   confirmButtonColor: "#DD6B55",
+   confirmButtonText: "try again!",
+   closeOnConfirm: true});
 	    console.error(err);
 	  });
 	} else {
@@ -60,6 +68,14 @@ $http.post('/auth/pwLogin', user)
 		localStorage.setItem('dd_id', res.data.user)
 		$state.go('main')
 	}).catch(function(err){
+		swal({
+   title: "invalid username or password",
+   text: "Please try again!",
+   type: "warning",
+   showCancelButton: false,
+   confirmButtonColor: "#DD6B55",
+   confirmButtonText: "try again!",
+   closeOnConfirm: true}); 
 		console.error(err);
 	});
 }
