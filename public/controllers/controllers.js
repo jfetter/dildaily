@@ -95,29 +95,23 @@ loadUserTasks();
 	}
 
 // sort
-	$scope.sortTasks = function(col){
-		//toggle up down carrots
+$scope.sortTasks = function(col){
+	var col = col;
 		if(!$rootScope.tasks){
-			return;
-		}
-		if (col === "date"){
-			$scope.sorted2 = !$scope.sorted2;
-			$rootScope.tasks.sort(function(a,b){
-				if (!$scope.sorted2){
-					return new Date(a.completeBy) - new Date(b.completeBy);
-				}
-	  	return new Date(b.completeBy) - new Date(a.completeBy);
-		});
-		} else if(col === "name") {
-			$scope.sorted = !$scope.sorted;
-				$rootScope.tasks.sort(function(a,b){
-					return b.task_name > a.task_name
-				})
-				if(!$scope.sorted){
-					$rootScope.tasks.reverse();
-				}
-			}
-		}
+		return;
+		var reverseOrder;
+	}
+	if (col === "date"){
+		$scope.sorted2 = !$scope.sorted2;
+		col = 'completeBy';
+		reverseOrder = $scope.sorted2 ? true : false;
+	} else if(col === "name") {
+		$scope.sorted = !$scope.sorted;
+		col = 'task_name';
+		reverseOrder = $scope.sorted ? true : false;
+	}
+	UtilityService.sortTasks($rootScope.tasks, col, reverseOrder);
+}
 })
 
 .controller("addCtrl", function($scope, $rootScope, $state, $http){
