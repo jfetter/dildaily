@@ -2,7 +2,7 @@
 
 angular.module("myApp")
 
-.service("UtilityService", function($http){
+.service("UtilityService", function($http, $rootScope){
 	this.tasks = [];
 
 	this.console = function(){
@@ -14,8 +14,10 @@ angular.module("myApp")
 // being used to hide and show login logout on nave ctrl
 	this.loggedIn = function(){
 		if (localStorage.satellizer_token){
+			$rootScope.loggedIn = true;
 			return true;
-		} return false; 
+		} 
+		return false; 
 	}
 	
 })

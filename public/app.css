@@ -14,11 +14,20 @@
 	background-color: white;
 }
 
+.search-all{
+	padding-left: 1%;
+	margin-left: 2%;
+}
+
 .search-results{
 	border-radius: 7px;
 	margin-top: 3%;
 	background: lightgray;
 	color: #99bbff;
+}
+
+.archive-btn{
+	padding: 5px 4px;
 }
 
 .s-result:hover{
