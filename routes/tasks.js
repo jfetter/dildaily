@@ -32,9 +32,9 @@ router.post("/delete", function(req, res){
 })
 
 router.put("/edit", (req, res) =>{
-	console.log("EDIT REQ BODY !!!!!", req.body.taskId)
+	console.log("EDIT REQ BODY !!!!!", req.body)
 	var task = req.body;
-	Todo.findByIdAndUpdate(req.body.taskId, {
+	Todo.findByIdAndUpdate(task.taskId, {
 		$set:{ task_name: task.task_name ,
 		task_description: task.task_description, 
 		frequency: task.frequency,

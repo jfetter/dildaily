@@ -37,9 +37,9 @@
       </span>
     
  
-      <div class="row" ng-mouseleave="clearSearch()">
+      <div ng-show="cat" class="row" ng-mouseleave="clearSearch()">
         <div class="col-sm-12">
-          <span ng-show="cat"  class="search-results col-sm-6 col-sm-offset-6">
+          <span  class="search-results col-sm-6 col-sm-offset-6">
             <div ng-repeat="result in searchArray | filter:searchFor track by $index">
               <p class="s-result" ng-click="showDetails(result)" >{{result}}</p>
             </div>
@@ -68,14 +68,15 @@
   <script src="./bower_components/angular-sweetalert/SweetAlert.min.js"></script>
   <script src="./bower_components/sweetalert/dist/sweetalert.min.js"></script>
   <script src="./bower_components/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="./bundle.js"></script>
 
-  <script src="./app.js"></script>
+  <!-- <script src="./app.js"></script>
   <script src="./controllers/controllers.js"></script>
   <script src="./controllers/editCtrl.js"></script>
   <script src="./controllers/modalCtrl.js"></script>
   <script src="./controllers/authCtrl.js"></script>
   <script src="./controllers/navCtrl.js"></script>
-  <script src="./services.js"></script>
+  <script src="./services.js"></script> -->
  
 </body>
 </html>
