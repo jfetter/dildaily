@@ -1,15 +1,15 @@
-"use strict";
+// "use strict";
 
-angular.module("myApp")
+// angular.module("myApp")
 
-.directive("addTask",function){
-	return{
-		templateUrl: "templates/add.html"
-	}
-})
+// .directive("addTask",function){
+// 	return{
+// 		templateUrl: "templates/add.html"
+// 	}
+// })
 
-.directive('taskForm', function(){
-  return{
-    templateUrl: "templates/task-form.html"
-  }
-})
+// .directive('taskForm', function(){
+//   return{
+//     templateUrl: "templates/task-form.html"
+//   }
+// })
