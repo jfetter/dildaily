@@ -9,7 +9,6 @@ angular.module("myApp")
 		return UtilityService.loggedIn();
 	} 
 
-
 	$scope.goToMyTasks =function(){
 		console.log("my tasks button clicked")
 		if (localStorage.satellizer_token){
@@ -94,6 +93,10 @@ $scope.$watch("searchFor", function(oldS, newS){
 
 $scope.searchAllCats = function(){
 	searchAllCats();
+}
+
+$scope.showAll = function(){
+	console.log("write logic to show all tasks of a certain category")
 }
 
 	$scope.clearSearch = function(){

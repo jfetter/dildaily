@@ -24,32 +24,6 @@ router.post("/newtodo", function(req, res){
 	})
 })
 
-// route.get("/archives/fetch", function(req, res){
-// 	var user = req.body;
-// 	console.log("fetching all archives for", user)
-// })
-
-// archives ///
-
-router.post("/archive/add", function(req, res){
-	var user = req.body.user_id;
-	var task = req.body.taskId;
-	console.log("adding to archives", req.body)
-})
-
-router.get("arvchive/unarchive", function(req, res){
-	var user = req.body.user_id;
-	var task = req.body.taskId;
-	console.log("unarchiving:", task)
-})
-
-router.post("/archive/delete", function(req, res){
-	var user = req.body.user_id;
-	var task = req.body.taskId;
-	console.log("unarchiving:", task)
-})
-
-
 
 router.post("/delete", function(req, res){
 	console.log("delete req body !!!!!!",req.body.taskId)

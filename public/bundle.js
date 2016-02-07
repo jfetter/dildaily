@@ -43,19 +43,19 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 
 
 
-// "use strict";
+"use strict";
 
-// angular.module("myApp")
+angular.module("myApp")
 
-// .directive("addTask",function){
-// 	return{
-// 		templateUrl: "templates/add.html"
-// 	}
-// })
+.directive("archive",function){
+	return{
+		templateUrl: "templates/archive.html"
+	}
+})
 
-// .directive('taskForm', function(){
+// .directive('tools', function(){
 //   return{
-//     templateUrl: "templates/task-form.html"
+//     templateUrl: "templates/tool.html"
 //   }
 // })
 
@@ -3733,55 +3733,55 @@ this.sortTasks = function(sortData, sortBy, reverseOrder){
 
 
 
-// "use strict";
+"use strict";
 
-// angular.module("myApp")
+angular.module("myApp")
 
-// 	.controller("addCtrl", function($scope, $rootScope, $state, $http){
-// 	console.log("IN ADD CTRL"); 
-// 	$scope.todo = true; 
-// 	console.log($scope.addEdit);
+	.controller("addCtrl", function($scope, $rootScope, $state, $http){
+	console.log("IN ADD CTRL"); 
+	$scope.todo = true; 
+	console.log($scope.addEdit);
 
-// 	$scope.closePopUp = function(){
-// 		$state.go("main")
-// 	}
+	$scope.closePopUp = function(){
+		$state.go("main")
+	}
 
-// 	$scope.addAppt = function(){
-// 		console.log("add meeting")
-// 		$scope.todo = false; 
-// 		//$state.go("main.add")
-// 	}
+	$scope.addAppt = function(){
+		console.log("add meeting")
+		$scope.todo = false; 
+		//$state.go("main.add")
+	}
 
-// 	$scope.submitTask = function(){
-// 		var task = {};
-// 		$scope.todo = true;
-// 		task.user_id = localStorage.dd_id;
-// 		task.task_name = $scope.task_name;
-// 		task.task_description = $scope.task_description;
-// 		task.frequency = $scope.frequency;
-// 		task.completeBy = $scope.completeBy;
-// 		task.email_reminder = $scope.task_email_reminder;
-// 		task.additional_info = $scope.task_additional_info;
-// 		task.completed = false;
-// 		task.task_type = "todo";
-// 	  if (!$rootScope.tasks) $rootScope.tasks = [];
-// 		$http.post("/tasks/newtodo", task )
+	$scope.submitTask = function(){
+		var task = {};
+		$scope.todo = true;
+		task.user_id = localStorage.dd_id;
+		task.task_name = $scope.task_name;
+		task.task_description = $scope.task_description;
+		task.frequency = $scope.frequency;
+		task.completeBy = $scope.completeBy;
+		task.email_reminder = $scope.task_email_reminder;
+		task.additional_info = $scope.task_additional_info;
+		task.completed = false;
+		task.task_type = "todo";
+	  if (!$rootScope.tasks) $rootScope.tasks = [];
+		$http.post("/tasks/newtodo", task )
 
-// 		.then(function(res){
-// 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-// 			task.taskId = res.data;
-// 			$rootScope.tasks.push(task);
-// 			$state.go('main')
-// 	},function(err){
-// 			console.log(err);
-// 		})
-// 	}
+		.then(function(res){
+			console.log("LOOK WHAT I BROUGHT BACK",res.data);
+			task.taskId = res.data;
+			$rootScope.tasks.push(task);
+			$state.go('main')
+	},function(err){
+			console.log(err);
+		})
+	}
 
-// 	$scope.createNewAppt = function(){
-// 		console.log("create new appt")
-// 	}
+	$scope.createNewAppt = function(){
+		console.log("create new appt")
+	}
 
-// })
+})
 
 
 
@@ -3889,6 +3889,70 @@ $http.post('/auth/pwLogin', user)
 
 angular.module("myApp")
 
+.controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http) {
+	if (!$rootScope.editThis){
+		$state.go('main');
+	}
+	// hide or show modal
+	$scope.addEdit = true;
+	console.log("ADDEDIT", $scope.addEdit)
+
+	$scope.closePopUp = function(){
+		$state.go('main');
+	}
+
+
+
+	console.log("$rootScope.editThis", $rootScope.editThis);
+  $scope.task_name = $rootScope.editThis.task_name;
+  $scope.task_description = $rootScope.editThis.task_description;
+  //$scope.completeBy = $rootScope.editThis.completeBy;
+  $scope.frequency = $rootScope.editThis.frequency;
+  $scope.additional_info = $rootScope.editThis.additional_info;
+
+  $scope.submitTask = function(){
+		console.log("item to edit", $rootScope.editThis)
+			var task = {};
+			$scope.todo = true;
+			task.taskId = $rootScope.editThis._id;
+			task.user_id = localStorage.dd_id || "";
+			task.task_name = $scope.task_name || "";
+			task.task_description = $scope.task_description || "";
+			task.frequency = $scope.frequency || "";
+			task.completeBy = $scope.completeBy || "";
+			task.email_reminder = $scope.task_email_reminder || "";
+			task.additional_info = $scope.task_additional_info || "";
+			task.completed = false;
+			task.task_type = "todo";
+			console.log("EDIT TASK", task);
+		$timeout(function(){
+			$http.put("/tasks/edit", task)
+			},10)
+		.then(function(res){
+			console.log("RES BODY IN EDIT", res);
+			$state.go('main');
+			location.reload();
+			}, function(err){
+				console.log(err);
+			})
+		}
+
+
+
+})
+
+
+.directive('taskModal', function(){
+  return{
+    templateUrl: "partials/task-modal.html"
+  }
+})
+
+
+"use strict";
+
+angular.module("myApp")
+
 .controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
@@ -3979,70 +4043,6 @@ $scope.sortTasks = function(col){
 
 angular.module("myApp")
 
-.controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http) {
-	if (!$rootScope.editThis){
-		$state.go('main');
-	}
-	// hide or show modal
-	$scope.addEdit = true;
-	console.log("ADDEDIT", $scope.addEdit)
-
-	$scope.closePopUp = function(){
-		$state.go('main');
-	}
-
-
-
-	console.log("$rootScope.editThis", $rootScope.editThis);
-  $scope.task_name = $rootScope.editThis.task_name;
-  $scope.task_description = $rootScope.editThis.task_description;
-  //$scope.completeBy = $rootScope.editThis.completeBy;
-  $scope.frequency = $rootScope.editThis.frequency;
-  $scope.additional_info = $rootScope.editThis.additional_info;
-
-  $scope.submitTask = function(){
-		console.log("item to edit", $rootScope.editThis)
-			var task = {};
-			$scope.todo = true;
-			task.taskId = $rootScope.editThis._id;
-			task.user_id = localStorage.dd_id || "";
-			task.task_name = $scope.task_name || "";
-			task.task_description = $scope.task_description || "";
-			task.frequency = $scope.frequency || "";
-			task.completeBy = $scope.completeBy || "";
-			task.email_reminder = $scope.task_email_reminder || "";
-			task.additional_info = $scope.task_additional_info || "";
-			task.completed = false;
-			task.task_type = "todo";
-			console.log("EDIT TASK", task);
-		$timeout(function(){
-			$http.put("/tasks/edit", task)
-			},10)
-		.then(function(res){
-			console.log("RES BODY IN EDIT", res);
-			$state.go('main');
-			location.reload();
-			}, function(err){
-				console.log(err);
-			})
-		}
-
-
-
-})
-
-
-.directive('taskModal', function(){
-  return{
-    templateUrl: "partials/task-modal.html"
-  }
-})
-
-
-"use strict";
-
-angular.module("myApp")
-
 .controller("modalCtrl", function($scope, $state, $uibModalInstance){
 
  $scope.animationsEnabled = true;
@@ -4113,7 +4113,6 @@ angular.module("myApp")
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
 	} 
-
 
 	$scope.goToMyTasks =function(){
 		console.log("my tasks button clicked")
@@ -4201,6 +4200,10 @@ $scope.searchAllCats = function(){
 	searchAllCats();
 }
 
+$scope.showAll = function(){
+	console.log("write logic to show all tasks of a certain category")
+}
+
 	$scope.clearSearch = function(){
 		if (!$scope.searchFor){		
 			console.log("CAT BEFORE", $scope.cat)
@@ -4216,3 +4219,31 @@ $scope.searchAllCats = function(){
 	}
 
 })
+
+<!-- <div class="container add-task-cont">
+	<div class="row">
+		<table class="table add-task-table">
+			<tr class="add-task-row">
+				<td class="add-task-task">
+					<input type="text" placeholder="input new task" class="input-task">
+				</td>
+				<td class="add-task-descript">
+					<input type="text" placeholder="desciprtion" class="input-descript">
+				</td>
+				<td class="add-task-recurrence">
+					<label for="selectFreq">frequency</label>
+					<select id="selectFreq" class="input-recurrence">
+						<option value="weekly">weekly</option><option value="daily">daily</option>
+						<option value="other">other</option>
+					</select>
+				</td>
+				<td class="add-task-butt" >
+					<button class="add-task-btn btn">Add</button>
+				</td>	
+				<td class="cancel-add-butt" >
+					<button class="cancel-add-btn btn">cancel</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div> -->

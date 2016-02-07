@@ -1,26 +1,3 @@
-
-<div class="container">
-	<div class="row">
-		<div class="col-sm-12">
-			<h1 class="title">{{title}}</h1>
-		</div>
-	</div>	
-	<div class="row">
-		<div class="col-sm-12">
-			<a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add">Add New Todo</a>
-		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
-			
-			<div ui-view class="add-edit-view"></div>
-		
-		</div>
-	</div>
-</div>
-
-<div class="container daily-cont">
-	<h3 class="row">Tasks</h3>
-	<div class="row">
-		<p class= "col-sm-4">double click task name for details</p>
-		
 	</div>
 		<div class="col-sm-6 daily">
 			<div class="row daily-row">
@@ -59,18 +36,3 @@
 		  					<input ng-model="strike" ng-change="checkOff(item)" type="checkbox" />
 						</td>
 					</tr>
-					
-		</table>
-		<div class="col-sm-6">
-			<div ng-show="false">
-			<tools />
-			</div>
-			<div ng-show="false">
-			<searchDisplay />
-			</div>
-			<div ng-show="false">
-			<archives />
-			</div>
-		</div>
-</div>
-
