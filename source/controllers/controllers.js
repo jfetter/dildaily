@@ -2,32 +2,6 @@
 
 angular.module("myApp")
 
-// .controller("navCtrl", function($scope, $state, UtilityService){
-// 	// hide login or logout button
-// 	$scope.loginButton = function(){
-// 		return UtilityService.loggedIn();
-// 	} 
-
-// 	$scope.goToMyTasks =function(){
-// 		console.log("my tasks button clicked")
-// 		if (localStorage.satellizer_token){
-// 			$state.go("main");
-// 		} else {
-// 			console.log("login or register modal coming soon")
-// 		}
-// 	}
-
-// 	$scope.logOut = function(){
-// 		console.log("log out clicked");
-// 		//localStorage.removeItem("satellizer_token");
-// 		//localStorage.removeItem("dd_id");
-// 		localStorage.clear();
-// 		$state.go('home');
-// 	};
-// })
-
-
-
 .controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
@@ -161,30 +135,5 @@ $scope.createNewAppt = function(){
  })
 
 
-
-.controller("modalCtrl", function($scope, $state, $uibModalInstance){
-
- $scope.animationsEnabled = true;
-
-  // $scope.open = function(size) {
-
-  //   var modalInstance = $uibModal.open({
-  //     animation: $scope.animationsEnabled,
-  //     templateUrl: 'template/modal.html',
-  //     controller: 'ModalInstanceCtrl',
-  //     size: size,
-  //   });
-
-  //   modalInstance.result.then(function() {
-
-  //   }, function() {
-  //     $log.info('Modal dismissed at: ' + new Date());
-  //   });
-  // };
-
-  $scope.toggleAnimation = function() {
-    $scope.animationsEnabled = !$scope.animationsEnabled;
-  };
-})
 
 

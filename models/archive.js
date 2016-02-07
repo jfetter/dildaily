@@ -10,12 +10,11 @@ var archiveSchema = Schema({
 	task_name: {type: String, required: true, default: " "}, 
 	task_description: {type: String, required: true, default: " "},
 	frequency: {type: String, required: true, default: " "},
-	completeBy: {type: Date},
 	email_reminder: {type: String, required: true, default: " "},
 	additional_info: {type: String, required: true, default: " "},
-	completed: {type: Boolean, required: true, default: false},
+	completed: {type: Date},
 	task_type: {type: String, required: true, default: "todo"}
 })
 
-Archive = mongoose.model("Archive", todoSchema);
+Archive = mongoose.model("Archive", archiveSchema);
 module.exports = Archive;

@@ -1,3 +1,58 @@
+
+"use strict";
+
+angular.module("myApp")
+
+	.controller("addCtrl", function($scope, $rootScope, $state, $http){
+	console.log("IN ADD CTRL"); 
+	$scope.todo = true; 
+	console.log($scope.addEdit);
+
+	$scope.closePopUp = function(){
+		$state.go("main")
+	}
+
+	$scope.addAppt = function(){
+		console.log("add meeting")
+		$scope.todo = false; 
+		//$state.go("main.add")
+	}
+
+	$scope.submitTask = function(){
+		var task = {};
+		$scope.todo = true;
+		task.user_id = localStorage.dd_id;
+		task.task_name = $scope.task_name;
+		task.task_description = $scope.task_description;
+		task.frequency = $scope.frequency;
+		task.completeBy = $scope.completeBy;
+		task.email_reminder = $scope.task_email_reminder;
+		task.additional_info = $scope.task_additional_info;
+		task.completed = false;
+		task.task_type = "todo";
+	  if (!$rootScope.tasks) $rootScope.tasks = [];
+		$http.post("/tasks/newtodo", task )
+
+		.then(function(res){
+			console.log("LOOK WHAT I BROUGHT BACK",res.data);
+			task.taskId = res.data;
+			$rootScope.tasks.push(task);
+			$state.go('main')
+	},function(err){
+			console.log(err);
+		})
+	}
+
+	$scope.createNewAppt = function(){
+		console.log("create new appt")
+	}
+
+})
+
+
+
+
+
 'use strict';
 
 //take out nganimate and ngstorage if I dont end up using them in final product
@@ -3834,32 +3889,6 @@ $http.post('/auth/pwLogin', user)
 
 angular.module("myApp")
 
-// .controller("navCtrl", function($scope, $state, UtilityService){
-// 	// hide login or logout button
-// 	$scope.loginButton = function(){
-// 		return UtilityService.loggedIn();
-// 	} 
-
-// 	$scope.goToMyTasks =function(){
-// 		console.log("my tasks button clicked")
-// 		if (localStorage.satellizer_token){
-// 			$state.go("main");
-// 		} else {
-// 			console.log("login or register modal coming soon")
-// 		}
-// 	}
-
-// 	$scope.logOut = function(){
-// 		console.log("log out clicked");
-// 		//localStorage.removeItem("satellizer_token");
-// 		//localStorage.removeItem("dd_id");
-// 		localStorage.clear();
-// 		$state.go('home');
-// 	};
-// })
-
-
-
 .controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
@@ -3993,31 +4022,6 @@ $scope.createNewAppt = function(){
  })
 
 
-
-.controller("modalCtrl", function($scope, $state, $uibModalInstance){
-
- $scope.animationsEnabled = true;
-
-  // $scope.open = function(size) {
-
-  //   var modalInstance = $uibModal.open({
-  //     animation: $scope.animationsEnabled,
-  //     templateUrl: 'template/modal.html',
-  //     controller: 'ModalInstanceCtrl',
-  //     size: size,
-  //   });
-
-  //   modalInstance.result.then(function() {
-
-  //   }, function() {
-  //     $log.info('Modal dismissed at: ' + new Date());
-  //   });
-  // };
-
-  $scope.toggleAnimation = function() {
-    $scope.animationsEnabled = !$scope.animationsEnabled;
-  };
-})
 
 
 
