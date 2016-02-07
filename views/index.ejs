@@ -20,11 +20,14 @@
 <!--       <a ng-sref="home" class="btn col-sm-1">Home</a> -->
 
 <!--  need to set up login logout hide show to actually mean something -->
+      
       <a ng-show="onRegister" ng-hide="loginButton()" ng-click="onRegister = false" ui-sref="home" class="btn col-sm-1 login-btn">Login</a>
       <a ng-hide="onRegister || loginButton()"  ng-click="onRegister = true" ui-sref="register" class="reg-btn pull-right">Register</a>
-      <a ng-show="loginButton()" ng-click="logOut()" class=" btn col-sm-1">Log Out</a>
-
-      <a ng-show="loginButton()" ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn btn col-sm-1">My Tasks</a>
+      <div class="row">
+      <span class="col-sm-6">
+        <a ng-show="loginButton()" ng-click="logOut()" class=" btn col-sm-2">Log Out</a>
+        <a ng-show="loginButton()" ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn btn col-sm-2">My Tasks</a>
+      </span>
       <span ng-show="loginButton()" class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">
             <option class="search-opt" value="">&nbsp;</option> 
@@ -33,16 +36,18 @@
             <option class="search-opt" value="contacts">contacts</option>
             <option class="search-opt" value="tools">tools</option>
           </select>
-       <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-6">
-         <div class="row">
-          <a ng-click="searchAllCats()" href="" class="search-all col-sm-6 col-smp-offset-6 btn btn-info">Search all</a href="">
-        </div>
+          
+       <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-8">
+       <div class="row">
+        <a ng-click="searchAllCats()" href="" class="search-all col-sm-12 btn btn-info">Search all</a href="">
+          </div>
       </span>
     
  
+   </div>
       <div ng-show="cat" class="row" ng-mouseleave="clearSearch()">
-        <div class="col-sm-12">
-          <span  class="search-results col-sm-6 col-sm-offset-6">
+        <div class="">
+          <span  class="search-results">
             <div ng-repeat="result in searchArray | filter:searchFor track by $index">
               <p class="s-result" ng-click="showDetails(result)" >{{result}}</p>
             </div>

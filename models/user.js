@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var jwt = require('jwt-simple');
 var moment = require('moment');
-
+// var Todo = require('./models/todo.js');
+// var Archive = require('./models/archive.js');
 
 var User;
 
@@ -14,7 +15,8 @@ var userSchema = Schema({
 	password: {type: String}, 
 	// link the ids saved in this array to the array of todos
 	todos: [{ type: Schema.Types.ObjectId, ref: 'Todo' }],
-	//appointments: { type: Schema.Types.ObjectId, ref: 'Appointment' },
+	appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
+	//archives: {type: Schema.Types.ObjectId, ref: 'Archive'}]
 	contacts: {type: Array},
 	github: String,
 	facebook: String
