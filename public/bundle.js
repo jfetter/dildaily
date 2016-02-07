@@ -47,17 +47,17 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 
 angular.module("myApp")
 
-.directive("archive",function){
+.directive("archive",function(){
 	return{
 		templateUrl: "templates/archive.html"
 	}
 })
 
-// .directive('tools', function(){
-//   return{
-//     templateUrl: "templates/tool.html"
-//   }
-// })
+.directive('leftView', function(){
+  return{
+    templateUrl: "directives/left-view.html"
+  }
+})
 
 //! moment.js
 //! version : 2.11.2
@@ -3684,7 +3684,8 @@ angular.module("myApp")
 		console.log("congrats you made it to the service")
 	}
 
-
+//this.allViews = ["Tasks", "Appointments", "Daily Schedule", "Weekly Scheudle", "Archives"]
+//this.cat;
 //prolly take this out of service 
 // being used to hide and show login logout on nave ctrl
 	this.loggedIn = function(){
@@ -3958,8 +3959,64 @@ angular.module("myApp")
 			$state.go("home");
 			return;
 	 } 
+	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
+	 $rootScope.$watch('category', function(newcategory, oldcategory){
+	 		if (newcategory == undefined){
+	 			$rootScope.category = 'Tasks';
+	 		}
+	 			 var tHeads = {};
+	 if (!$scope.tHeads){
+			 	tHeads.col1= "Task";
+	 			tHeads.col2= "Description"; 
+	 			tHeads.col3= "Frequency"; 
+	 			tHeads.col4= "Complete By"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Done?";
+	 			tHeads.col7= "archive"; 
+	 		$scope.tHeads = tHeads;
+	 } else{
+	 		if ($rootScope.category === 'Appointments'){
+	 			tHeads.col1= "Contact Name";
+	 			tHeads.col2= "Company"; 
+	 			tHeads.col3= "Contact Method"; 
+	 			tHeads.col4= "Completion Date"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Last follow up Date";
+	 			tHeads.col7= "un-archive";
+	 			$scope.tHeads = tHeads;
+	 		} else if ($rootScope.category === 'This Week'){
+	 			console.log("THIS WEEK")
+	 	}
+	 }
+	})
 
-	 $scope.title = "DILIGENCE";
+
+
+	 // $scope.$watch('tHeads', function(newHeads, oldHeads){
+	 // 		console.log("NEW C IN MAIN", newcategory);
+	 		
+	 // 	if(newcategory == 'Archives'){
+	 // 			tHeads.col1= "Task";
+	 // 			tHeads.col2= "Description"; 
+	 // 			tHeads.col3= "Frequency"; 
+	 // 			tHeads.col4= "Complete By"; 
+	 // 			tHeads.col5= "Edit/Delete"; 
+	 // 			tHeads.col6= "Done?";
+	 // 			tHeads.col7= "archive"; 
+	 // 		$scope.tHeads = tHeads;
+	 // 		console.log("NEW category", $scope.tHeads);
+	 // 		}
+	 // 	if (newcategory == 'Appointments'){
+	 // 			tHeads.col1= "Contact Name";
+	 // 			tHeads.col2= "Company"; 
+	 // 			tHeads.col3= "Contact Method"; 
+	 // 			tHeads.col4= "Completion Date"; 
+	 // 			tHeads.col5= "Edit/Delete"; 
+	 // 			tHeads.col6= "Last follow up Date";
+	 // 			tHeads.col7= "un-archive";
+	 // 		console.log("NEW category", $scope.tHeads);
+	 // 	}
+	 // })
 
 	$scope.viewDetails = function(){
 		console.log("make a directive to show details")
@@ -4110,6 +4167,8 @@ angular.module("myApp")
 .controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService){
 	// hide login or logout button
 
+	$scope.cats = [{name: 'Tasks' }, {name: 'Appointments' }, {name: "This Week" }, {name: "Today" }, {name: "All"}, {name: "Archives"} ];
+
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
 	} 
@@ -4179,7 +4238,12 @@ var searchAllCats = function(){
 		//})
 	}
 
-$scope.$watch("searchFor", function(oldS, newS){
+$scope.$watch('cat', function(newC, oldC){
+	console.log("CAT", newC);
+	$rootScope.category = newC;
+})
+
+$scope.$watch("searchFor", function(newS, oldS){
 	console.log("change")
 	if ($scope.cat){
 		var cat = $scope.cat;
@@ -4219,31 +4283,3 @@ $scope.showAll = function(){
 	}
 
 })
-
-<!-- <div class="container add-task-cont">
-	<div class="row">
-		<table class="table add-task-table">
-			<tr class="add-task-row">
-				<td class="add-task-task">
-					<input type="text" placeholder="input new task" class="input-task">
-				</td>
-				<td class="add-task-descript">
-					<input type="text" placeholder="desciprtion" class="input-descript">
-				</td>
-				<td class="add-task-recurrence">
-					<label for="selectFreq">frequency</label>
-					<select id="selectFreq" class="input-recurrence">
-						<option value="weekly">weekly</option><option value="daily">daily</option>
-						<option value="other">other</option>
-					</select>
-				</td>
-				<td class="add-task-butt" >
-					<button class="add-task-btn btn">Add</button>
-				</td>	
-				<td class="cancel-add-butt" >
-					<button class="cancel-add-btn btn">cancel</button>
-				</td>
-			</tr>
-		</table>
-	</div>
-</div> -->

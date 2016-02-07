@@ -30,11 +30,7 @@
       </span>
       <span ng-show="loginButton()" class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">
-            <option class="search-opt" value="">&nbsp;</option> 
-             <option ng-disabled="true" class="search-opt" value="archives">archives</option>
-            <option class="search-opt" value="tasks">tasks</option>
-            <option class="search-opt" value="contacts">contacts</option>
-            <option class="search-opt" value="tools">tools</option>
+            <option class="search-opt" ng-repeat="category in cats track by $index" value="{{category.name}}">{{category.name}}</option>
           </select>
           
        <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-8">

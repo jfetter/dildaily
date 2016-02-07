@@ -9,7 +9,8 @@ angular.module("myApp")
 		console.log("congrats you made it to the service")
 	}
 
-
+//this.allViews = ["Tasks", "Appointments", "Daily Schedule", "Weekly Scheudle", "Archives"]
+//this.cat;
 //prolly take this out of service 
 // being used to hide and show login logout on nave ctrl
 	this.loggedIn = function(){

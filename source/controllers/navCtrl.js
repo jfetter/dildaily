@@ -5,6 +5,8 @@ angular.module("myApp")
 .controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService){
 	// hide login or logout button
 
+	$scope.cats = [{name: 'Tasks' }, {name: 'Appointments' }, {name: "This Week" }, {name: "Today" }, {name: "All"}, {name: "Archives"} ];
+
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
 	} 
@@ -74,7 +76,12 @@ var searchAllCats = function(){
 		//})
 	}
 
-$scope.$watch("searchFor", function(oldS, newS){
+$scope.$watch('cat', function(newC, oldC){
+	console.log("CAT", newC);
+	$rootScope.category = newC;
+})
+
+$scope.$watch("searchFor", function(newS, oldS){
 	console.log("change")
 	if ($scope.cat){
 		var cat = $scope.cat;

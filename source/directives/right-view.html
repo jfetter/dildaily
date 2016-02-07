@@ -1,14 +1,10 @@
-	</div>
-		<div class="col-sm-6 daily">
-			<div class="row daily-row">
-				</div>
-				<table class="table table-bordered table-striped daily-table">
+<!-- 				<table class="table table-bordered table-striped daily-table">
 					<tr>
 						<th class="col-sm-2" ng-click=sortTasks('name')> Task <span>&nbsp;</span><span ng-hide="!sorted"class="fa fa-chevron-down"></span><span ng-hide="sorted" class="fa fa-chevron-up"></span> </th>
 						<th class="col-sm-2"> Description</th>
 						<th class="col-sm-2"> Frequency </th>
-						<th class="col-sm-2" ng-click="sortTasks('date')" >{{col[0]}}<span>&nbsp;</span><span ng-hide="!sorted2"class="glyphicon glyphicon-chevron-down"></span><span ng-hide="sorted2" class="glyphicon glyphicon-chevron-up"></span> </th>
-						<th class="col-sm-2"> unarchive</th>
+						<th class="col-sm-2" ng-click="sortTasks('date')" >Complete By <span>&nbsp;</span><span ng-hide="!sorted2"class="glyphicon glyphicon-chevron-down"></span><span ng-hide="sorted2" class="glyphicon glyphicon-chevron-up"></span> </th>
+						<th class="col-sm-2"> Edit/Delete</th>
 
 						<th class="col-sm-2 text-center"> 
 							<div class="">
@@ -19,7 +15,7 @@
 							</div>
 						</th>
 					</tr>
-					<!-- need to set up to track by item._id !!!! -->
+					need to set up to track by item._id !!!!
 					<tr ng-class="{strike: strike}" class=" {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
 						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
 							<td class="col-sm-2">{{item.task_description}}</td>
@@ -30,9 +26,10 @@
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
 							<td class="col-sm-2 text-center"> 
 								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
-								<i class="fa fa-trash" ng-click="deleteTask(item)"></i><a ng-show=""></a>
+								<i class="fa fa-trash" ng-click="deleteTask(item)"></i>
 							</td>
 							<td class="table-icons text-center">
 		  					<input ng-model="strike" ng-change="checkOff(item)" type="checkbox" />
 						</td>
-					</tr>
+					</tr>	
+		</table> -->

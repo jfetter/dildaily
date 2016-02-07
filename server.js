@@ -26,7 +26,7 @@ app.use("/", require('./routes/index'));
 app.use("/users", require("./routes/users"));
 app.use("/tasks", require("./routes/tasks"))
 app.use("/auth", require("./routes/auth"));
-app.use("/archive", require("./routes/archive"));
+app.use("/archive", require("./routes/archives"));
 
 app.use(function(req, res){
 	res.status(404).render('404')

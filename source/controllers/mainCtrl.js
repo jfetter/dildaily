@@ -7,8 +7,64 @@ angular.module("myApp")
 			$state.go("home");
 			return;
 	 } 
+	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
+	 $rootScope.$watch('category', function(newcategory, oldcategory){
+	 		if (newcategory == undefined){
+	 			$rootScope.category = 'Tasks';
+	 		}
+	 			 var tHeads = {};
+	 if (!$scope.tHeads){
+			 	tHeads.col1= "Task";
+	 			tHeads.col2= "Description"; 
+	 			tHeads.col3= "Frequency"; 
+	 			tHeads.col4= "Complete By"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Done?";
+	 			tHeads.col7= "archive"; 
+	 		$scope.tHeads = tHeads;
+	 } else{
+	 		if ($rootScope.category === 'Appointments'){
+	 			tHeads.col1= "Contact Name";
+	 			tHeads.col2= "Company"; 
+	 			tHeads.col3= "Contact Method"; 
+	 			tHeads.col4= "Completion Date"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Last follow up Date";
+	 			tHeads.col7= "un-archive";
+	 			$scope.tHeads = tHeads;
+	 		} else if ($rootScope.category === 'This Week'){
+	 			console.log("THIS WEEK")
+	 	}
+	 }
+	})
 
-	 $scope.title = "DILIGENCE";
+
+
+	 // $scope.$watch('tHeads', function(newHeads, oldHeads){
+	 // 		console.log("NEW C IN MAIN", newcategory);
+	 		
+	 // 	if(newcategory == 'Archives'){
+	 // 			tHeads.col1= "Task";
+	 // 			tHeads.col2= "Description"; 
+	 // 			tHeads.col3= "Frequency"; 
+	 // 			tHeads.col4= "Complete By"; 
+	 // 			tHeads.col5= "Edit/Delete"; 
+	 // 			tHeads.col6= "Done?";
+	 // 			tHeads.col7= "archive"; 
+	 // 		$scope.tHeads = tHeads;
+	 // 		console.log("NEW category", $scope.tHeads);
+	 // 		}
+	 // 	if (newcategory == 'Appointments'){
+	 // 			tHeads.col1= "Contact Name";
+	 // 			tHeads.col2= "Company"; 
+	 // 			tHeads.col3= "Contact Method"; 
+	 // 			tHeads.col4= "Completion Date"; 
+	 // 			tHeads.col5= "Edit/Delete"; 
+	 // 			tHeads.col6= "Last follow up Date";
+	 // 			tHeads.col7= "un-archive";
+	 // 		console.log("NEW category", $scope.tHeads);
+	 // 	}
+	 // })
 
 	$scope.viewDetails = function(){
 		console.log("make a directive to show details")
