@@ -9,6 +9,7 @@ angular.module("myApp")
 		return UtilityService.loggedIn();
 	} 
 
+
 	$scope.goToMyTasks =function(){
 		console.log("my tasks button clicked")
 		if (localStorage.satellizer_token){

@@ -17,13 +17,14 @@
 <body>
 
   <div class ="container well" ng-controller="navCtrl">
-      <a ng-sref="home" class="btn col-sm-1">Home</a>
+<!--       <a ng-sref="home" class="btn col-sm-1">Home</a> -->
 
 <!--  need to set up login logout hide show to actually mean something -->
-      <a ng-hide="loginButton()" ui-sref="home" class="btn col-sm-1">Log in</a>
-      <a ng-show="loginButton()" ng-click="logOut()" class="btn col-sm-1">Log Out</a>
+      <a ng-show="onRegister" ng-hide="loginButton()" ng-click="onRegister = false" ui-sref="home" class="btn col-sm-1 login-btn">Login</a>
+      <a ng-hide="onRegister || loginButton()"  ng-click="onRegister = true" ui-sref="register" class="reg-btn pull-right">Register</a>
+      <a ng-show="loginButton()" ng-click="logOut()" class=" btn col-sm-1">Log Out</a>
 
-      <a ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn btn col-sm-1">My Tasks</a>
+      <a ng-show="loginButton()" ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn btn col-sm-1">My Tasks</a>
       <span ng-show="loginButton()" class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">
             <option class="search-opt" value="">&nbsp;</option> 
@@ -33,7 +34,9 @@
             <option class="search-opt" value="tools">tools</option>
           </select>
        <input ng-model="searchFor" type="text" class="task-search input-sm col-sm-6">
-        <a ng-click="searchAllCats()" href="" class="search-all col-sm-2 btn btn-info">Search <br>all</a href="">
+         <div class="row">
+          <a ng-click="searchAllCats()" href="" class="search-all col-sm-6 col-smp-offset-6 btn btn-info">Search all</a href="">
+        </div>
       </span>
     
  
@@ -61,8 +64,8 @@
   <script src="./bower_components/satellizer/satellizer.min.js">
   </script>
   <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
-  <!--<script src="./bower_components/moment/moment.js"></script>
-  <script src="./bower_components/angular-moment/angular-moment.js"></script>-->
+  <script src="./bower_components/moment/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.js"></script>
   <script src="./bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="./bower_components/angular-sweetalert/SweetAlert.min.js"></script>

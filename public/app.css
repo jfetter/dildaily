@@ -2,6 +2,7 @@
 	border: 3px solid white;
 }*/
 
+
 .details{
 	display: inline;
 }
@@ -10,7 +11,9 @@
 	NAV BAR
 
 -------------*/
-
+.login-btn{
+	font-size: 25px;
+}
 
 .task-search{
 	margin-top: 1%;
@@ -33,11 +36,11 @@
 }
 
 .search-all {
-  padding-left: 1%;
-  padding-right: 3%;
+  padding-left: 15%;
+  padding-right: 15%;
   padding-bottom: 3%;
-  margin-left: 0%;
-  margin-top: -4%;
+  margin-left: 15%;
+  margin-top: 2%;
 }
 
 .search-results{
@@ -104,6 +107,10 @@ ADD/EDIT FORM
 LOGIN/REGISTER
 
 -------------*/
+.home-title{
+	font-size: 70px;
+}
+
 .sign-in{
 	margin-bottom: 10%;
 }
