@@ -8,7 +8,9 @@
 	</div>	
 	<div class="row">
 		<div class="col-sm-12">
-			<a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add">Add New Todo</a>
+			<a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add"><span ng-show="true">Add New Task</span></a>
+			<a ui-sref="main.add"><span class=" btn btn-warning add-button" ng-show="true">Add New Appointment</span></a>
+
 		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
 			
 			<div ui-view class="add-edit-view"></div>
