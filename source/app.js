@@ -6,6 +6,7 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 ///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
 	
+	
 	$authProvider.github({
 		clientId: "ec5a4e91c7264952a976"
 	});

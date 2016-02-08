@@ -16,7 +16,7 @@
 						</th>
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
-					<tr ng-class="{strike: strike}" class=" {active : isSelected(item)}" ng-repeat="item in tasks track by $index">
+					<tr ng-class="{strike: strike}" class=" {active : isSelected(item)}" ng-repeat="item in rowData track by $index">
 						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
 							<td class="col-sm-2">{{item.task_description}}</td>
 							<td class="col-sm-2">{{item.frequency}}</td>

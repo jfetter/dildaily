@@ -6,6 +6,7 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 ///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
 	
+	
 	$authProvider.github({
 		clientId: "ec5a4e91c7264952a976"
 	});
@@ -3954,41 +3955,13 @@ angular.module("myApp")
 
 angular.module("myApp")
 
-.controller("mainCtrl", function($scope, $rootScope, $state, UtilityService, $http, $uibModal, $log){
+.controller("mainCtrl", function($scope, $q,  $rootScope, $state, UtilityService, $http, $uibModal, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
 			return;
 	 } 
+
 	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
-	 $rootScope.$watch('category', function(newcategory, oldcategory){
-	 		if (newcategory == undefined){
-	 			$rootScope.category = 'Tasks';
-	 		}
-	 			 var tHeads = {};
-	 if (!$scope.tHeads){
-			 	tHeads.col1= "Task";
-	 			tHeads.col2= "Description"; 
-	 			tHeads.col3= "Frequency"; 
-	 			tHeads.col4= "Complete By"; 
-	 			tHeads.col5= "Edit/Delete"; 
-	 			tHeads.col6= "Done?";
-	 			tHeads.col7= "archive"; 
-	 		$scope.tHeads = tHeads;
-	 } else{
-	 		if ($rootScope.category === 'Appointments'){
-	 			tHeads.col1= "Contact Name";
-	 			tHeads.col2= "Company"; 
-	 			tHeads.col3= "Contact Method"; 
-	 			tHeads.col4= "Completion Date"; 
-	 			tHeads.col5= "Edit/Delete"; 
-	 			tHeads.col6= "Last follow up Date";
-	 			tHeads.col7= "un-archive";
-	 			$scope.tHeads = tHeads;
-	 		} else if ($rootScope.category === 'This Week'){
-	 			console.log("THIS WEEK")
-	 	}
-	 }
-	})
 
 
 
@@ -4022,14 +3995,90 @@ angular.module("myApp")
 		console.log("make a directive to show details")
 	}
   
-  function loadUserTasks(){	
+  $rootScope.userData;
+  function loadData(){	
+  	var data; 
 		$http.get(`users/login/${localStorage.dd_id}`)
 			.then(function(res){
-			console.log("RES BODY IN MAIN CTRL",  res.data.todos)
+			console.log("RES BODY IN MAIN CTRL",  res.data)
+			$rootScope.userData = res.data;
+			data = res.data;
+			updateView(data);
 			$rootScope.tasks = res.data.todos;
 		}, function(err){ console.log(err)})
+			return data;
   } 
-loadUserTasks();
+  loadData();
+
+  $rootScope.$watch('userData', function(newData, oldData){
+  	console.log("LOADED DATA", newData);
+  	updateView();
+  })
+
+	 function updateView(data){
+	 		if (!data){return}
+	 		if ($rootScope.category == undefined){
+	 			console.log("CATEGORY IS UNDEFINED")
+	 			$rootScope.category = 'Tasks';
+	 		}
+	 		var tasks = data.todos;
+	 		var appointments = data.appointments;
+	 		var archives = data.archives;
+	 		var contacts = data.contacts; 
+	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
+	 			 var tHeads = {};
+	 			 var rowData = {}; 
+	 if (!$scope.tHeads){
+	 			//dataPool = $rootScope.tasks;
+			 	tHeads.col1= "Task Name";
+	 			tHeads.col2= "Description"; 
+	 			tHeads.col3= "Frequency"; 
+	 			tHeads.col4= "Complete By"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Done?";
+	 			tHeads.col7= "archive";
+	 			//rowData.task_name = $rootScope.task.task_name;
+	 			$scope.rowData = tasks;
+	 			$scope.tHeads = tHeads;
+	 			console.log('row data', $scope.rowData);
+	 			console.log("root tasks", $rootScope.tasks)
+	 } else{
+	 		if ($rootScope.category === 'Appointments'){
+	 			tHeads.col1= "Contact Name";
+	 			tHeads.col2= "Company"; 
+	 			tHeads.col3= "Contact Method"; 
+	 			tHeads.col4= "Completion Date"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Last follow up Date";
+	 			tHeads.col7= "un-archive";
+	 			$scope.tHeads = tHeads;
+	 			$scope.rowData = appointments;
+	 		} else if ($rootScope.category === 'Archives'){
+	 				 			tHeads.col1= "Contact Name";
+	 			tHeads.col2= "Company"; 
+	 			tHeads.col3= "Contact Method"; 
+	 			tHeads.col4= "Completion Date"; 
+	 			tHeads.col5= "Edit/Delete"; 
+	 			tHeads.col6= "Last follow up Date";
+	 			tHeads.col7= "un-archive";
+	 			$scope.tHeads = tHeads;
+	 			$scope.rowData = appointments;
+	 			console.log("Archives");
+	 	}
+	 }
+	}
+
+	function injectTasks(){
+		console.log("figure out a way to inject recurring tasks into todo list... and give them set due dates etc")
+	}
+	injectTasks();
+
+	function cleanOldTasks(){
+		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
+	}
+	cleanOldTasks();
+
+
 
 	function addKind(){
 	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
