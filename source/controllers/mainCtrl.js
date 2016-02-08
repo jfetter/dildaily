@@ -37,10 +37,6 @@ angular.module("myApp")
 	 // 		console.log("NEW category", $scope.tHeads);
 	 // 	}
 	 // })
-
-	$scope.viewDetails = function(){
-		console.log("make a directive to show details")
-	}
   
   $rootScope.userData;
   function loadData(){	
@@ -50,6 +46,9 @@ angular.module("myApp")
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
 			data = res.data;
+			//cleanOldTasks(); ... or maybe handle these on the back end?
+			//injectNewTasks();
+			//addKind();
 			updateView(data);
 			$rootScope.tasks = res.data.todos;
 		}, function(err){ console.log(err)})
@@ -62,11 +61,20 @@ angular.module("myApp")
   	updateView();
   })
 
+  $rootScope.$watch('category', function(newCategory, oldCategory){
+  	$scope.currentView = newCategory;
+  	if ($rootScope.userData){	
+  		updateView($rootScope.userData);
+  	} else{
+  		console.log("BANG USER DATA LALALALALALALAL")
+  	}
+  });
+
 	 function updateView(data){
 	 		if (!data){return}
-	 		if ($rootScope.category == undefined){
+	 		if ($scope.currentView == undefined){
 	 			console.log("CATEGORY IS UNDEFINED")
-	 			$rootScope.category = 'Tasks';
+	 			$scope.currentView = 'Tasks';
 	 		}
 	 		var tasks = data.todos;
 	 		var appointments = data.appointments;
@@ -85,12 +93,11 @@ angular.module("myApp")
 	 			tHeads.col6= "Done?";
 	 			tHeads.col7= "archive";
 	 			//rowData.task_name = $rootScope.task.task_name;
+	 			console.log('BANG THEADS');
 	 			$scope.rowData = tasks;
 	 			$scope.tHeads = tHeads;
-	 			console.log('row data', $scope.rowData);
-	 			console.log("root tasks", $rootScope.tasks)
 	 } else{
-	 		if ($rootScope.category === 'Appointments'){
+	 		if ($scope.currentView === 'Appointments'){
 	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
 	 			tHeads.col3= "Contact Method"; 
@@ -100,7 +107,7 @@ angular.module("myApp")
 	 			tHeads.col7= "un-archive";
 	 			$scope.tHeads = tHeads;
 	 			$scope.rowData = appointments;
-	 		} else if ($rootScope.category === 'Archives'){
+	 		} else if ($scope.currentView === 'Archives'){
 	 				 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
 	 			tHeads.col3= "Contact Method"; 
@@ -109,14 +116,19 @@ angular.module("myApp")
 	 			tHeads.col6= "Last follow up Date";
 	 			tHeads.col7= "un-archive";
 	 			$scope.tHeads = tHeads;
-	 			$scope.rowData = appointments;
+	 			$scope.rowData = ["test 1", "test 2", "test 3", "test 4", "test 5", "test 6"];
 	 			console.log("Archives");
 	 	}
 	 }
 	}
 
-	function injectTasks(){
-		console.log("figure out a way to inject recurring tasks into todo list... and give them set due dates etc")
+	function injectTasks(tasks){
+		console.log("need to test injection function");
+		// tasks.forEach(function(task){
+		// 	if (Date.now() > task.completeBy && nowTasks.indexOf(task) === -1){
+		// 		nowTasks.push(task);
+		// 	}
+		// })
 	}
 	injectTasks();
 
@@ -126,14 +138,19 @@ angular.module("myApp")
 	cleanOldTasks();
 
 
-
 	function addKind(){
+		//var quitMessages["Are you sure; have you tried doing a kind thing?", "c'mon, deep down inside you know you think this is cute", "okay, fine, but try to do kind things on your own then"];
 	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
 		var selection = Math.floor(Math.random()*kindness.length);
 		console.log("ADD KIND INDEX", selection);
 		return kindness[selection];
 	}
 	
+
+	$scope.viewDetails = function(){
+		console.log("make a directive to show details")
+	}
+
 	$scope.deleteTask = function(item){
 		console.log("item to delete", item._id)
 		var taskId = item._id;
