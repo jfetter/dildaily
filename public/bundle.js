@@ -3695,6 +3695,8 @@ angular.module("myApp")
 		} return false; 
 	}
 
+
+
 this.sortTasks = function(sortData, sortBy, reverseOrder){
 		console.log("sortData2", sortData )
 		console.log("sortBy", sortBy )
@@ -3998,12 +4000,25 @@ angular.module("myApp")
 			.then(function(res){
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
+			$rootScope.tasks = res.data.todos;
 			data = res.data;
+			// var today = [];
+
+			// data.todos.forEach(function(item){
+			// 	if (item.completeBy <= Date.now()){
+			// 		today.push(item);
+			// 	}
+			// })
+			// data.appointments.forEach(function(item){
+			// 	if (item.apptDate <= Date.now() ){
+			// 		today.push(item);
+			// 	}
+			// $rootScope.today = data.today;
+
 			//cleanOldTasks(); ... or maybe handle these on the back end?
 			//injectNewTasks();
 			//addKind();
 			updateView(data);
-			$rootScope.tasks = res.data.todos;
 		}, function(err){ console.log(err)})
 			return data;
   } 
@@ -4233,7 +4248,7 @@ angular.module("myApp")
 .controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService){
 	// hide login or logout button
 
-	$scope.cats = [{name: 'Tasks' }, {name: 'Appointments' }, {name: "This Week" }, {name: "Today" }, {name: "All"}, {name: "Archives"} ];
+	$scope.cats = [{name: 'Tasks' }, {name: 'Appointments' }, {name: "This Week" }, {name: "Today" }, {name: "Archives"}, {name: "All"} ];
 
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
@@ -4265,6 +4280,7 @@ angular.module("myApp")
 function assembleSearch(searchArray, searchTerm){
 	// $timeout(function(){
 		if (!searchArray || !searchTerm) return;
+		console.log("searchArray", searchArray)
 		$scope.searchArray = [];
 		searchArray.forEach(function(item){
 			$scope.searchArray.push(item[searchTerm])	
@@ -4274,19 +4290,34 @@ function assembleSearch(searchArray, searchTerm){
 }
 
 var searchCases = function(cat){
-		if (cat === 'tasks'){
-			var searchArray = $rootScope.tasks;
+	var data = $rootScope.userData; 
+	console.log("data", data);
+		if (cat === 'Tasks'){
+			var searchArray = data.todos;
 			var searchTerm = "task_name";
-		} else if (cat === 'archives'){
-			var searchArray = $rootScope.archives
+			console.log("SEARCH ARRAY1", searchArray);
+		} else if (cat === 'Archives'){
+			var searchArray = data.archives;
 			var searchTerm;
 			console.log("archives coming soon")
-		}else if (cat === 'contacts'){
-			var searchArray = $rootScope.contacts
+		} else if (cat === 'Today'){
+			var searchArray = $rootScope.today;
+			var searchTerm;
+			console.log("TODAY coming soon")
+		} else if (cat === 'This Week'){
+			var searchArray = $rootScope.week;
+			var searchTerm;
+			console.log("THIS WEEK coming soon")
+		} else if (cat === 'Appointments'){
+			var searchArray = data.appointments;
+			var searchTerm;
+			console.log("appointments coming soon")
+		}else if (cat === 'Contacts'){
+			var searchArray = data.contacts;
 			var searchTerm;
 			console.log("contacts coming soon")
-		}else if (cat === 'tools'){
-			var searchArray = $rootScope.tools
+		}else if (cat === 'Tools'){
+			var searchArray = $rootScope.tools;
 			var searchTerm;
 			console.log("prolly be a while til I have tools")
 		}
@@ -4313,7 +4344,9 @@ $scope.$watch("searchFor", function(newS, oldS){
 	console.log("change")
 	if ($scope.cat){
 		var cat = $scope.cat;
+		console.log("CAT IS", cat, "searchFor is", newS)
 		var searchObject = searchCases(cat);
+		console.log(searchObject);
 		var searchArray = searchObject.searchArray;
 		var searchTerm = searchObject.searchTerm; 
 		assembleSearch(searchArray, searchTerm)

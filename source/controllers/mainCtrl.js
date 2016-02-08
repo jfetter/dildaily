@@ -45,12 +45,25 @@ angular.module("myApp")
 			.then(function(res){
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
+			$rootScope.tasks = res.data.todos;
 			data = res.data;
+			// var today = [];
+
+			// data.todos.forEach(function(item){
+			// 	if (item.completeBy <= Date.now()){
+			// 		today.push(item);
+			// 	}
+			// })
+			// data.appointments.forEach(function(item){
+			// 	if (item.apptDate <= Date.now() ){
+			// 		today.push(item);
+			// 	}
+			// $rootScope.today = data.today;
+
 			//cleanOldTasks(); ... or maybe handle these on the back end?
 			//injectNewTasks();
 			//addKind();
 			updateView(data);
-			$rootScope.tasks = res.data.todos;
 		}, function(err){ console.log(err)})
 			return data;
   } 

@@ -19,6 +19,8 @@ angular.module("myApp")
 		} return false; 
 	}
 
+
+
 this.sortTasks = function(sortData, sortBy, reverseOrder){
 		console.log("sortData2", sortData )
 		console.log("sortBy", sortBy )

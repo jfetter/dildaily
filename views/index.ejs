@@ -38,10 +38,10 @@
         <a ng-click="showAll()" href="" class="search-all col-sm-12 btn btn-info">Show all</a href="">
           </div>
       </span>
-    
- 
    </div>
-      <div ng-show="cat" class="row" ng-mouseleave="clearSearch()">
+
+<!-- ng-show="cat" -->
+      <div  class="row results-container" ng-mouseleave="clearSearch()">
         <div class="">
           <span  class="search-results">
             <div ng-repeat="result in searchArray | filter:searchFor track by $index">
@@ -50,8 +50,9 @@
           </span>
         </div>
       </div> 
+
    </div>
-</div>
+
 
   
   
