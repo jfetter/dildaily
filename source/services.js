@@ -2,8 +2,20 @@
 
 angular.module("myApp")
 
-.service("UtilityService", function($http, $rootScope){
+.service("UtilityService", function($http, $rootScope, $cookies, jwtHelper){
 	this.tasks = [];
+
+
+
+	$rootScope.appTitle = "BETTER TITLE COMING SOON";
+	
+	// $rootScope.myName; 
+	// $rootScope.myId;
+	//  var token = localStorage.satellizer_token;
+	//  	if(token){
+	// 	$rootScope.myInfo = (jwtHelper.decodeToken(token))
+	// 	$rootScope.myId = $rootScope.myInfo._id;
+	// }
 
 	this.console = function(){
 		console.log("congrats you made it to the service")

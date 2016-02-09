@@ -2,7 +2,7 @@
 
 angular.module("myApp")
 
-.controller("mainCtrl", function($scope, $q,  $rootScope, $state, UtilityService, $http, $uibModal, $log){
+.controller("mainCtrl", function($scope, $rootScope, $cookies, jwtHelper, $state, UtilityService, $http, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
 			return;
@@ -45,6 +45,8 @@ angular.module("myApp")
 			.then(function(res){
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
+			$rootScope.myId = res.data._Id;
+			$rootScope.myName = res.data.username;
 			$rootScope.tasks = res.data.todos;
 			data = res.data;
 			// var today = [];
@@ -96,7 +98,7 @@ angular.module("myApp")
 	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads){
+	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
@@ -171,7 +173,7 @@ angular.module("myApp")
 		$http.post("/tasks/delete", {taskId: taskId}) 
 		.then(function(res){
 			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadUserTasks();
+			loadData();
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
 
@@ -184,12 +186,32 @@ angular.module("myApp")
 	//$scope.dailys = $localStorage.dailys;
 
 	$scope.checkOff = function(item){
-		$scope.selected = item;
-		console.log("from within checkOff item._id is", item._id); 			
+		item.completed = !item.completed;
 	}
 
 	$scope.archive = function(){
-		console.log("send selected items to an array on the back end")
+		$rootScope.tasks.forEach(function(item){
+			console.log(item, "ARCHIVING THIS GUY")
+			if (item.completed === true){
+			var newArchive = {};
+			newArchive.user_id = item.user_id;
+			newArchive.archive_name = item.task_name;
+			newArchive.descript = item.descript;
+			newArchive.additional_info = item.additional_info;
+			newArchive.completed = Date.now();
+			newArchive.category = 'todo';
+			console.log(newArchive, "NEW ARCHIVE")
+				$http.post("/archives/add", { 
+					newArchive: newArchive, 
+					deleteMe:item._id
+				}) 
+				.then(function(res){
+					console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+					loadData();
+				}, function(err){console.log(err)})
+				
+			}
+		})
 	}
 
 	$scope.unarchive = function(){

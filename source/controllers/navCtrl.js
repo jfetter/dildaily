@@ -31,8 +31,6 @@ angular.module("myApp")
 
 	console.log("cat", $scope.cat);
 
-
-	
 	//if ($scope.searchArray.length){$scope.searchArray.sort()};
 function assembleSearch(searchArray, searchTerm){
 	// $timeout(function(){

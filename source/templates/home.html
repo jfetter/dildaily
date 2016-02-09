@@ -1,7 +1,7 @@
 
     <div class="container sign-in">
         <div class="jumbotron">
-            <h1 class="home-title col-centered">Diligence</h1>
+            <h1 class="home-title col-centered">{{appTitle}}</h1>
             <br>
         </div>
 
@@ -14,7 +14,7 @@
             <button ng-click="pwlogin()" class="btn btn-lg btn-primary btn-block" type="submit">Signin with email</button>
              <br>
             <div class="oauth-logins">
-            <button ng-disabled="true" ng-click="authenticate('facebook')" class="btn btn-lg btn-info  col-lg-6 col-md-6 col-sm-12 col-xs-12" type="submit">Login with Facebook</button>
+<!--             <button ng-disabled="true" ng-click="authenticate('facebook')" class="btn btn-lg btn-info  col-lg-6 col-md-6 col-sm-12 col-xs-12" type="submit">Login with Facebook</button> -->
             <button ng-click="authenticate('github')" class="btn btn-lg btn-info  col-lg-6 col-md-6 col-sm-12 col-xs-12" type="submit">Login with Git Hub</button>
             </div>
       </form>

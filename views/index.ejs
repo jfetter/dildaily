@@ -42,13 +42,13 @@
 
 <!-- ng-show="cat" -->
       <div  class="row results-container" ng-mouseleave="clearSearch()">
-        <div class="">
+       <!--  <div class=""> -->
           <span  class="search-results">
-            <div ng-repeat="result in searchArray | filter:searchFor track by $index">
+            <div class="search-repeat" ng-repeat="result in searchArray | filter:searchFor track by $index">
               <p class="s-result" ng-click="showDetails(result)" >{{result}}</p>
             </div>
           </span>
-        </div>
+        <!-- </div> -->
       </div> 
 
    </div>
@@ -60,13 +60,16 @@
   <div ui-view></div>
 </div>
  
-
+  
+  <script src="./bower_components/jquery/dist/jquery.js"></script>
   <script src="./bower_components/angular/angular.js"></script>
   <script src="./bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="./bower_components/async/dist/async.js"></script>
   <script src="./bower_components/satellizer/satellizer.min.js">
   </script>
   <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
+  <script src="./bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="./bower_components/angular-jwt/dist/angular-jwt.js"></script>
   <script src="./bower_components/moment/moment.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.js"></script>
   <script src="./bower_components/angular-bootstrap/ui-bootstrap.js"></script>

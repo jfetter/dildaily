@@ -5,7 +5,8 @@ var router = express.Router();
 var User = require("../models/user")
 var Todo = require('../models/todo');
 var Archive = require('../models/archive')
-//var Task = require('../models/appointment');
+var Appointment = require('../models/appointment')
+var Contact = require('../models/contact');
 
 router.post("/newtodo", function(req, res){
 	var userId = req.body.user_id

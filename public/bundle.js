@@ -1,7 +1,7 @@
 'use strict';
 
 //take out nganimate and ngstorage if I dont end up using them in final product
-angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", "angularMoment"])
+angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies', "angularMoment"])
 
 ///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
@@ -3678,8 +3678,20 @@ Za.fn=Ia.prototype;var Xd=bb(1,"add"),Yd=bb(-1,"subtract");a.defaultFormat="YYYY
 
 angular.module("myApp")
 
-.service("UtilityService", function($http, $rootScope){
+.service("UtilityService", function($http, $rootScope, $cookies, jwtHelper){
 	this.tasks = [];
+
+
+
+	$rootScope.appTitle = "BETTER TITLE COMING SOON";
+	
+	// $rootScope.myName; 
+	// $rootScope.myId;
+	//  var token = localStorage.satellizer_token;
+	//  	if(token){
+	// 	$rootScope.myInfo = (jwtHelper.decodeToken(token))
+	// 	$rootScope.myId = $rootScope.myInfo._id;
+	// }
 
 	this.console = function(){
 		console.log("congrats you made it to the service")
@@ -3745,6 +3757,13 @@ angular.module("myApp")
 	console.log("IN ADD CTRL"); 
 	$scope.todo = true; 
 	console.log($scope.addEdit);
+
+	// for adding contacts -- 
+	// conncect all contacts at a company
+	// search -contact people / contact companies
+	// split left right view for contacts
+	// tools: email templates:
+	// call to action, we vs I vs you score
 
 	$scope.closePopUp = function(){
 		$state.go("main")
@@ -3957,7 +3976,7 @@ angular.module("myApp")
 
 angular.module("myApp")
 
-.controller("mainCtrl", function($scope, $q,  $rootScope, $state, UtilityService, $http, $uibModal, $log){
+.controller("mainCtrl", function($scope, $rootScope, $cookies, jwtHelper, $state, UtilityService, $http, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
 			return;
@@ -4000,6 +4019,8 @@ angular.module("myApp")
 			.then(function(res){
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
+			$rootScope.myId = res.data._Id;
+			$rootScope.myName = res.data.username;
 			$rootScope.tasks = res.data.todos;
 			data = res.data;
 			// var today = [];
@@ -4051,7 +4072,7 @@ angular.module("myApp")
 	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads){
+	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
@@ -4126,7 +4147,7 @@ angular.module("myApp")
 		$http.post("/tasks/delete", {taskId: taskId}) 
 		.then(function(res){
 			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadUserTasks();
+			loadData();
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
 
@@ -4139,12 +4160,32 @@ angular.module("myApp")
 	//$scope.dailys = $localStorage.dailys;
 
 	$scope.checkOff = function(item){
-		$scope.selected = item;
-		console.log("from within checkOff item._id is", item._id); 			
+		item.completed = !item.completed;
 	}
 
 	$scope.archive = function(){
-		console.log("send selected items to an array on the back end")
+		$rootScope.tasks.forEach(function(item){
+			console.log(item, "ARCHIVING THIS GUY")
+			if (item.completed === true){
+			var newArchive = {};
+			newArchive.user_id = item.user_id;
+			newArchive.archive_name = item.task_name;
+			newArchive.descript = item.descript;
+			newArchive.additional_info = item.additional_info;
+			newArchive.completed = Date.now();
+			newArchive.category = 'todo';
+			console.log(newArchive, "NEW ARCHIVE")
+				$http.post("/archives/add", { 
+					newArchive: newArchive, 
+					deleteMe:item._id
+				}) 
+				.then(function(res){
+					console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+					loadData();
+				}, function(err){console.log(err)})
+				
+			}
+		})
 	}
 
 	$scope.unarchive = function(){
@@ -4274,8 +4315,6 @@ angular.module("myApp")
 
 	console.log("cat", $scope.cat);
 
-
-	
 	//if ($scope.searchArray.length){$scope.searchArray.sort()};
 function assembleSearch(searchArray, searchTerm){
 	// $timeout(function(){

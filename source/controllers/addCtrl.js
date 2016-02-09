@@ -8,6 +8,13 @@ angular.module("myApp")
 	$scope.todo = true; 
 	console.log($scope.addEdit);
 
+	// for adding contacts -- 
+	// conncect all contacts at a company
+	// search -contact people / contact companies
+	// split left right view for contacts
+	// tools: email templates:
+	// call to action, we vs I vs you score
+
 	$scope.closePopUp = function(){
 		$state.go("main")
 	}
