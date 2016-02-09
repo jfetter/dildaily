@@ -33,7 +33,16 @@ router.put("/archive", function(req, res){
 	}, function(err, updatedTask){
 		res.status(err ? 400 : 200).send(err || taskId)	
 	})
+})
 
+router.put("/unarchive", function(req, res){
+	var completion_date = "";
+	var taskId = req.body.taskId;
+	console.log("task to archive", taskId);
+	Todo.findByIdAndUpdate(taskId, {$set: {completion_date: completion_date, completed: false}
+	}, function(err, updatedTask){
+		res.status(err ? 400 : 200).send(err || taskId)	
+	})
 })
 
 router.post("/delete", function(req, res){

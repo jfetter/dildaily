@@ -2,14 +2,16 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<h1 class="title">Welcome {{myName}}!</h1>
-			<h1 class="title">{{appTitle}}</h1>
+			<h1 class="title">{{myName}}'s {{appTitle}}</h1>
+			<br>
 		</div>
 	</div>	
 	<div class="row">
 		<div class="col-sm-12">
-			<a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add"><span ng-show="true">Add New Task</span></a>
-			<a ui-sref="main.add"><span class=" btn btn-warning add-button" ng-show="true">Add New Appointment</span></a>
+			<a ng-repeat="button in addBtns" ng-click="addNew(button)" ui-sref="main.add" class="btn" ng-class="button.classIs">Add New {{button.name}}</a>
+			<!-- <a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add"><span ng-show="true">Add New Task</span></a>
+			<a ui-sref="main.add"><span class=" btn btn-warning add-button" ng-show="true">Add New Appointment</span></a>	
+			<a ui-sref="main.add" ng-click="newContact; !newAppointment; !newTask"><span class=" btn btn-success add-button" ng-show="true">Add New contact</span></a> -->
 
 		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
 			

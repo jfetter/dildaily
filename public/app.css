@@ -111,6 +111,11 @@ ADD/EDIT FORM
 .strike{
 	text-decoration: line-through;
 }
+.un-strike{
+	text-decoration: none;
+}
+
+
 
 /*------------
 

@@ -7,7 +7,7 @@ angular.module("myApp")
 
 
 
-	$rootScope.appTitle = "Agent duh";
+	$rootScope.appTitle = "Agen-done";
 	
 	// $rootScope.myName; 
 	// $rootScope.myId;

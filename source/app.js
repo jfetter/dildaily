@@ -23,8 +23,9 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl", authenticate: false})
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
 	.state("main.completed", {url:"/completed", templateUrl:"templates/completed.html", controller:"mainCtrl"})	
-	.state("main.edit", {url:"/edit", templateUrl:"templates/task-form.html", controller:"editCtrl"})
-	.state("main.add", {url:"/add", templateUrl:"templates/task-form.html", controller:"addCtrl"})
+	.state("main.edit", {url:"/edit", templateUrl:"templates/input-form.html", controller:"editCtrl"})
+	.state("main.add", {url:"/add", templateUrl:"templates/input-form.html", controller:"addCtrl"})
+	.state("main.tools", {url:"/add", templateUrl:"templates/input-form.html", controller:"toolsCtrl"})
 	//for error messages etc
 	.state("main.alert", {url:"/alert", templateUrl:"templates/alert.html", controller:"alertCtrl"})
 	// to display addl details 

@@ -23,8 +23,9 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl", authenticate: false})
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
 	.state("main.completed", {url:"/completed", templateUrl:"templates/completed.html", controller:"mainCtrl"})	
-	.state("main.edit", {url:"/edit", templateUrl:"templates/task-form.html", controller:"editCtrl"})
-	.state("main.add", {url:"/add", templateUrl:"templates/task-form.html", controller:"addCtrl"})
+	.state("main.edit", {url:"/edit", templateUrl:"templates/input-form.html", controller:"editCtrl"})
+	.state("main.add", {url:"/add", templateUrl:"templates/input-form.html", controller:"addCtrl"})
+	.state("main.tools", {url:"/add", templateUrl:"templates/input-form.html", controller:"toolsCtrl"})
 	//for error messages etc
 	.state("main.alert", {url:"/alert", templateUrl:"templates/alert.html", controller:"alertCtrl"})
 	// to display addl details 
@@ -48,15 +49,31 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 
 angular.module("myApp")
 
-.directive("archive",function(){
+.directive("right-view",function(){
 	return{
-		templateUrl: "templates/archive.html"
+		templateUrl: "templates/right-view.html"
 	}
 })
 
 .directive('leftView', function(){
   return{
     templateUrl: "directives/left-view.html"
+  }
+})
+
+.directive('taskForm', function(){
+  return{
+    templateUrl: "directives/task-form.html"
+  }
+})
+  .directive('contactForm', function(){
+  return{
+    templateUrl: "directives/contact-form.html"
+  }
+})
+.directive('appointmentForm', function(){
+  return{
+    templateUrl: "directives/appointment-form.html"
   }
 })
 
@@ -3683,7 +3700,7 @@ angular.module("myApp")
 
 
 
-	$rootScope.appTitle = "Agent duh";
+	$rootScope.appTitle = "Agen-done";
 	
 	// $rootScope.myName; 
 	// $rootScope.myId;
@@ -4128,40 +4145,59 @@ angular.module("myApp")
 	}
 
 	// convert into mongoose
- 
+ 	$rootScope.addBtns = [{name:'Task', classIs:'btn-info'}, 
+ 	{name:'Appointment', classIs:'btn-warning'}, 
+ 	{name:'Contact', classIs:'btn-success'}];
 
-	//$localStorage.dailys = [{name: "test1", description: "descrip1", done: true }, {name: "test2", description: "descrip2", done: false }, {name: "kindness", description: addKind(), done: false}];
-	//$scope.dailys = $localStorage.dailys;
+	$scope.addNew = function(button){
+		console.log('addNew', button.name);
+		if(button.name === $scope.addBtns[0].name){
+			$rootScope.addThis = $scope.addBtns[0].name
+		} else if (button.name === $scope.addBtns[1].name){
+			$rootScope.addThis = $scope.addBtns[1].name
+		} else if (button.name === $scope.addBtns[2].name){ 
+			$rootScope.addThis = $scope.addBtns[2].name
+		}
+	}
 
+	$scope.striking = function(item){
+		if(!item)return;
+		if (item.completed === true){
+			console.log("STRIKE ME DOWN")
+			return 'strike';
+		}
+		return 'un-strike';
+	}
+
+	$scope.striker = 'un-strike';
 	$scope.checkOff = function(item){
 		item.completed = !item.completed;
 		if (item.completed){
 			$timeout(function(){
 			archive(item)}, 1000)
-		}
+		} else {
+			$timeout(function(){
+			unArchive(item)}, 1000)
+		}		
 	}
 
 	var archive = function(item){
-		//var data = $rootScope.userData;
-		// $rootScope.tasks.forEach(function(item){
-			console.log(item, "ARCHIVING THIS GUY")
-			//if (item.completed === true){
-			//var newArchive = {};
-			// newArchive.user_id = item.user_id;
-			// newArchive.archive_name = item.task_name;
-			// newArchive.descript = item.descript;
-			// newArchive.additional_info = item.additional_info;
-			// newArchive.completed = Date.now();
-			// newArchive.category = 'todo';
-			$http.put("tasks/archive", {taskId: item._id}) 
-			.then(function(res){
-				console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-				loadData();
-			}, function(err){console.log(err)})
-				
-			}
-		// })
+		console.log(item, "ARCHIVING THIS GUY")
+		$http.put("tasks/archive", {taskId: item._id}) 
+		.then(function(res){
+			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+			loadData();
+		}, function(err){console.log(err)})			
+	}
 	 
+		var unArchive = function(item){
+		console.log(item, "UNARCHIVING THIS GUY")
+		$http.put("tasks/unarchive", {taskId: item._id}) 
+		.then(function(res){
+			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
+			loadData();
+		}, function(err){console.log(err)})			
+	} 
 
 	$scope.unarchive = function(){
 		console.log("move an item from archive list back into todos")
@@ -4395,4 +4431,11 @@ $scope.showAll = function(){
 		console.log("build details view")
 	}
 
+})
+
+angular.module("myApp")
+
+.controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
+	console.log("make flash cards, contact list, company list, email templates etc...")
+	
 })

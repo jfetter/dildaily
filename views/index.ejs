@@ -24,9 +24,10 @@
       <a ng-show="onRegister" ng-hide="loginButton()" ng-click="onRegister = false" ui-sref="home" class="btn col-sm-1 login-btn">Login</a>
       <a ng-hide="onRegister || loginButton()"  ng-click="onRegister = true" ui-sref="register" class="reg-btn pull-right">Register</a>
       <div class="row">
-      <span class="col-sm-6">
-        <a ng-show="loginButton()" ng-click="logOut()" class=" btn col-sm-2">Log Out</a>
-        <a ng-show="loginButton()" ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn btn col-sm-2">My Tasks</a>
+      <span ng-show="loginButton()"class="col-sm-6">
+        <a ng-click="logOut()" class=" col-sm-2">Log Out</a>
+        <a ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn col-sm-2">My {{appTitle}}</a>
+        <a ui-sref="main.tools"class="col-sm-2" >Tools</a>
       </span>
       <span ng-show="loginButton()" class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">
