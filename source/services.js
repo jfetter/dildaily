@@ -4,22 +4,62 @@ angular.module("myApp")
 
 .service("UtilityService", function($http, $rootScope, $cookies, jwtHelper){
 	this.tasks = [];
-
-
+	this.archives = [];
 
 	$rootScope.appTitle = "Agent duh";
-	
-	// $rootScope.myName; 
-	// $rootScope.myId;
-	//  var token = localStorage.satellizer_token;
-	//  	if(token){
-	// 	$rootScope.myInfo = (jwtHelper.decodeToken(token))
-	// 	$rootScope.myId = $rootScope.myInfo._id;
-	// }
+	$rootScope.userData = {};
 
-	this.console = function(){
-		console.log("congrats you made it to the service")
+	this.loadData = function(){
+		var data; 
+		$http.get(`users/login/${localStorage.dd_id}`)
+			.then(function(res){
+			console.log("RES BODY IN SERVICE CTRL",  res.data)
+			data = res.data;
+			updateView(data)
+		}, function(err){ console.error(err)})
+			return data;
 	}
+
+
+	 var updateView = function(data){
+	 	console.log("GREETINGS FROM UPDATE VIEW")
+	 		if(!data){return}
+	 		var contacts = data.contacts; 
+	 		$rootScope.contacts = contacts; 
+	 		var tasks = [];
+	 		var appointments =[];
+	 		var archives = [];
+	 		var aLength = data.appointments.length - 1;
+	 		var tLength = data.todos.length -1; 
+	 		console.log("TLENGTH", tLength)
+	 		for (var i = 0; i < aLength; i ++){
+	 			if (data.appointments[i].appointment_date < Date.now()){
+	 				archives.push(data.appointments[i])
+	 			} else {
+	 				appointments.push(data.appointments[i])
+	 			}
+	 			if (i === aLength - 1){
+	 				$rootScope.userData.appointments = appointments; 
+	 			}
+	 		}
+
+	 		// data.todos.forEach(function(item, index){
+	 			for (var j = 0; j < tLength; j ++){
+	 			if (data.todos[j].completed === false 
+	 				|| data.todos[j].completeBy === null 
+	 				|| data.todos[j].completeBy <= Date.now()){
+	 				tasks.push(data.todos[j])
+	 			} else {
+	 				archives.push(data.todos[j])
+	 				console.log("PUSHED", data.todos[j], "TO ARCHIVES")
+	 			}
+	 			if (j === tLength -1){
+	 				$rootScope.tasks = tasks; 
+	 				//this.archives.concat
+	 				console.log("ROOTSCOPE DATA TASKS", $rootScope.tasks)
+	 			}
+	 		}
+	 	}
 
 //this.allViews = ["Tasks", "Appointments", "Daily Schedule", "Weekly Scheudle", "Archives"]
 //this.cat;

@@ -10,13 +10,11 @@
 							<div class="">
 								<span class="">{{tHeads.col6}}</span>
 							</div>
-							<div class="">
-								<a href="" ng-click="archive(checked)" class="btn btn-sm btn-success row">{{tHeads.col7}}</a>
-							</div>
+
 						</th>
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
-					<tr class="row-data" ng-class="{strike: strike}" ng-repeat="item in rowData track by $index">
+					<tr class="row-data" ng-repeat="item in rowData track by $index">
 						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
 							<td class="col-sm-2">{{item.task_description}}</td>
 							<td class="col-sm-2">{{item.frequency}}</td>
@@ -29,7 +27,9 @@
 								<i class="fa fa-trash" ng-click="deleteTask(item)"></i>
 							</td>
 							<td class="table-icons text-center">
-		  					<input ng-model="strike" ng-change="checkOff(item)" type="checkbox" />
+		  					<div class="">
+									<a href="" ng-model="strike" ng-click="archive(item)" class="btn btn-sm btn-success row">{{tHeads.col7}}</a>
+							</div>
 						</td>
 					</tr>	
 		</table>

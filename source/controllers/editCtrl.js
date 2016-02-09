@@ -2,7 +2,7 @@
 
 angular.module("myApp")
 
-.controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http) {
+.controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http, UtilityService) {
 	if (!$rootScope.editThis){
 		$state.go('main');
 	}
@@ -43,8 +43,8 @@ angular.module("myApp")
 			},10)
 		.then(function(res){
 			console.log("RES BODY IN EDIT", res);
+			UtilityService.loadData();
 			$state.go('main');
-			location.reload();
 			}, function(err){
 				console.log(err);
 			})

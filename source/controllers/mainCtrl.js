@@ -11,65 +11,49 @@ angular.module("myApp")
 	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
   
   $rootScope.userData;
-  function loadData(){	
-  	var data; 
-		$http.get(`users/login/${localStorage.dd_id}`)
-			.then(function(res){
-			console.log("RES BODY IN MAIN CTRL",  res.data)
-			$rootScope.userData = res.data;
-			$rootScope.myId = res.data._Id;
-			$rootScope.myName = res.data.username;
-			$rootScope.tasks = res.data.todos;
-			data = res.data;
-			updateView(data);
-		}, function(err){ console.log(err)})
-			return data;
-  } 
-  loadData();
+  // function loadData(){	
+  // 	var data; 
+		// $http.get(`users/login/${localStorage.dd_id}`)
+		// 	.then(function(res){
+		// 	console.log("RES BODY IN MAIN CTRL",  res.data)
+		// 	$rootScope.userData = res.data;
+		// 	$rootScope.myId = res.data._Id;
+		// 	$rootScope.myName = res.data.username;
+		// 	$rootScope.tasks = res.data.todos;
+		// 	data = res.data;
+		// 	updateView(data);
+		// }, function(err){ console.log(err)})
+		// 	return data;
+  //} 
+  UtilityService.loadData();
 
   $rootScope.$watch('userData', function(newData, oldData){
   	console.log("LOADED DATA", newData);
-  	updateView();
+  	updateDisplay();
   })
 
   $rootScope.$watch('category', function(newCategory, oldCategory){
   	$scope.currentView = newCategory;
   	if ($rootScope.userData){	
-  		updateView($rootScope.userData);
+  		console.log("THERE IS USER DATA TRALALALALALALAL")
+  		updateDisplay();
   	} else{
   		console.log("BANG USER DATA LALALALALALALAL")
   	}
   });
 
-	 function updateView(data){
-	 		if (!data){return}
+  // UtilityService.$watch('tasks', function(newTask, oldTask){
+  // 	updateDisplay();
+  // })
+
+
+	 function updateDisplay(){
+	 	if (!$rootScope.userData){return}
 	 		if ($scope.currentView == undefined){
 	 			console.log("CATEGORY IS UNDEFINED")
 	 			$scope.currentView = 'Tasks';
 	 		}
-	 		var contacts = data.contacts; 
-	 		var tasks = [];
-	 		var appointments =[];
-	 		var archives = [];
-
-	 		data.appointments.forEach(function(item){
-	 			if (item.appointment_date < Date.now()){
-	 				archives.push(item)
-	 			} else {
-	 				appointments.push(item)
-	 			}
-	 		})
-
-	 		data.todos.forEach(function(item){
-	 			if (item.completed === true || item.completeBy < Date.now()){
-	 				archives.push(item)
-	 			} else {
-	 				tasks.push(item)
-	 			}
-	 		})
-	 		
-
-	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
+	 		console.log("DATA IN UPDATE DISPLAY", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
 	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
@@ -80,10 +64,10 @@ angular.module("myApp")
 	 			tHeads.col4= "Complete By"; 
 	 			tHeads.col5= "Edit/Delete"; 
 	 			tHeads.col6= "Done?";
-	 			tHeads.col7= "archive";
+	 			tHeads.col7= "Done";
 	 			//rowData.task_name = $rootScope.task.task_name;
 	 			console.log('BANG THEADS');
-	 			$scope.rowData = tasks;
+	 			$scope.rowData = $rootScope.tasks;
 	 			$scope.tHeads = tHeads;
 	 } else{
 	 		if ($scope.currentView === 'Appointments'){
@@ -95,7 +79,7 @@ angular.module("myApp")
 	 			tHeads.col6= "Last follow up Date";
 	 			tHeads.col7= "un-archive";
 	 			$scope.tHeads = tHeads;
-	 			$scope.rowData = appointments;
+	 			$scope.rowData = UtilityService.tasks;
 	 		} else if ($scope.currentView === 'Archives'){
 	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
@@ -105,12 +89,12 @@ angular.module("myApp")
 	 			tHeads.col6= "Last follow up Date";
 	 			tHeads.col7= "un-archive";
 	 			$scope.tHeads = tHeads;
-	 			$scope.rowData = archives;
+	 			$scope.rowData = $rootScope.userData.archives;
 	 			console.log("Archives");
 	 	}
 	 }
 	}
-
+//}
 	function injectTasks(tasks){
 		console.log("need to test injection function");
 		// tasks.forEach(function(task){
@@ -147,7 +131,7 @@ angular.module("myApp")
 		$http.post("/tasks/delete", {taskId: taskId}) 
 		.then(function(res){
 			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadData();
+			
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
 
@@ -159,15 +143,10 @@ angular.module("myApp")
 	//$localStorage.dailys = [{name: "test1", description: "descrip1", done: true }, {name: "test2", description: "descrip2", done: false }, {name: "kindness", description: addKind(), done: false}];
 	//$scope.dailys = $localStorage.dailys;
 
-	$scope.checkOff = function(item){
-		item.completed = !item.completed;
-		if (item.completed){
+	$scope.archive = function(item){
+		item.completed = true;
+			if (item.completed){
 			$timeout(function(){
-			archive(item)}, 1000)
-		}
-	}
-
-	var archive = function(item){
 		//var data = $rootScope.userData;
 		// $rootScope.tasks.forEach(function(item){
 			console.log(item, "ARCHIVING THIS GUY")
@@ -182,11 +161,12 @@ angular.module("myApp")
 			$http.put("tasks/archive", {taskId: item._id}) 
 			.then(function(res){
 				console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-				loadData();
+				UtilityService.loadData();
 			}, function(err){console.log(err)})
 				
-			}
-		// })
+		}, 1000)
+	}
+}		// })
 	 
 
 	$scope.unarchive = function(){

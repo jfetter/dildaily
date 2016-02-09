@@ -3,7 +3,7 @@
 
 angular.module("myApp")
 
-	.controller("addCtrl", function($scope, $rootScope, $state, $http){
+	.controller("addCtrl", function($scope, $rootScope, $http, $state, UtilityService){
 	console.log("IN ADD CTRL"); 
 	$scope.todo = true; 
 	console.log($scope.addEdit);
@@ -42,8 +42,7 @@ angular.module("myApp")
 
 		.then(function(res){
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-			task.taskId = res.data;
-			$rootScope.tasks.push(task);
+			UtilityService.loadData();
 			$state.go('main')
 	},function(err){
 			console.log(err);
