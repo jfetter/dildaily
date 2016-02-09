@@ -30,7 +30,7 @@ angular.module("myApp")
 		$scope.todo = true;
 		task.user_id = localStorage.dd_id;
 		task.task_name = $scope.task_name;
-		task.task_description = $scope.task_description;
+		task.descript = $scope.task_description;
 		task.frequency = $scope.frequency;
 		task.completeBy = $scope.completeBy;
 		task.email_reminder = $scope.task_email_reminder;

@@ -4,22 +4,21 @@ var express = require('express');
 var router = express.Router();
 var User = require("../models/user")
 var Todo = require('../models/todo');
-var Archive = require('../models/archive')
 
 router.post("/add", function(req, res){
-	var user = req.body.newArchive.user_id;
-	var deleteMe = req.body.deleteMe;
-	var newArchive = req.body.newArchive;
+	var user = req.body.user_id;
+	var item_id = req.body._id;
 	console.log("adding to archives", req.body);
-	Archive.create(newArchive, function(err, createdArchive){
-		if(err)res.status(400).send(err.message);
-		console.log("CREATED ARCHIVE", createdArchive._id, "for User:", user)
+	//Archive.create(newArchive, function(err, createdArchive){
+		// if(err) {
+		// 	return res.status(400).send(err.message)
+		// } else {
+		// 	console.log("CREATED ARCHIVE", createdArchive._id, "for User:", user)
 		User.findById(user, function(err, foundUser){
 			if (err || !foundUser) res.status(400).send(err);
 			console.log("foundUser", foundUser)
 			// update tasks array and archives 
 			// need if else here for appointment
-			var userArchives = foundUser.archives;
 			userArchives.push(createdArchive._id);
 			var updatedTodos = [];
 			foundUser.todos.forEach(function(item){
@@ -48,8 +47,11 @@ router.post("/add", function(req, res){
 			}) // save updates to user
 
 		}) // find user
+
+	// 	}
+		
 	
-	})//create new Archive Item
+	// })//create new Archive Item
 
 }) // add new archive
 

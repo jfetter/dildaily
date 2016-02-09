@@ -13,8 +13,9 @@ var todoSchema = Schema({
 	completeBy: {type: Date},
 	email_reminder: {type: String, required: true, default: " "},
 	additional_info: {type: String, required: true, default: " "},
+	category: {type: String, required: true, default: "todo"},
 	completed: {type: Boolean, required: true, default: false},
-	task_type: {type: String, required: true, default: "todo"}
+	completion_date: {type: Date}
 })
 
 Todo = mongoose.model("Todo", todoSchema);

@@ -4,7 +4,7 @@ var express = require('express');
 var router = express.Router();
 var User = require("../models/user")
 var Todo = require('../models/todo');
-var Archive = require('../models/archive')
+// var Archive = require('../models/archive')
 var Appointment = require('../models/appointment')
 var Contact = require('../models/contact');
 
@@ -14,7 +14,7 @@ router.post("/newtodo", function(req, res){
 	console.log(todo)
 	todo.save((err, savedTask) => {
 		console.log("savedTask", savedTask)
-		if (err)res.status(400).send(err.message);
+		if (err)res.status(400).send(err);
 		var taskId = savedTask._id;
 		User.findByIdAndUpdate(userId, {$push: {todos: taskId}} ,function(err, foundUser){
 			if (err) res.status(400).send(err.message);
@@ -25,6 +25,16 @@ router.post("/newtodo", function(req, res){
 	})
 })
 
+router.put("/archive", function(req, res){
+	var completion_date = Date.now();
+	var taskId = req.body.taskId;
+	console.log("task to archive", taskId);
+	Todo.findByIdAndUpdate(taskId, {$set: {completion_date: completion_date, completed: true}
+	}, function(err, updatedTask){
+		res.status(err ? 400 : 200).send(err || taskId)	
+	})
+
+})
 
 router.post("/delete", function(req, res){
 	console.log("delete req body !!!!!!",req.body.taskId)

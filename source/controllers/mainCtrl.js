@@ -2,41 +2,13 @@
 
 angular.module("myApp")
 
-.controller("mainCtrl", function($scope, $rootScope, $cookies, jwtHelper, $state, UtilityService, $http, $log){
+.controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
 	 if (!localStorage.satellizer_token){
 			$state.go("home");
 			return;
 	 } 
 
 	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
-
-
-
-	 // $scope.$watch('tHeads', function(newHeads, oldHeads){
-	 // 		console.log("NEW C IN MAIN", newcategory);
-	 		
-	 // 	if(newcategory == 'Archives'){
-	 // 			tHeads.col1= "Task";
-	 // 			tHeads.col2= "Description"; 
-	 // 			tHeads.col3= "Frequency"; 
-	 // 			tHeads.col4= "Complete By"; 
-	 // 			tHeads.col5= "Edit/Delete"; 
-	 // 			tHeads.col6= "Done?";
-	 // 			tHeads.col7= "archive"; 
-	 // 		$scope.tHeads = tHeads;
-	 // 		console.log("NEW category", $scope.tHeads);
-	 // 		}
-	 // 	if (newcategory == 'Appointments'){
-	 // 			tHeads.col1= "Contact Name";
-	 // 			tHeads.col2= "Company"; 
-	 // 			tHeads.col3= "Contact Method"; 
-	 // 			tHeads.col4= "Completion Date"; 
-	 // 			tHeads.col5= "Edit/Delete"; 
-	 // 			tHeads.col6= "Last follow up Date";
-	 // 			tHeads.col7= "un-archive";
-	 // 		console.log("NEW category", $scope.tHeads);
-	 // 	}
-	 // })
   
   $rootScope.userData;
   function loadData(){	
@@ -49,22 +21,6 @@ angular.module("myApp")
 			$rootScope.myName = res.data.username;
 			$rootScope.tasks = res.data.todos;
 			data = res.data;
-			// var today = [];
-
-			// data.todos.forEach(function(item){
-			// 	if (item.completeBy <= Date.now()){
-			// 		today.push(item);
-			// 	}
-			// })
-			// data.appointments.forEach(function(item){
-			// 	if (item.apptDate <= Date.now() ){
-			// 		today.push(item);
-			// 	}
-			// $rootScope.today = data.today;
-
-			//cleanOldTasks(); ... or maybe handle these on the back end?
-			//injectNewTasks();
-			//addKind();
 			updateView(data);
 		}, function(err){ console.log(err)})
 			return data;
@@ -91,10 +47,28 @@ angular.module("myApp")
 	 			console.log("CATEGORY IS UNDEFINED")
 	 			$scope.currentView = 'Tasks';
 	 		}
-	 		var tasks = data.todos;
-	 		var appointments = data.appointments;
-	 		var archives = data.archives;
 	 		var contacts = data.contacts; 
+	 		var tasks = [];
+	 		var appointments =[];
+	 		var archives = [];
+
+	 		data.appointments.forEach(function(item){
+	 			if (item.appointment_date < Date.now()){
+	 				archives.push(item)
+	 			} else {
+	 				appointments.push(item)
+	 			}
+	 		})
+
+	 		data.todos.forEach(function(item){
+	 			if (item.completed === true || item.completeBy < Date.now()){
+	 				archives.push(item)
+	 			} else {
+	 				tasks.push(item)
+	 			}
+	 		})
+	 		
+
 	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
@@ -123,7 +97,7 @@ angular.module("myApp")
 	 			$scope.tHeads = tHeads;
 	 			$scope.rowData = appointments;
 	 		} else if ($scope.currentView === 'Archives'){
-	 				 			tHeads.col1= "Contact Name";
+	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
 	 			tHeads.col3= "Contact Method"; 
 	 			tHeads.col4= "Completion Date"; 
@@ -131,7 +105,7 @@ angular.module("myApp")
 	 			tHeads.col6= "Last follow up Date";
 	 			tHeads.col7= "un-archive";
 	 			$scope.tHeads = tHeads;
-	 			$scope.rowData = ["test 1", "test 2", "test 3", "test 4", "test 5", "test 6"];
+	 			$scope.rowData = archives;
 	 			console.log("Archives");
 	 	}
 	 }
@@ -187,32 +161,33 @@ angular.module("myApp")
 
 	$scope.checkOff = function(item){
 		item.completed = !item.completed;
+		if (item.completed){
+			$timeout(function(){
+			archive(item)}, 1000)
+		}
 	}
 
-	$scope.archive = function(){
-		$rootScope.tasks.forEach(function(item){
+	var archive = function(item){
+		//var data = $rootScope.userData;
+		// $rootScope.tasks.forEach(function(item){
 			console.log(item, "ARCHIVING THIS GUY")
-			if (item.completed === true){
-			var newArchive = {};
-			newArchive.user_id = item.user_id;
-			newArchive.archive_name = item.task_name;
-			newArchive.descript = item.descript;
-			newArchive.additional_info = item.additional_info;
-			newArchive.completed = Date.now();
-			newArchive.category = 'todo';
-			console.log(newArchive, "NEW ARCHIVE")
-				$http.post("/archives/add", { 
-					newArchive: newArchive, 
-					deleteMe:item._id
-				}) 
-				.then(function(res){
-					console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-					loadData();
-				}, function(err){console.log(err)})
+			//if (item.completed === true){
+			//var newArchive = {};
+			// newArchive.user_id = item.user_id;
+			// newArchive.archive_name = item.task_name;
+			// newArchive.descript = item.descript;
+			// newArchive.additional_info = item.additional_info;
+			// newArchive.completed = Date.now();
+			// newArchive.category = 'todo';
+			$http.put("tasks/archive", {taskId: item._id}) 
+			.then(function(res){
+				console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+				loadData();
+			}, function(err){console.log(err)})
 				
 			}
-		})
-	}
+		// })
+	 
 
 	$scope.unarchive = function(){
 		console.log("move an item from archive list back into todos")
