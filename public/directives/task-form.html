@@ -1,7 +1,9 @@
 	<div class="row">
 		<table class="col-sm-12 table add-task-table">
 			<tbody>
+				<tr><h1 ng-show="addThis" ng-click="addNew()" class="add-btn text-center" ng-class="addThis.classIs"> Create New {{addThis.name}}</h1></tr>
 			<tr class="add-task-row row">
+
 				<td class="add-task-task">
 					<label for="Taskname">task name</label>
 					<input ng-model="task_name" type="text" placeholder="input new task" class="input-task">
@@ -30,14 +32,18 @@
 						<option value="hour before">Hour Before</option>
 					</select>
 				</td> -->
-				<td class="addCancel-task-butt" >
-					<button ng-click="submitTask()" class="add-task-btn btn btn-sm btn-info">Sumbit</button>
-					<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
-				</td>
+		<!-- 		<td class="addCancel-task-butt" >
+					<button ng-click="submitTask()" ng-class="addThis.classIs" class="add-task-btn btn btn-sm ">Sumbit</button>
+				</td> -->
+
 			</tr>
 				<tr class="row">
 					<td class="col-sm-12" colspan="5">
 				<input id="addl-info" type="text" ng-model="additional_info" class="input-lg col-sm-12" placeholder="additional details">
+					</td>
+					<td ng-show="addThis" ng-click="addNew()" class="add-btn text-center" ng-class="addThis.classIs"> Create New {{addThis.name}}
+					<td>
+						<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
 					</td>
 				</tr>
 			</tbody>

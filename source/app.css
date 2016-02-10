@@ -84,8 +84,8 @@ ADD/EDIT FORM
 	width: 50%;
 }
 
-.add-button{
-  margin-bottom: 2em;
+.add-btn{
+	border-radius: 7px;
 }
 
 .add-task-cont{

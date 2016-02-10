@@ -1,13 +1,10 @@
 <div class="container task-form-cont">
 			
 		<!-- <div class="col-sm-6"> -->
-			<div ng-show="addThis ==='Task'">
+			<div ng-show="addThis.name ==='Task'">
 			<task-form />
 			</div>
-			<div ng-show="addThis === 'Contact'">
-			<contact-form />
-			</div>
-			<div ng-show="addThis === 'Appointment'">
+			<div ng-show="addThis.name === 'Appointment' || addThis.name ==='Contact' ">
 			<appointment-form />
 			</div>
 

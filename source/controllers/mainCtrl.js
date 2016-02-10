@@ -53,7 +53,7 @@ angular.module("myApp")
 	 		var archives = [];
 
 	 		data.appointments.forEach(function(item){
-	 			if (item.appointment_date < Date.now()){
+	 			if (new Date(item.appointment_date) < Date.now()){
 	 				archives.push(item)
 	 			} else {
 	 				appointments.push(item)
@@ -61,7 +61,7 @@ angular.module("myApp")
 	 		})
 
 	 		data.todos.forEach(function(item){
-	 			if (item.completed === true || item.completeBy < Date.now()){
+	 			if (item.completed === true || new Date(item.completeBy) < Date.now()){
 	 				archives.push(item)
 	 			} else {
 	 				tasks.push(item)
@@ -140,7 +140,16 @@ angular.module("myApp")
 		console.log("make a directive to show details")
 	}
 
-	$scope.deleteTask = function(item){
+	$scope.deleteItem = function(item){
+		if (item.category === 'Task'){
+			deleteTask(item);
+		} else {
+			console.log("DELETE CONTACT/ APPT")
+			deleteContact(item);
+		} 
+	}
+
+	function deleteTask(item){
 		console.log("item to delete", item._id)
 		var taskId = item._id;
 		var userId = item.user_id; 
@@ -150,8 +159,22 @@ angular.module("myApp")
 			loadData();
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
+	}	
 
+	function deleteContact(item){
+		console.log("item to delete", item._id)
+		var contactId = item._id;
+		var userId = item.user_id; 
+		$http.post("/contacts/delete", {contactId: contactId}) 
+		.then(function(res){
+			console.log("RESPONSE FROM DELETE REQ", res.data);
+			loadData();
+		}, function(err){console.log(err)})
+		//add sweet alert to confirm before deleting
 	}
+
+
+
 
 	// convert into mongoose
  	$rootScope.addBtns = [{name:'Task', classIs:'btn-info'}, 
@@ -161,11 +184,11 @@ angular.module("myApp")
 	$scope.addNew = function(button){
 		console.log('addNew', button.name);
 		if(button.name === $scope.addBtns[0].name){
-			$rootScope.addThis = $scope.addBtns[0].name
+			$rootScope.addThis = $scope.addBtns[0]
 		} else if (button.name === $scope.addBtns[1].name){
-			$rootScope.addThis = $scope.addBtns[1].name
+			$rootScope.addThis = $scope.addBtns[1]
 		} else if (button.name === $scope.addBtns[2].name){ 
-			$rootScope.addThis = $scope.addBtns[2].name
+			$rootScope.addThis = $scope.addBtns[2]
 		}
 	}
 
@@ -178,17 +201,17 @@ angular.module("myApp")
 		return 'un-strike';
 	}
 
-	$scope.striker = 'un-strike';
-	$scope.checkOff = function(item){
-		item.completed = !item.completed;
-		if (item.completed){
-			$timeout(function(){
-			archive(item)}, 1000)
-		} else {
-			$timeout(function(){
-			unArchive(item)}, 1000)
-		}		
-	}
+	// $scope.striker = 'un-strike';
+	// $scope.checkOff = function(item){
+	// 	item.completed = !item.completed;
+	// 	if (item.completed){
+	// 		$timeout(function(){
+	// 		archive(item)}, 1000)
+	// 	} else {
+	// 		$timeout(function(){
+	// 		unArchive(item)}, 1000)
+	// 	}		
+	// }
 
 	var archive = function(item){
 		console.log(item, "ARCHIVING THIS GUY")
@@ -207,10 +230,6 @@ angular.module("myApp")
 			loadData();
 		}, function(err){console.log(err)})			
 	} 
-
-	$scope.unarchive = function(){
-		console.log("move an item from archive list back into todos")
-	}
 
 	$scope.goToEdit = function(item){
 		console.log("ITEM", item)

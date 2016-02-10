@@ -6,16 +6,23 @@ var Schema = mongoose.Schema;
 var Contact;
 
 var contactSchema = Schema({
+	category: {type: String, required: true},
 	user_id: {type: String, required: true},
-	contact_name: {type: String, required: true, default: " "},
-	company_name: {type: String, required: true, default: " "},
-	notes: {type: String, required: true, default: " "},
-	contact_phn:{type: String, required: true, default: " "},
-	contact_email:{type: String, required: true, default: " "},
-	additional_contact_info:{type: String, required: true, default: " "},
-	last_contact_date:{type: Date, required: true, default: " "},
-	next_contact_date:{type: Date, required: true, default: " "}
+	contact_name: {type: String},
+	company_name: {type: String},
+	next_appt_date: {type: Date},
+	appointment_time: {type: Date},
+	contact_phn:{type: String},
+	contact_email:{type: String},
+	linkedin:{type: String},
+	last_contact_date: {type: Date},
+	followup_date: {type: Date},
+	contact_notes: {type: String},
+	appt_notes: {type: String},
+	recurrence: {type: String}
 })
+
+
 
 Contact = mongoose.model("Contact", contactSchema);
 module.exports = Contact;

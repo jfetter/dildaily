@@ -6,8 +6,8 @@ angular.module("myApp")
 	this.tasks = [];
 
 
-
-	$rootScope.appTitle = "Agen-done";
+//other names: Hire, get-it, Agen-do
+	$rootScope.appTitle = "Get To Work";
 	
 	// $rootScope.myName; 
 	// $rootScope.myId;
@@ -31,6 +31,9 @@ angular.module("myApp")
 		} return false; 
 	}
 
+this.loadUserData = function(){
+	console.log("NEED TO SHIFT DATA GRABBING FROM MAIN CTRL TO SERVICE")
+}
 
 
 this.sortTasks = function(sortData, sortBy, reverseOrder){

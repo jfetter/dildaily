@@ -1,26 +1,61 @@
 	<div class="row">
 		<table class="col-sm-12 table add-task-table">
 			<tbody>
+				<tr>
+					<h1 ng-show="addThis" ng-click="addNew()" class="text-center add-btn" ng-class="addThis.classIs"> Create New {{addThis.name}}</h1>
+				</tr>
 			<tr class="add-task-row row">
-				<td class="add-task-task">
-					<label for="Taskname">Appointment With</label>
-					<input ng-model="task_name" type="text" placeholder="input new task" class="input-task">
+				<td class="add-task-contact">
+					<label for="ApptName">Contact Name</label>
+					<input ng-model="contact_name" type="text" placeholder="contact's name" class="input-task">
 				</td>
-				<td class="add-task-descript">
-					<label for="description">description</label>
-					<input ng-model="task_description" type="text" placeholder="desciprtion" class="input-descript">
+				<td class="add-appt-co">
+					<label for="description">Co. Name</label>
+					<input ng-model="company_name" type="text" placeholder="contact's company" class="input-descript">
 				</td>
-				<td class="add-task-completeBy">
-					<label ng-hide="!todo" for="complete_by">Complete By</label>
-					<label ng-hide="todo" for="complete_by">Appt Date</label>
-					<input required ng-model="completeBy" type="date" placeholder="complete By" class="input-descript">
+				<td class="add-appt-date">
+					<label ng-show="addThis.name === 'Contact'" for="last-contact-date">Date of Next Appt</label>
+					<label ng-show="addThis.name === 'Appointment'" for="Date">Appt Date</label>
+					<input required ng-model="appt_date" type="date" class="input-date" required>
+				</td>				
+				<td class="add-task-time">
+					<label for="time">Appt Time</label>
+					<input required ng-model="appt_time" type="time" class="input-date" required>
 				</td>
-				<td class="add-task-recurrence">
-					<label for="selectFreq">frequency</label>
-					<select ng-model="frequency" id="selectFreq" placeholder="desciprtion" class="input-recurrence">
+					<td ng-show="addThis.name === 'Contact'">
+						<label for="addContact">Add To Appt Schedule?</label>
+						<input type="checkbox" ng-model="addAppt" ng-change="addContact('Appointment')">
+					</td>
+				<td ng-hide="addThis.name ==='Contact'" class="add-task-recurrence">
+					<label for="recurs">Recurs?</label>
+					<select ng-model="recurrence" id="recurs" placeholder="desciprtion" class="input-recurrence">
 						<option value="weekly">weekly</option><option value="daily">daily</option>
-						<option value="other">other</option>
 					</select>
+					<tr>
+					<tr class="add-task-row row">
+				<td class="add-task-contact">
+					<label for="contactPhn">Contact Phone</label>
+					<input ng-model="contact_phn" type="phone" placeholder="xxx-xxx-xxxx" class="input-task">
+				</td>
+				<td class="add-appt-co">
+					<label for="contactEmail">Contact email</label>
+					<input ng-model="contact_email" type="email" placeholder="jdoe@company.com" class="input-descript">
+				</td>
+				<td class="add-appt-linkedin">
+					<label for="LinkedIn">Linked In</label>
+					<input required ng-model="linkedin" type="text" class="input-date" placeholder="linkedin.com/in/fnamelname">
+				</td>				
+				<td class="add-appt-fu">
+					<label ng-hide="addThis.name === 'Appointment'" for="followup_date">Date of Last Contact</label>
+					<label ng-show="addThis.name === 'Appointment'" for="followup_date">Follow Up Date</label>
+					<input ng-model="followup_date" type="date" class="input-date" required>
+				</td>
+				<td ng-show="addThis.name === 'Appointment'">
+						<label for="addContact">Save As Contact?</label>
+						<input type="checkbox" ng-model="addContact" ng-change="addContact('Contact')">
+					</td>
+			</tr>
+			<tr>
 <!-- 				</td>
 					<td class="add-task-reminder">
 					<label  for="selectFreq">email reminder</label>
@@ -30,15 +65,18 @@
 						<option value="hour before">Hour Before</option>
 					</select>
 				</td> -->
-				<td class="addCancel-task-butt" >
-					<button ng-click="submitTask()" class="add-task-btn btn btn-sm btn-info">Sumbit</button>
-					<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
-				</td>
+
 			</tr>
 				<tr class="row">
 					<td class="col-sm-12" colspan="5">
-				<input id="addl-info" type="text" ng-model="additional_info" class="input-lg col-sm-12" placeholder="additional details">
+						<label for="notes">notes</label>
+				<input ng-show="addThis.name === 'Appointment'" id="notes" type="text" ng-model="appt_notes" class="input-lg col-sm-12" placeholder="date applied, other contacts at company etc">
+				<input ng-hide="addThis.name === 'Appointment'" id="notes" type="text" ng-model="contact_notes" class="input-lg col-sm-12" placeholder="date applied, other contacts at company etc">
 					</td>
+				<td class="addCancel-task-butt" >
+					<button class="add-task-btn btn btn-sm" ng-click="addNew()" ng-class="addThis.classIs">Sumbit</button>
+					<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
+				</td>
 				</tr>
 			</tbody>
 		</table>

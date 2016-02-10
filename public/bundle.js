@@ -3699,8 +3699,8 @@ angular.module("myApp")
 	this.tasks = [];
 
 
-
-	$rootScope.appTitle = "Agen-done";
+//other names: Hire, get-it, Agen-do
+	$rootScope.appTitle = "Get To Work";
 	
 	// $rootScope.myName; 
 	// $rootScope.myId;
@@ -3724,6 +3724,9 @@ angular.module("myApp")
 		} return false; 
 	}
 
+this.loadUserData = function(){
+	console.log("NEED TO SHIFT DATA GRABBING FROM MAIN CTRL TO SERVICE")
+}
 
 
 this.sortTasks = function(sortData, sortBy, reverseOrder){
@@ -3783,16 +3786,57 @@ angular.module("myApp")
 	// call to action, we vs I vs you score
 
 	$scope.closePopUp = function(){
+		$rootScope.addThis = null;
 		$state.go("main")
 	}
 
-	$scope.addAppt = function(){
-		console.log("add meeting")
-		$scope.todo = false; 
-		//$state.go("main.add")
+	$scope.addNew = function(){
+		console.log("IN ADD NEW")
+		if ($rootScope.addThis.name === 'Task') {
+			submitTask();
+		} else if ($rootScope.addThis.name === 'Appointment' || $rootScope.addThis.name === 'Contact' ){ 
+			var type = $rootScope.addThis.name;
+			console.log("ADDDING ", type)
+			addContact(type);
+		}
 	}
 
-	$scope.submitTask = function(){
+	var addContact = function(type){
+		$rootScope.addThis = null;
+		$scope.todo = false; 
+		//var myId = $rootScope.myId; 
+		console.log("in addAPPT OR CONTACT. TYPE:", type)
+		var newContact = {};
+	if (type === "Contact"){
+		newContact.contact_notes = $scope.contact_notes;
+		newContact.category = 'Contact';
+	}else{
+		newContact.category = 'Appointment';
+		newContact.appt_notes = $scope.appt_notes;
+		newContact.recurrence = $scope.recurrence;
+	}
+	  newContact.user_id = localStorage.dd_id;
+		newContact.next_appt_date = $scope.appt_date;
+		newContact.contact_name = $scope.contact_name;
+		newContact.company_name = $scope.company_name;
+		newContact.appointment_time = $scope.appt_time;
+		newContact.contact_phn = $scope.contact_phn;
+		newContact.contact_email = $scope.contact_email;
+		newContact.linkedin = $scope.linkedin;
+		newContact.followup_date = $scope.followup_date;
+		$http.post("/contacts/newcontact", newContact )
+	.then(function(res){
+			$rootScope.addThis = null;
+			console.log("LOOK WHAT I BROUGHT BACK",res.data);
+			//contact.contactId = res.data;
+			UtilityService.loadUserData;
+			$state.go('main')
+	},function(err){
+			console.log(err);
+		})
+	}
+
+	var submitTask = function(){
 		var task = {};
 		$scope.todo = true;
 		task.user_id = localStorage.dd_id;
@@ -3808,6 +3852,7 @@ angular.module("myApp")
 		$http.post("/tasks/newtodo", task )
 
 		.then(function(res){
+			$rootScope.addThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
 			task.taskId = res.data;
 			$rootScope.tasks.push(task);
@@ -3817,9 +3862,6 @@ angular.module("myApp")
 		})
 	}
 
-	$scope.createNewAppt = function(){
-		console.log("create new appt")
-	}
 
 })
 
@@ -4044,7 +4086,7 @@ angular.module("myApp")
 	 		var archives = [];
 
 	 		data.appointments.forEach(function(item){
-	 			if (item.appointment_date < Date.now()){
+	 			if (new Date(item.appointment_date) < Date.now()){
 	 				archives.push(item)
 	 			} else {
 	 				appointments.push(item)
@@ -4052,7 +4094,7 @@ angular.module("myApp")
 	 		})
 
 	 		data.todos.forEach(function(item){
-	 			if (item.completed === true || item.completeBy < Date.now()){
+	 			if (item.completed === true || new Date(item.completeBy) < Date.now()){
 	 				archives.push(item)
 	 			} else {
 	 				tasks.push(item)
@@ -4131,7 +4173,16 @@ angular.module("myApp")
 		console.log("make a directive to show details")
 	}
 
-	$scope.deleteTask = function(item){
+	$scope.deleteItem = function(item){
+		if (item.category === 'Task'){
+			deleteTask(item);
+		} else {
+			console.log("DELETE CONTACT/ APPT")
+			deleteContact(item);
+		} 
+	}
+
+	function deleteTask(item){
 		console.log("item to delete", item._id)
 		var taskId = item._id;
 		var userId = item.user_id; 
@@ -4141,8 +4192,22 @@ angular.module("myApp")
 			loadData();
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
+	}	
 
+	function deleteContact(item){
+		console.log("item to delete", item._id)
+		var contactId = item._id;
+		var userId = item.user_id; 
+		$http.post("/contacts/delete", {contactId: contactId}) 
+		.then(function(res){
+			console.log("RESPONSE FROM DELETE REQ", res.data);
+			loadData();
+		}, function(err){console.log(err)})
+		//add sweet alert to confirm before deleting
 	}
+
+
+
 
 	// convert into mongoose
  	$rootScope.addBtns = [{name:'Task', classIs:'btn-info'}, 
@@ -4152,11 +4217,11 @@ angular.module("myApp")
 	$scope.addNew = function(button){
 		console.log('addNew', button.name);
 		if(button.name === $scope.addBtns[0].name){
-			$rootScope.addThis = $scope.addBtns[0].name
+			$rootScope.addThis = $scope.addBtns[0]
 		} else if (button.name === $scope.addBtns[1].name){
-			$rootScope.addThis = $scope.addBtns[1].name
+			$rootScope.addThis = $scope.addBtns[1]
 		} else if (button.name === $scope.addBtns[2].name){ 
-			$rootScope.addThis = $scope.addBtns[2].name
+			$rootScope.addThis = $scope.addBtns[2]
 		}
 	}
 
@@ -4169,17 +4234,17 @@ angular.module("myApp")
 		return 'un-strike';
 	}
 
-	$scope.striker = 'un-strike';
-	$scope.checkOff = function(item){
-		item.completed = !item.completed;
-		if (item.completed){
-			$timeout(function(){
-			archive(item)}, 1000)
-		} else {
-			$timeout(function(){
-			unArchive(item)}, 1000)
-		}		
-	}
+	// $scope.striker = 'un-strike';
+	// $scope.checkOff = function(item){
+	// 	item.completed = !item.completed;
+	// 	if (item.completed){
+	// 		$timeout(function(){
+	// 		archive(item)}, 1000)
+	// 	} else {
+	// 		$timeout(function(){
+	// 		unArchive(item)}, 1000)
+	// 	}		
+	// }
 
 	var archive = function(item){
 		console.log(item, "ARCHIVING THIS GUY")
@@ -4198,10 +4263,6 @@ angular.module("myApp")
 			loadData();
 		}, function(err){console.log(err)})			
 	} 
-
-	$scope.unarchive = function(){
-		console.log("move an item from archive list back into todos")
-	}
 
 	$scope.goToEdit = function(item){
 		console.log("ITEM", item)
