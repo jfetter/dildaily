@@ -1,7 +1,7 @@
 'use strict';
 
 //take out nganimate and ngstorage if I dont end up using them in final product
-angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies', "angularMoment"])
+angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies']) //"angularMoment"
 
 ///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
@@ -3701,14 +3701,30 @@ angular.module("myApp")
 
 //other names: Hire, get-it, Agen-do
 	$rootScope.appTitle = "Get To Work";
-	
-	// $rootScope.myName; 
-	// $rootScope.myId;
-	//  var token = localStorage.satellizer_token;
-	//  	if(token){
-	// 	$rootScope.myInfo = (jwtHelper.decodeToken(token))
-	// 	$rootScope.myId = $rootScope.myInfo._id;
-	// }
+	$rootScope.tagLine = "a resource for job hunters"
+	var today = new Date().getDay();
+	var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	$rootScope.today = weekdays[today]; 
+	//There are only x more hours left today...
+	$rootScope.hoursLeft; 
+
+
+
+	$rootScope.myName; 
+	$rootScope._myId;
+	 var cookies = $cookies.get('token');
+	 	if(cookies){
+	 	var allMyInfo = (jwtHelper.decodeToken(token))
+		$rootScope._myId = allMyInfo._id;
+	}
+	this.cats = [ {name: "Today" }, 
+	{name: "This Week" }, 
+	{name: 'Appointments' }, 
+	{name: 'Tasks' },
+	{name: "Archives"}, 
+	{name: "Contacts"}, 
+	{name: "Companies"}, 
+	{name: "All"} ];
 
 	this.console = function(){
 		console.log("congrats you made it to the service")
@@ -3937,10 +3953,11 @@ $http.post('/auth/pwLogin', user)
 		console.log("RES AFTER LOGIN",res);
 		localStorage.setItem('satellizer_token', res.data.token)
 		localStorage.setItem('dd_id', res.data.user)
+		console.log("$rootScope.myId", $rootScope.myId)
 		$state.go('main')
 	}).catch(function(err){
 		swal({
-   title: "invalid username or password",
+   title: "invalid email or password",
    text: "Please try again!",
    type: "warning",
    showCancelButton: false,
@@ -4041,6 +4058,10 @@ angular.module("myApp")
 			return;
 	 } 
 
+	 $rootScope.$watch('_myId', function(newOne, oldOne){
+	 		console.log("NEW ONE", newOne, "OLD ONE", oldOne);
+	 })
+
 	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
   
   $rootScope.userData;
@@ -4105,7 +4126,7 @@ angular.module("myApp")
 	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
+	 if (!$scope.tHeads || $scope.currentView === 'Tasks' || $scope.currentView === 'Archives'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
@@ -4358,10 +4379,10 @@ angular.module("myApp")
 
 angular.module("myApp")
 
-.controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService){
+.controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService, $cookies){
 	// hide login or logout button
 
-	$scope.cats = [{name: 'Tasks' }, {name: 'Appointments' }, {name: "This Week" }, {name: "Today" }, {name: "Archives"}, {name: "All"} ];
+	$scope.cats = UtilityService.cats;
 
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
@@ -4381,6 +4402,7 @@ angular.module("myApp")
 		//localStorage.removeItem("dd_id");
 		$scope.cat = null;
 		localStorage.clear();
+		$cookies.clear();
 		UtilityService.loggedIn();
 		$state.go('home');
 	};

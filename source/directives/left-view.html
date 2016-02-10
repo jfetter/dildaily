@@ -1,11 +1,10 @@
 				<table class="table table-bordered table-striped daily-table">
 					<tr>
-						<th class="col-sm-2" ng-click=sortTasks('name')> {{tHeads.col1}} <span>&nbsp;</span><span ng-hide="!sorted"class="fa fa-chevron-down"></span><span ng-hide="sorted" class="fa fa-chevron-up"></span> </th>
+						<th class="col-sm-2" ng-click=sortTasks('name')> {{tHeads.col1}} <span>&nbsp;</span><span ng-hide="!sorted">&#9660;</span><span ng-hide="sorted">&#9650;</span> </th>
 						<th class="col-sm-2"> {{tHeads.col2}}</th>
 						<th class="col-sm-2"> {{tHeads.col3}} </th>
-						<th class="col-sm-2" ng-click="sortTasks('date')" >{{tHeads.col4}}<span>&nbsp;</span><span ng-hide="!sorted2"class="glyphicon glyphicon-chevron-down"></span><span ng-hide="sorted2" class="glyphicon glyphicon-chevron-up"></span> </th>
+						<th class="col-sm-2" ng-click="sortTasks('date')" >{{tHeads.col4}}<span>&nbsp;</span><span ng-hide="!sorted2">&#9660;</span><span ng-hide="sorted2" >&#9650;</span> </th>
 						<th class="col-sm-2"> {{tHeads.col5}}</th>
-
 						<th class="col-sm-2 text-center"> 
 							<div class="">
 								<span class="">{{tHeads.col6}}</span>

@@ -1,7 +1,7 @@
 'use strict';
 
 //take out nganimate and ngstorage if I dont end up using them in final product
-angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies', "angularMoment"])
+angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies']) //"angularMoment"
 
 ///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){

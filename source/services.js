@@ -8,14 +8,30 @@ angular.module("myApp")
 
 //other names: Hire, get-it, Agen-do
 	$rootScope.appTitle = "Get To Work";
-	
-	// $rootScope.myName; 
-	// $rootScope.myId;
-	//  var token = localStorage.satellizer_token;
-	//  	if(token){
-	// 	$rootScope.myInfo = (jwtHelper.decodeToken(token))
-	// 	$rootScope.myId = $rootScope.myInfo._id;
-	// }
+	$rootScope.tagLine = "a resource for job hunters"
+	var today = new Date().getDay();
+	var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	$rootScope.today = weekdays[today]; 
+	//There are only x more hours left today...
+	$rootScope.hoursLeft; 
+
+
+
+	$rootScope.myName; 
+	$rootScope._myId;
+	 var cookies = $cookies.get('token');
+	 	if(cookies){
+	 	var allMyInfo = (jwtHelper.decodeToken(token))
+		$rootScope._myId = allMyInfo._id;
+	}
+	this.cats = [ {name: "Today" }, 
+	{name: "This Week" }, 
+	{name: 'Appointments' }, 
+	{name: 'Tasks' },
+	{name: "Archives"}, 
+	{name: "Contacts"}, 
+	{name: "Companies"}, 
+	{name: "All"} ];
 
 	this.console = function(){
 		console.log("congrats you made it to the service")

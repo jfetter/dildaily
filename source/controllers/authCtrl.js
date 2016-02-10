@@ -66,10 +66,11 @@ $http.post('/auth/pwLogin', user)
 		console.log("RES AFTER LOGIN",res);
 		localStorage.setItem('satellizer_token', res.data.token)
 		localStorage.setItem('dd_id', res.data.user)
+		console.log("$rootScope.myId", $rootScope.myId)
 		$state.go('main')
 	}).catch(function(err){
 		swal({
-   title: "invalid username or password",
+   title: "invalid email or password",
    text: "Please try again!",
    type: "warning",
    showCancelButton: false,

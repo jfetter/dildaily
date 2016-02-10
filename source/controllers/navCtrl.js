@@ -2,10 +2,10 @@
 
 angular.module("myApp")
 
-.controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService){
+.controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService, $cookies){
 	// hide login or logout button
 
-	$scope.cats = [{name: 'Tasks' }, {name: 'Appointments' }, {name: "This Week" }, {name: "Today" }, {name: "Archives"}, {name: "All"} ];
+	$scope.cats = UtilityService.cats;
 
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
@@ -25,6 +25,7 @@ angular.module("myApp")
 		//localStorage.removeItem("dd_id");
 		$scope.cat = null;
 		localStorage.clear();
+		$cookies.clear();
 		UtilityService.loggedIn();
 		$state.go('home');
 	};

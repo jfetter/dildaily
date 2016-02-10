@@ -3,6 +3,8 @@
         <div class="jumbotron">
             <h1 class="home-title col-centered">{{appTitle}}</h1>
             <br>
+            <h3>{{tagLine}}</h3>
+                <a ng-hide="onRegister || loginButton()"  ng-click="onRegister = true" ui-sref="register" class="reg-btn pull-right">Register</a>
         </div>
 
         <form   name="myform" class="form-signin" role="form" novalidate>

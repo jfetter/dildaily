@@ -15,10 +15,13 @@ router.post("/", function(req, res){
 router.get("/login/:id", (req, res) => {
 	let id = req.params.id;
 	User.findById( id, (err, foundUser) =>{
-		console.log("found user after login", foundUser.name)
-		res.status(err ? 400:200).send(err || foundUser)
-	}).populate("todos appointments");
+		if ( err || !foundUser) return res.status(400).send(err)
+		res.status(200).send(foundUser);
+			console.log("found user after login", foundUser.name)
+	}).populate("todos contacts appointments");
 })
+
+
 
 
 module.exports = router; 

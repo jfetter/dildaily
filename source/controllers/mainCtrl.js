@@ -8,6 +8,10 @@ angular.module("myApp")
 			return;
 	 } 
 
+	 $rootScope.$watch('_myId', function(newOne, oldOne){
+	 		console.log("NEW ONE", newOne, "OLD ONE", oldOne);
+	 })
+
 	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
   
   $rootScope.userData;
@@ -72,7 +76,7 @@ angular.module("myApp")
 	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
+	 if (!$scope.tHeads || $scope.currentView === 'Tasks' || $scope.currentView === 'Archives'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
