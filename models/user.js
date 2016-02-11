@@ -60,7 +60,8 @@ userSchema.statics.login = function(user, cb){
 		console.log("DB USER", dbUser)
 		if(err || !dbUser) return cb(err || 'Incorrect email or password');
 		bcrypt.compare(user.password, dbUser.password, function(err, correct){
-			if(err || !correct) return cb(err || 'Incorrect email or password');
+			if(err) return cb(err);
+			else if (!correct) return cb(false)
 			dbUser.password = null;
 			cb(null, dbUser);
 		})

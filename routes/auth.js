@@ -17,29 +17,7 @@ var User = require('../models/user');
  |--------------------------------------------------------------------------
  | Login with EMail and Password
  |--------------------------------------------------------------------------
- */
-// router.post('/signup', function(req, res){
-//   //need to add middleware to check if email is already used
-//   console.log("SIGNUP REQ.BODY",  req.body);
-//   var email = req.body.email;
-//   User.findOne({email: email}, function(err, existingUser){
-//     if (err || existingUser ){
-//       //console.log(err || existingUser);
-//      return res.status(400).send("problem registering user or email taken");
-//     }
-//     //else
-//   var user = new User();
-//     user.username = req.body.userName 
-//     user.email = req.body.email
-//   //User.create(req.body, function(err, savedUser){
-//     console.log("USER BEFORE SAVE", user)
-//     user.save(function(err, user) {
-//       if (err)return res.status(400).send("User Not Found")
-//       var token = user.createJWT();
-//       res.send({ token: token , user:user._id});
-//     });
-//   })
-// })
+*/
 
 router.post('/signup', function(req, res){
   User.register(req.body, function(err, user){
@@ -49,13 +27,13 @@ router.post('/signup', function(req, res){
 
 router.post('/pwLogin', function(req, res){
   User.login(req.body, function(err, user){
-    console.log("USER AFTER LOGIN")
     if(user){
+    console.log("USER AFTER LOGIN", user)
       var token = jwt.encode(user, process.env.JWT_SECRET);
-      console.log(token)
+      console.log(token, "TOKEN")
       res.cookie('token', token).send(user._id)
     } else{
-      res.send('Incorrect email or Password!')
+      res.status(400).send('Incorrect email or Password!')
     }
   })
 })

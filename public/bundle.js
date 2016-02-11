@@ -3712,19 +3712,37 @@ angular.module("myApp")
 
 	$rootScope.myName; 
 	$rootScope._myId;
-	 var cookies = $cookies.get('token');
-	 	if(cookies){
+	this.setUserInfo = function(){
+	 var token = $cookies.get('token');
+	 	if(token){
 	 	var allMyInfo = (jwtHelper.decodeToken(token))
 		$rootScope._myId = allMyInfo._id;
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+		console.log("$rootScope._myId", $rootScope._myId);
+		return $rootScope._myId;
 	}
-	this.cats = [ {name: "Today" }, 
-	{name: "This Week" }, 
-	{name: 'Appointments' }, 
-	{name: 'Tasks' },
-	{name: "Archives"}, 
-	{name: "Contacts"}, 
-	{name: "Companies"}, 
-	{name: "All"} ];
+
+	this.removeCookies = function(){
+		var token = $cookies.get('token');
+		if(token){
+		$cookies.remove('token')
+		$rootScope._myId = null;
+		console.log("IN REMOVE COOKIES IF $rootScope._myId", $rootScope._myId);
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+	}
+
+		this.cats = [ {name: "Today" }, 
+		{name: "This Week" }, 
+		{name: 'Appointments' }, 
+		{name: 'Tasks' },
+		{name: "Archives"}, 
+		{name: "Contacts"}, 
+		{name: "Companies"}, 
+		{name: "All"} ];	
 
 	this.console = function(){
 		console.log("congrats you made it to the service")
@@ -3735,7 +3753,7 @@ angular.module("myApp")
 //prolly take this out of service 
 // being used to hide and show login logout on nave ctrl
 	this.loggedIn = function(){
-		if (localStorage.satellizer_token){
+		if ($rootScope._myId){
 			return true;
 		} return false; 
 	}
@@ -3831,7 +3849,7 @@ angular.module("myApp")
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
 	}
-	  newContact.user_id = localStorage.dd_id;
+	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
 		newContact.company_name = $scope.company_name;
@@ -3855,7 +3873,7 @@ angular.module("myApp")
 	var submitTask = function(){
 		var task = {};
 		$scope.todo = true;
-		task.user_id = localStorage.dd_id;
+		task.user_id = $rootScope._myId;
 		task.task_name = $scope.task_name;
 		task.descript = $scope.task_description;
 		task.frequency = $scope.frequency;
@@ -3890,8 +3908,11 @@ angular.module("myApp")
 angular.module("myApp")
 
 
-.controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http){
-
+.controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http, UtilityService){
+	if ($rootScope._myId){
+			$state.go("main");
+			return;
+	} 
 ///// stuff for satelizer oauth login /////
 
 	$scope.authenticate = function(provider){
@@ -3900,8 +3921,8 @@ angular.module("myApp")
 				if (localStorage.satellizer_token){
 					console.log(res.data, "logged in")
 					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
-					localStorage.dd_id = res.data.user;
-					$state.go("main")
+					//localStorage.dd_id = res.data.user;
+					$state.go("main");
 				} // if satellizer token in local storage
 			})
 			.catch(function(err){
@@ -3951,9 +3972,9 @@ $scope.signup = function(){
 $http.post('/auth/pwLogin', user)
 	.then(function(res){
 		console.log("RES AFTER LOGIN",res);
-		localStorage.setItem('satellizer_token', res.data.token)
-		localStorage.setItem('dd_id', res.data.user)
-		console.log("$rootScope.myId", $rootScope.myId)
+		//localStorage.setItem('satellizer_token', res.data.id)
+		//localStorage.setItem('dd_id', res.data.id)
+		UtilityService.setUserInfo();
 		$state.go('main')
 	}).catch(function(err){
 		swal({
@@ -4053,7 +4074,8 @@ angular.module("myApp")
 angular.module("myApp")
 
 .controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
-	 if (!localStorage.satellizer_token){
+	 UtilityService.setUserInfo();
+	 if (!$rootScope._myId){
 			$state.go("home");
 			return;
 	 } 
@@ -4067,11 +4089,11 @@ angular.module("myApp")
   $rootScope.userData;
   function loadData(){	
   	var data; 
-		$http.get(`users/login/${localStorage.dd_id}`)
+		$http.get(`users/login/${$rootScope._myId}`)
 			.then(function(res){
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
-			$rootScope.myId = res.data._Id;
+			//$rootScope.myId = res.data._Id;
 			$rootScope.myName = res.data.username;
 			$rootScope.tasks = res.data.todos;
 			data = res.data;
@@ -4402,7 +4424,7 @@ angular.module("myApp")
 		//localStorage.removeItem("dd_id");
 		$scope.cat = null;
 		localStorage.clear();
-		$cookies.clear();
+		UtilityService.removeCookies();
 		UtilityService.loggedIn();
 		$state.go('home');
 	};

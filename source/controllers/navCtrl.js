@@ -25,7 +25,7 @@ angular.module("myApp")
 		//localStorage.removeItem("dd_id");
 		$scope.cat = null;
 		localStorage.clear();
-		$cookies.clear();
+		UtilityService.removeCookies();
 		UtilityService.loggedIn();
 		$state.go('home');
 	};

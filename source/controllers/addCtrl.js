@@ -45,7 +45,7 @@ angular.module("myApp")
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
 	}
-	  newContact.user_id = localStorage.dd_id;
+	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
 		newContact.company_name = $scope.company_name;
@@ -69,7 +69,7 @@ angular.module("myApp")
 	var submitTask = function(){
 		var task = {};
 		$scope.todo = true;
-		task.user_id = localStorage.dd_id;
+		task.user_id = $rootScope._myId;
 		task.task_name = $scope.task_name;
 		task.descript = $scope.task_description;
 		task.frequency = $scope.frequency;

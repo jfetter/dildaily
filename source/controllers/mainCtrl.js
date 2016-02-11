@@ -3,7 +3,8 @@
 angular.module("myApp")
 
 .controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
-	 if (!localStorage.satellizer_token){
+	 UtilityService.setUserInfo();
+	 if (!$rootScope._myId){
 			$state.go("home");
 			return;
 	 } 
@@ -17,11 +18,11 @@ angular.module("myApp")
   $rootScope.userData;
   function loadData(){	
   	var data; 
-		$http.get(`users/login/${localStorage.dd_id}`)
+		$http.get(`users/login/${$rootScope._myId}`)
 			.then(function(res){
 			console.log("RES BODY IN MAIN CTRL",  res.data)
 			$rootScope.userData = res.data;
-			$rootScope.myId = res.data._Id;
+			//$rootScope.myId = res.data._Id;
 			$rootScope.myName = res.data.username;
 			$rootScope.tasks = res.data.todos;
 			data = res.data;

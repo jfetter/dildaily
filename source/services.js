@@ -19,19 +19,37 @@ angular.module("myApp")
 
 	$rootScope.myName; 
 	$rootScope._myId;
-	 var cookies = $cookies.get('token');
-	 	if(cookies){
+	this.setUserInfo = function(){
+	 var token = $cookies.get('token');
+	 	if(token){
 	 	var allMyInfo = (jwtHelper.decodeToken(token))
 		$rootScope._myId = allMyInfo._id;
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+		console.log("$rootScope._myId", $rootScope._myId);
+		return $rootScope._myId;
 	}
-	this.cats = [ {name: "Today" }, 
-	{name: "This Week" }, 
-	{name: 'Appointments' }, 
-	{name: 'Tasks' },
-	{name: "Archives"}, 
-	{name: "Contacts"}, 
-	{name: "Companies"}, 
-	{name: "All"} ];
+
+	this.removeCookies = function(){
+		var token = $cookies.get('token');
+		if(token){
+		$cookies.remove('token')
+		$rootScope._myId = null;
+		console.log("IN REMOVE COOKIES IF $rootScope._myId", $rootScope._myId);
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+	}
+
+		this.cats = [ {name: "Today" }, 
+		{name: "This Week" }, 
+		{name: 'Appointments' }, 
+		{name: 'Tasks' },
+		{name: "Archives"}, 
+		{name: "Contacts"}, 
+		{name: "Companies"}, 
+		{name: "All"} ];	
 
 	this.console = function(){
 		console.log("congrats you made it to the service")
@@ -42,7 +60,7 @@ angular.module("myApp")
 //prolly take this out of service 
 // being used to hide and show login logout on nave ctrl
 	this.loggedIn = function(){
-		if (localStorage.satellizer_token){
+		if ($rootScope._myId){
 			return true;
 		} return false; 
 	}

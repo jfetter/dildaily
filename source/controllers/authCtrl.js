@@ -3,8 +3,11 @@
 angular.module("myApp")
 
 
-.controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http){
-
+.controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http, UtilityService){
+	if ($rootScope._myId){
+			$state.go("main");
+			return;
+	} 
 ///// stuff for satelizer oauth login /////
 
 	$scope.authenticate = function(provider){
@@ -13,8 +16,8 @@ angular.module("myApp")
 				if (localStorage.satellizer_token){
 					console.log(res.data, "logged in")
 					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
-					localStorage.dd_id = res.data.user;
-					$state.go("main")
+					//localStorage.dd_id = res.data.user;
+					$state.go("main");
 				} // if satellizer token in local storage
 			})
 			.catch(function(err){
@@ -64,9 +67,9 @@ $scope.signup = function(){
 $http.post('/auth/pwLogin', user)
 	.then(function(res){
 		console.log("RES AFTER LOGIN",res);
-		localStorage.setItem('satellizer_token', res.data.token)
-		localStorage.setItem('dd_id', res.data.user)
-		console.log("$rootScope.myId", $rootScope.myId)
+		//localStorage.setItem('satellizer_token', res.data.id)
+		//localStorage.setItem('dd_id', res.data.id)
+		UtilityService.setUserInfo();
 		$state.go('main')
 	}).catch(function(err){
 		swal({
