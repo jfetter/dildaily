@@ -53,6 +53,7 @@ angular.module("myApp")
 		newContact.contact_phn = $scope.contact_phn;
 		newContact.contact_email = $scope.contact_email;
 		newContact.linkedin = $scope.linkedin;
+		newContact.contact_method = $scope.contact_method;
 		newContact.followup_date = $scope.followup_date;
 		$http.post("/contacts/newcontact", newContact )
 	.then(function(res){
