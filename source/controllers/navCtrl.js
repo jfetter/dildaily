@@ -30,8 +30,6 @@ angular.module("myApp")
 		$state.go('home');
 	};
 
-	console.log("cat", $scope.cat);
-
 	//if ($scope.searchArray.length){$scope.searchArray.sort()};
 function assembleSearch(searchArray, searchTerm){
 	// $timeout(function(){

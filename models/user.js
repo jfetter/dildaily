@@ -36,12 +36,14 @@ userSchema.methods.createJWT = function(){
 
 userSchema.statics.register = function(user, cb){
 	var email = user.email;
+	var username = user.username;
 	bcrypt.genSalt(10, function(err, salt) {
 		bcrypt.hash(user.password, salt, function(err, password) {
 			User.find({email: email}, function(err, user){
 				if (err || user[0]){return console.log(err || "email already exists")}
 				var newUser = new User;
 				newUser.email = email;
+				newUser.username = username;
 				newUser.password = password;
 				console.log(newUser)
 				newUser.save(function(err, savedUser){

@@ -9,109 +9,103 @@ angular.module("myApp")
 			return;
 	 } 
 
-	 $rootScope.$watch('_myId', function(newOne, oldOne){
-	 		console.log("NEW ONE", newOne, "OLD ONE", oldOne);
-	 })
 
 	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
-  
-  $rootScope.userData;
-  function loadData(){	
-  	var data; 
-		$http.get(`users/login/${$rootScope._myId}`)
-			.then(function(res){
-			console.log("RES BODY IN MAIN CTRL",  res.data)
-			$rootScope.userData = res.data;
-			//$rootScope.myId = res.data._Id;
-			$rootScope.myName = res.data.username;
-			$rootScope.tasks = res.data.todos;
-			data = res.data;
-			updateView(data);
-		}, function(err){ console.log(err)})
-			return data;
-  } 
-  loadData();
 
-  $rootScope.$watch('userData', function(newData, oldData){
-  	console.log("LOADED DATA", newData);
-  	updateView();
+  UtilityService.setUserInfo();
+
+  $rootScope.$watch('myData', function(newData, oldData){
+  	if ($rootScope.myData){	
+  		console.log("LOADED DATAAAAA", newData);
+  		updateView(newData);
+  	}
   })
 
+//category is set in the navCtrl upon drop-down 'cat' change
   $rootScope.$watch('category', function(newCategory, oldCategory){
+  	console.log(newCategory, "= newCategory in watch")
   	$scope.currentView = newCategory;
-  	if ($rootScope.userData){	
-  		updateView($rootScope.userData);
+  	if ($rootScope.myData){	
+  		updateView($rootScope.myData);
   	} else{
-  		console.log("BANG USER DATA LALALALALALALAL")
   	}
   });
 
 	 function updateView(data){
-	 		if (!data){return}
+	 		if (!$rootScope.myData){return}
 	 		if ($scope.currentView == undefined){
 	 			console.log("CATEGORY IS UNDEFINED")
 	 			$scope.currentView = 'Tasks';
-	 		}
-	 		var contacts = data.contacts; 
-	 		var tasks = [];
-	 		var appointments =[];
-	 		var archives = [];
+	 		} 
+	 		console.log("DAATAAA IN UPDATE VIEW", data)
 
-	 		data.appointments.forEach(function(item){
-	 			if (new Date(item.appointment_date) < Date.now()){
-	 				archives.push(item)
-	 			} else {
-	 				appointments.push(item)
-	 			}
-	 		})
-
-	 		data.todos.forEach(function(item){
-	 			if (item.completed === true || new Date(item.completeBy) < Date.now()){
-	 				archives.push(item)
-	 			} else {
-	 				tasks.push(item)
-	 			}
-	 		})
 	 		
 
-	 		console.log("DATA IN UPDATE VIEW", $rootScope.userData);
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads || $scope.currentView === 'Tasks' || $scope.currentView === 'Archives'){
+	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
-	 			tHeads.col5= "Edit/Delete"; 
-	 			tHeads.col6= "Done?";
+	 			tHeads.col5= "Done?";
+	 			tHeads.col6= "Edit/Delete"; 
 	 			tHeads.col7= "archive";
 	 			//rowData.task_name = $rootScope.task.task_name;
-	 			console.log('BANG THEADS');
-	 			$scope.rowData = tasks;
+	 			$scope.r_1 = "task_name";
+	 			$scope.r_2 = "task_description";
+	 			$scope.r_3 = "frequency";
+	 			$scope.r_4 = "completeBy";
+	 			$scope.rowData = UtilityService.tasks;
+	 			console.log("ROW DATA", $scope.rowData)
 	 			$scope.tHeads = tHeads;
 	 } else{
 	 		if ($scope.currentView === 'Appointments'){
 	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
 	 			tHeads.col3= "Contact Method"; 
-	 			tHeads.col4= "Completion Date"; 
-	 			tHeads.col5= "Edit/Delete"; 
-	 			tHeads.col6= "Last follow up Date";
-	 			tHeads.col7= "un-archive";
+	 			tHeads.col4= "Appointment Date"; 
+	 			tHeads.col5= "Appointment Time";
+	 			tHeads.col6= "Edit/Delete"; 
+	 			$scope.r_1 = "contact_name";
+	 			$scope.r_2 = "coompany_name";
+	 			$scope.r_3 = "contact_method";
+	 			$scope.r_4 = "appointment_date";
+	 			$scope.r_5 = "appointment_time";
+	 			$scope.rowData = UtilityService.appointments;
 	 			$scope.tHeads = tHeads;
-	 			$scope.rowData = appointments;
-	 		} else if ($scope.currentView === 'Archives'){
+	 		} else if ($scope.currentView === 'Contacts'){
 	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
-	 			tHeads.col3= "Contact Method"; 
-	 			tHeads.col4= "Completion Date"; 
-	 			tHeads.col5= "Edit/Delete"; 
-	 			tHeads.col6= "Last follow up Date";
-	 			tHeads.col7= "un-archive";
+	 			tHeads.col3= "email"; 
+	 			tHeads.col4= "phone"; 
+	 			tHeads.col5= "next Contact Date";
+	 			tHeads.col6= "Edit/Delete";  
+	 			$scope.r_1 = "contact_name";
+	 			$scope.r_2 = "coompany_name";
+	 			$scope.r_3 = "contact_method";
+	 			$scope.r_4 = "appointment_date";
+	 			$scope.r_5 = "appointment_time";
+	 			$scope.rowData = UtilityService.contacts;
 	 			$scope.tHeads = tHeads;
-	 			$scope.rowData = archives;
-	 			console.log("Archives");
+	 	} else if ($scope.currentView === 'Archives'){
+	 			tHeads.col1= "Name";
+	 			tHeads.col2= "Description/Company"; 
+	 			tHeads.col3= "Frequency"; 
+	 			tHeads.col4= "Complete By"; 
+	 			tHeads.col5= "Done?";
+	 			tHeads.col6= "Edit/Delete"; 
+	 			tHeads.col7= "archive";
+	 			// if(){
+	 			// 	$scope.r_1 = "task_name";
+	 			// }
+	 			$scope.r_1 = "task_name";
+	 			$scope.r_2 = "task_description";
+	 			$scope.r_3 = "frequency";
+	 			$scope.r_4 = "completeBy";
+	 			$scope.rowData = UtilityService.archives;
+	 			$scope.tHeads = tHeads;
 	 	}
 	 }
 	}

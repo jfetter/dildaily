@@ -8,6 +8,7 @@ var Contact;
 var contactSchema = Schema({
 	category: {type: String, required: true},
 	user_id: {type: String, required: true},
+	contact_method: {type: String},
 	contact_name: {type: String},
 	company_name: {type: String},
 	next_appt_date: {type: Date},

@@ -13,22 +13,22 @@
 					</tr>
 					<!-- need to set up to track by item._id !!!! -->
 					<tr class="row-data" ng-class='striking(item)' ng-repeat="item in rowData track by $index">
-						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item.task_name}} </span></td>
-							<td class="col-sm-2">{{item.task_description}}</td>
-							<td class="col-sm-2">{{item.frequency}}</td>
+						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item[r_1]}} </span></td>
+							<td class="col-sm-2">{{item[r_2]}}</td>
+							<td class="col-sm-2">{{item[r_3]}}</td>
 							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
 							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
-							<td class="col-sm-2">{{item.completeBy | amDateFormat:'ll'}}</td>
+							<td class="col-sm-2">{{item[r_4] | amDateFormat:'ll'}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
+							<td class="table-icons text-center">
+		  					<div class="">
+									<a ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
+									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
+								</div>
+						</td>
 							<td class="col-sm-2 text-center"> 
 								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
 								<i class="fa fa-trash" ng-click="deleteItem(item)"></i>
 							</td>
-							<td class="table-icons text-center">
-		  					<div class="">
-									<a ng-hide="currentView === 'Archives'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
-									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
-								</div>
-						</td>
 					</tr>	
 		</table>

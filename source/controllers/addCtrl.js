@@ -3,7 +3,7 @@
 
 angular.module("myApp")
 
-	.controller("addCtrl", function($scope, $rootScope, $state, $http){
+	.controller("addCtrl", function($scope, $rootScope, $state, $http, UtilityService){
 	console.log("IN ADD CTRL"); 
 	$scope.todo = true; 
 	console.log($scope.addEdit);
@@ -58,8 +58,7 @@ angular.module("myApp")
 	.then(function(res){
 			$rootScope.addThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-			//contact.contactId = res.data;
-			UtilityService.loadUserData;
+			//UtilityService.setUserData;
 			$state.go('main')
 	},function(err){
 			console.log(err);
@@ -71,7 +70,7 @@ angular.module("myApp")
 		$scope.todo = true;
 		task.user_id = $rootScope._myId;
 		task.task_name = $scope.task_name;
-		task.descript = $scope.task_description;
+		task.task_description = $scope.task_description;
 		task.frequency = $scope.frequency;
 		task.completeBy = $scope.completeBy;
 		task.email_reminder = $scope.task_email_reminder;

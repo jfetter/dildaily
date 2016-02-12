@@ -27,9 +27,17 @@
 						<input type="checkbox" ng-model="addAppt" ng-change="addContact('Appointment')">
 					</td>
 				<td ng-hide="addThis.name ==='Contact'" class="add-task-recurrence">
+					<label for="method">Contact method</label>
+					<select ng-model="contact_method" id="method" placeholder="desciprtion" class="input-recurrence">
+						<option value="email">email</option>
+						<option value="phone">phone</option>
+						<option value="inPerson">in person</option>
+					</select>
 					<label for="recurs">Recurs?</label>
 					<select ng-model="recurrence" id="recurs" placeholder="desciprtion" class="input-recurrence">
-						<option value="weekly">weekly</option><option value="daily">daily</option>
+						<option value="once" selected="selected">once</option>
+						<option value="weekly">weekly</option>
+						<option value="daily">daily</option>
 					</select>
 					<tr>
 					<tr class="add-task-row row">

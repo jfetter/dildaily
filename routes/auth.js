@@ -28,7 +28,7 @@ router.post('/signup', function(req, res){
 router.post('/pwLogin', function(req, res){
   User.login(req.body, function(err, user){
     if(user){
-    console.log("USER AFTER LOGIN", user)
+      user.password = null;
       var token = jwt.encode(user, process.env.JWT_SECRET);
       console.log(token, "TOKEN")
       res.cookie('token', token).send(user._id)

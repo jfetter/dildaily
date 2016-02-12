@@ -16,8 +16,9 @@ router.get("/login/:id", (req, res) => {
 	let id = req.params.id;
 	User.findById( id, (err, foundUser) =>{
 		if ( err || !foundUser) return res.status(400).send(err)
+		foundUser.password = null;
 		res.status(200).send(foundUser);
-			console.log("found user after login", foundUser.name)
+			console.log("found user after login", foundUser)
 	}).populate("todos contacts appointments");
 })
 

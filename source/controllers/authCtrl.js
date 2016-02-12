@@ -31,7 +31,7 @@ angular.module("myApp")
 $scope.signup = function(){
 	var password2 = $scope.password2; 
 	var user = {
-	  userName: $scope.userName,
+	  username: $scope.userName,
 	  email: $scope.email,
 	  password: $scope.password
 	};
