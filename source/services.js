@@ -6,13 +6,9 @@ angular.module("myApp")
 		this.userData;
 		$rootScope.myData;
 		this.contacts = []
-		var contacts = []; 
  		this.tasks = [];
- 		var tasks = [];
  		this.appointments =[];
- 		var appointments = [];
  		this.archives = [];
- 		var archives = [];
 
 //other names: Hire, get-it, Agen-do
 	$rootScope.appTitle = "Get To Work";
@@ -99,8 +95,8 @@ angular.module("myApp")
 	} else if (localStorage.satellizer_token){
 		$rootScope._myId = localStorage.satellizer_token;
 		}
-		$rootScope.myData = loadData();
 	}
+		$rootScope.myData = loadData();
 		 $timeout( ()=>{
 		console.log("ABOUT TO ITERATE THROUGH STUFF")
 			buildTasks();
@@ -134,7 +130,26 @@ angular.module("myApp")
 
 	}
 
+		this.injectTasks = function (tasks){
+		console.log("need to test injection function");
+		// tasks.forEach(function(task){
+		// 	if (Date.now() > task.completeBy && nowTasks.indexOf(task) === -1){
+		// 		nowTasks.push(task);
+		// 	}
+		// })
+	}
 
+	this.cleanOldTasks = function (){
+		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
+	}
+
+		this.addKind = function (){
+		//var quitMessages["Are you sure; have you tried doing a kind thing?", "c'mon, deep down inside you know you think this is cute", "okay, fine, but try to do kind things on your own then"];
+	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+		var selection = Math.floor(Math.random()*kindness.length);
+		console.log("ADD KIND INDEX", selection);
+		return kindness[selection];
+	}
 
 	this.removeCookies = function(){
 		var token = $cookies.get('token');

@@ -9,11 +9,10 @@ angular.module("myApp")
 			return;
 	 } 
 
-
-	 $rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
-
+	$rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
   UtilityService.setUserInfo();
 
+//myData is set in Utility service
   $rootScope.$watch('myData', function(newData, oldData){
   	if ($rootScope.myData){	
   		console.log("LOADED DATAAAAA", newData);
@@ -28,8 +27,9 @@ angular.module("myApp")
   	if ($rootScope.myData){	
   		updateView($rootScope.myData);
   	} else{
-  	}
-  });
+  }
+});
+
 
 	 function updateView(data){
 	 		if (!$rootScope.myData){return}
@@ -38,8 +38,6 @@ angular.module("myApp")
 	 			$scope.currentView = 'Tasks';
 	 		} 
 	 		console.log("DAATAAA IN UPDATE VIEW", data)
-
-	 		
 
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
@@ -110,29 +108,11 @@ angular.module("myApp")
 	 }
 	}
 
-	function injectTasks(tasks){
-		console.log("need to test injection function");
-		// tasks.forEach(function(task){
-		// 	if (Date.now() > task.completeBy && nowTasks.indexOf(task) === -1){
-		// 		nowTasks.push(task);
-		// 	}
-		// })
-	}
-	injectTasks();
 
-	function cleanOldTasks(){
-		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
-	}
-	cleanOldTasks();
+	UtilityService.injectTasks();
+	UtilityService.cleanOldTasks();
+	UtilityService.addKind();
 
-
-	function addKind(){
-		//var quitMessages["Are you sure; have you tried doing a kind thing?", "c'mon, deep down inside you know you think this is cute", "okay, fine, but try to do kind things on your own then"];
-	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
-		var selection = Math.floor(Math.random()*kindness.length);
-		console.log("ADD KIND INDEX", selection);
-		return kindness[selection];
-	}
 	
 
 	$scope.viewDetails = function(){
@@ -201,23 +181,23 @@ angular.module("myApp")
 	}
 
 	// $scope.striker = 'un-strike';
-	// $scope.checkOff = function(item){
-	// 	item.completed = !item.completed;
-	// 	if (item.completed){
-	// 		$timeout(function(){
-	// 		archive(item)}, 1000)
-	// 	} else {
-	// 		$timeout(function(){
-	// 		unArchive(item)}, 1000)
-	// 	}		
-	// }
+	$scope.checkOff = function(item){
+		item.completed = !item.completed;
+		if (item.completed){
+			$timeout(function(){
+			archive(item)}, 1000)
+		} else {
+			$timeout(function(){
+			unArchive(item)}, 1000)
+		}		
+	}
 
 	var archive = function(item){
 		console.log(item, "ARCHIVING THIS GUY")
 		$http.put("tasks/archive", {taskId: item._id}) 
 		.then(function(res){
 			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			loadData();
+			UtilityService.setUserInfo();
 		}, function(err){console.log(err)})			
 	}
 	 
@@ -226,7 +206,7 @@ angular.module("myApp")
 		$http.put("tasks/unarchive", {taskId: item._id}) 
 		.then(function(res){
 			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			loadData();
+			UtilityService.setUserInfo();
 		}, function(err){console.log(err)})			
 	} 
 
@@ -238,8 +218,9 @@ angular.module("myApp")
 
 // sort
 $scope.sortTasks = function(col){
+	console.log("SORTA")
 	var col = col;
-		if(!$rootScope.tasks){
+		if(!$rootScope.myData){
 		return;
 		var reverseOrder;
 	}
