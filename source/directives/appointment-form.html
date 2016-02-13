@@ -24,7 +24,7 @@
 				</td>
 					<td ng-show="addThis.name === 'Contact'">
 						<label for="addContact">Add To Appt Schedule?</label>
-						<input type="checkbox" ng-model="addAppt" ng-change="addContact('Appointment')">
+						<input type="checkbox" ng-model="both" ng-change="both = !both">
 					</td>
 				<td ng-hide="addThis.name ==='Contact'" class="add-task-recurrence">
 					<label for="method">Contact method</label>
@@ -60,7 +60,7 @@
 				</td>
 				<td ng-show="addThis.name === 'Appointment'">
 						<label for="addContact">Save As Contact?</label>
-						<input type="checkbox" ng-model="addContact" ng-change="addContact('Contact')">
+						<input type="checkbox" ng-model="both" ng-change="both = !both" >
 					</td>
 			</tr>
 			<tr>
@@ -82,7 +82,8 @@
 				<input ng-hide="addThis.name === 'Appointment'" id="notes" type="text" ng-model="contact_notes" class="input-lg col-sm-12" placeholder="date applied, other contacts at company etc">
 					</td>
 				<td class="addCancel-task-butt" >
-					<button class="add-task-btn btn btn-sm" ng-click="addNew()" ng-class="addThis.classIs">Sumbit</button>
+					<button ng-hide="editThis" class="add-task-btn btn btn-sm" ng-click="addNew()" ng-class="addThis.classIs">Add New {{addThis.name}}</button>
+					<button ng-show="editThis" class="add-task-btn btn btn-sm btn-success" ng-click="addNew()" >Done Editing</button>
 					<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
 				</td>
 				</tr>

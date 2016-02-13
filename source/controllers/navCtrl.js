@@ -44,35 +44,35 @@ function assembleSearch(searchArray, searchTerm){
 }
 
 var searchCases = function(cat){
-	var data = $rootScope.userData; 
-	console.log("data", data);
+	//var data = $rootScope.myData; 
+	console.log("SEARCH CAT", cat);
 		if (cat === 'Tasks'){
-			var searchArray = data.todos;
+			var searchArray = UtilityService.tasks;
 			var searchTerm = "task_name";
 			console.log("SEARCH ARRAY1", searchArray);
 		} else if (cat === 'Archives'){
-			var searchArray = data.archives;
-			var searchTerm;
+			var searchArray = UtilityService.archives;
+			var searchTerm = "contact_name"
 			console.log("archives coming soon")
 		} else if (cat === 'Today'){
-			var searchArray = $rootScope.today;
-			var searchTerm;
+			var searchArray = UtilityService.today;
+			var searchTerm = "task_name";
 			console.log("TODAY coming soon")
 		} else if (cat === 'This Week'){
-			var searchArray = $rootScope.week;
-			var searchTerm;
+			var searchArray = UtilityService.thisweek;
+			var searchTerm = "contact_name";
 			console.log("THIS WEEK coming soon")
 		} else if (cat === 'Appointments'){
-			var searchArray = data.appointments;
-			var searchTerm;
+			var searchArray = UtilityService.appointments;
+			var searchTerm = "contact_name";
 			console.log("appointments coming soon")
 		}else if (cat === 'Contacts'){
-			var searchArray = data.contacts;
-			var searchTerm;
+			var searchArray = UtilityService.contacts;
+			var searchTerm = "contact_name";
 			console.log("contacts coming soon")
-		}else if (cat === 'Tools'){
-			var searchArray = $rootScope.tools;
-			var searchTerm;
+		}else if (cat === 'Companies'){
+			var searchArray = UtilityService.companies;
+			var searchTerm = "company_name";
 			console.log("prolly be a while til I have tools")
 		}
 		return {searchArray: searchArray, searchTerm: searchTerm}

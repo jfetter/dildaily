@@ -15,11 +15,6 @@ angular.module("myApp")
 	// tools: email templates:
 	// call to action, we vs I vs you score
 
-	$scope.closePopUp = function(){
-		$rootScope.addThis = null;
-		$state.go("main")
-	}
-
 	$scope.addNew = function(){
 		console.log("IN ADD NEW")
 		if ($rootScope.addThis.name === 'Task') {
@@ -45,6 +40,9 @@ angular.module("myApp")
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
 	}
+	if ($scope.both){
+		newContact.category = 'both';
+	}
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
@@ -59,7 +57,7 @@ angular.module("myApp")
 	.then(function(res){
 			$rootScope.addThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-			//UtilityService.setUserData;
+			UtilityService.loadData();
 			$state.go('main')
 	},function(err){
 			console.log(err);
@@ -84,9 +82,8 @@ angular.module("myApp")
 		.then(function(res){
 			$rootScope.addThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-			task.taskId = res.data;
-			$rootScope.tasks.push(task);
-			$state.go('main')
+			$state.go('main');
+			UtilityService.loadData();
 	},function(err){
 			console.log(err);
 		})

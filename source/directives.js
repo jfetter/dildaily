@@ -29,3 +29,9 @@ angular.module("myApp")
     templateUrl: "directives/appointment-form.html"
   }
 })
+
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })

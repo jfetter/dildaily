@@ -17,6 +17,7 @@ angular.module("myApp")
 					console.log(res.data, "logged in")
 					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
 					//localStorage.dd_id = res.data.user;
+					UtilityService.loadData();
 					$state.go("main");
 				} // if satellizer token in local storage
 			})
@@ -69,7 +70,7 @@ $http.post('/auth/pwLogin', user)
 		console.log("RES AFTER LOGIN",res);
 		//localStorage.setItem('satellizer_token', res.data.id)
 		//localStorage.setItem('dd_id', res.data.id)
-		UtilityService.setUserInfo();
+		UtilityService.loadData();
 		$state.go('main')
 	}).catch(function(err){
 		swal({

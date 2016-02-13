@@ -2,15 +2,16 @@
 
 angular.module("myApp")
 
-.controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
-	 UtilityService.setUserInfo();
-	 if (!$rootScope._myId){
+.controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log, $cookies){
+	var cookies = $cookies.get('token');
+	var satToken = localStorage.satellizer_token
+	 if (!cookies && !satToken){
 			$state.go("home");
 			return;
 	 } 
 
 	$rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
-  UtilityService.setUserInfo();
+  UtilityService.loadData();
 
 //myData is set in Utility service
   $rootScope.$watch('myData', function(newData, oldData){
@@ -18,7 +19,15 @@ angular.module("myApp")
   		console.log("LOADED DATAAAAA", newData);
   		updateView(newData);
   	}
+  }) 
+
+   $scope.$watch('rowData', function(newData, oldData){
+  	if ($scope.rowData){	
+  		console.log("NEW ROW DATA", newData);
+  	}
   })
+
+
 
 //category is set in the navCtrl upon drop-down 'cat' change
   $rootScope.$watch('category', function(newCategory, oldCategory){
@@ -92,9 +101,9 @@ angular.module("myApp")
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
-	 			tHeads.col5= "Done?";
+	 			tHeads.col5= "put back on agenda";
 	 			tHeads.col6= "Edit/Delete"; 
-	 			tHeads.col7= "archive";
+	 			tHeads.col7= "un-archive";
 	 			// if(){
 	 			// 	$scope.r_1 = "task_name";
 	 			// }
@@ -120,7 +129,8 @@ angular.module("myApp")
 	}
 
 	$scope.deleteItem = function(item){
-		if (item.category === 'Task'){
+		console.log("DELETE ITEM")
+		if (item.category === 'todo'){
 			deleteTask(item);
 		} else {
 			console.log("DELETE CONTACT/ APPT")
@@ -129,28 +139,65 @@ angular.module("myApp")
 	}
 
 	function deleteTask(item){
-		console.log("item to delete", item._id)
 		var taskId = item._id;
 		var userId = item.user_id; 
-		$http.post("/tasks/delete", {taskId: taskId}) 
+		$http.post("/tasks/delete", {taskId: taskId, userId: userId}) 
 		.then(function(res){
 			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadData();
+			UtilityService.loadData();
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
 	}	
 
 	function deleteContact(item){
-		console.log("item to delete", item._id)
-		var contactId = item._id;
-		var userId = item.user_id; 
-		$http.post("/contacts/delete", {contactId: contactId}) 
-		.then(function(res){
-			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadData();
-		}, function(err){console.log(err)})
-		//add sweet alert to confirm before deleting
-	}
+		var removeWhich;
+		var one = $scope.currentView;
+		var both = one === 'Contacts' ? one + " and Appointments" : one + " and Contacts";
+		one = "just " + one;
+		swal({   title: "Where do you want to delete from",
+		   text: "...",
+		      type: "warning",   
+		      showCancelButton: true,
+		       confirmButtonColor: "#DD6B55",
+		       // is confirm
+		       confirmButtonText: one,
+		       // else 
+		       cancelButtonText: both,
+		       closeOnConfirm: true,
+		       closeOnCancel: true },
+		       function(which){   
+		       if (which) {    
+		      	if (one.indexOf('Contacts') > -1){
+		      		removeWhich = 'Contact'
+		      	} else {
+		      		removeWhich = 'Appointment'
+		      	}
+						console.log(removeWhich, item)
+						postDelete(removeWhich, item)
+		       //swal("Deleting Contact!", "This person will be removed.", "success");  
+		       } else {  
+		       removeWhich = 'both';  
+		       //swal("Deleting Appointment", "This appointment will be removed", "success");
+					console.log(removeWhich, item)
+		      postDelete(removeWhich, item)
+		        } 
+			});
+	}   
+		      
+		function postDelete(removeWhich, item){
+			console.log("REMOVE WHICH 2", removeWhich)
+			console.log("item to delete", item._id)
+			var contactId = item._id;
+			var userId = item.user_id; 
+			$http.post("/contacts/delete", {contactId: contactId, userId: userId, removals: removeWhich}) 
+			.then(function(res){
+				console.log("RESPONSE FROM DELETE REQ", res.data);
+				UtilityService.loadData();
+			}, function(err){console.log(err)})
+			//add sweet alert to confirm before deleting	
+		}      
+	
+	
 
 
 
@@ -197,7 +244,7 @@ angular.module("myApp")
 		$http.put("tasks/archive", {taskId: item._id}) 
 		.then(function(res){
 			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			UtilityService.setUserInfo();
+			UtilityService.loadData();
 		}, function(err){console.log(err)})			
 	}
 	 
@@ -206,7 +253,7 @@ angular.module("myApp")
 		$http.put("tasks/unarchive", {taskId: item._id}) 
 		.then(function(res){
 			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			UtilityService.setUserInfo();
+			UtilityService.loadData();
 		}, function(err){console.log(err)})			
 	} 
 
@@ -216,23 +263,48 @@ angular.module("myApp")
 	  $state.go("main.edit");
 	}
 
-// sort
+// sort tasks or reverse order by column (col) clicked
 $scope.sortTasks = function(col){
-	console.log("SORTA")
-	var col = col;
 		if(!$rootScope.myData){
 		return;
-		var reverseOrder;
 	}
+	$scope.rowData = null;
+	console.log("SORTA", col);
+	console.log("CURRENT VIEW", $scope.currentView)
+	var col = col;
+	var sortData; 
+	var reverseOrder;
+	if ($scope.currentView === 'Tasks'){
+		sortData = UtilityService.tasks;
+	}
+	if ($scope.currentView === 'Contacts'){
+		sortData = UtilityService.contacts;;
+	}
+	 if ($scope.currentView === 'Appointments'){
+		sortData = UtilityService.appointments;;
+	} 	
+	 if ($scope.currentView === 'Archives'){
+		sortData = UtilityService.archives;;
+	} 
 	if (col === "date"){
 		$scope.sorted2 = !$scope.sorted2;
-		col = 'completeBy';
 		reverseOrder = $scope.sorted2 ? true : false;
+			if ($scope.currentView === "Tasks"){
+				col = 'completeBy';
+			} else {
+				col = 'next_appt_date';
+			}
 	} else if(col === "name") {
-		$scope.sorted = !$scope.sorted;
-		col = 'task_name';
-		reverseOrder = $scope.sorted ? true : false;
+			$scope.sorted = !$scope.sorted;
+			reverseOrder = $scope.sorted ? true : false;
+			if ($scope.currentView === "Tasks"){
+				col = 'task_name';
+			} else if ($scope.currentView === "Tasks"){
+				col = 'contact_name';
+			} else if ($scope.currentView === "Companies"){
+				col = 'company_name';
+			}
 	}
-	UtilityService.sortTasks($rootScope.tasks, col, reverseOrder);
+	$scope.rowData = UtilityService.sortTasks(sortData, col, reverseOrder);
 }
 })

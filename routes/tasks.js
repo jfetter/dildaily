@@ -46,10 +46,21 @@ router.put("/unarchive", function(req, res){
 })
 
 router.post("/delete", function(req, res){
-	console.log("delete req body !!!!!!",req.body.taskId)
-		Todo.findByIdAndRemove(req.body.taskId, function (err, task ){
-    res.status(err ? 400 : 200).send(err || "task deleted!!");
-  
+	var userId = req.body.userId;
+	var taskId = req.body.taskId;
+	console.log("delete from user:", userId, "task:", taskId)
+		User.findById(userId, function(err, foundUser){
+			if (err || !foundUser) return res.status(400).send(err || "no user found");
+			console.log("TODOS BEFORE DELETE", foundUser.todos)
+			foundUser.todos.splice(foundUser.todos.indexOf(taskId),1)
+			console.log("TODOS AFTER DELETE", foundUser.todos)
+			foundUser.save(foundUser, function(err, updatedUser){
+				if (err) return res.status(400).send(err)
+					console.log("USER TASK REMOVED. OFF TO REMOVE TODO NOW...")
+				Todo.findByIdAndRemove(taskId, function (err, deletedTask ){
+    		res.status(err ? 400 : 200).send(err || "task deleted!!");
+			})
+		})
 	})
 })
 

@@ -2,13 +2,16 @@
 
 angular.module("myApp")
 
-.service("UtilityService", function($http, $timeout, $rootScope, $cookies, jwtHelper){
+.service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
 		this.userData;
 		$rootScope.myData;
 		this.contacts = []
  		this.tasks = [];
  		this.appointments =[];
  		this.archives = [];
+ 		this.companies = [];
+ 		this.today = [];
+ 		this.thisweek = [];
 
 //other names: Hire, get-it, Agen-do
 	$rootScope.appTitle = "Get To Work";
@@ -17,30 +20,12 @@ angular.module("myApp")
 	var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 	$rootScope.today = weekdays[today]; 
 	//There are only x more hours left today...
-	$rootScope.hoursLeft; 
-
-	function loadData(){	
-			var myData;
-		$http.get(`users/login/${$rootScope._myId}`)
-			.then(function(res){
-			//$rootScope.userData = res.data;
-			//$rootScope.myId = res.data._Id;
-			//$rootScope.myName = res.data.username;
-			//$rootScope.tasks = res.data.todos;
-			myData = res.data;
-			$rootScope.myData = myData;
-			console.log("RES BODY IN SERVICE",  res.data)
-
-			return myData;
-		}, function(err){ 
-			console.log(err)
-			})
-  } 
+	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
 
-	var buildContacts = ( archs, tasks) => {
+	let buildContacts = ( newData, archs, tasks) => {
 		var archives = archs; var contacts = []; var appointments = [];
-		var contactData = $rootScope.myData.contacts;
+		var contactData = newData.contacts;
  		for (var i =0; i < contactData.length + 1; i ++){
  			var item = contactData[i];
  		if (i == contactData.length){
@@ -50,9 +35,13 @@ angular.module("myApp")
  			this.tasks = tasks;
  			this.appointments = appointments;
  			console.log("MY CONTACTS ARE...", contacts)
- 			loadData();
+ 			$rootScope.myData = newData;
  			return;
  		}
+ 		if (item.category === 'both'){
+ 				contacts.push(item);
+ 				appointments.push(item);
+ 			}
  		if (item.category === 'Contact'){
  			contacts.push(item);
  		} else {
@@ -67,15 +56,15 @@ angular.module("myApp")
  		//$rootScope.myData 
 }
 
- var buildTasks = () =>{
- 	if (!$rootScope.myData)return;
+ let buildTasks = (newData) =>{
+ 	console.log("MY DATA", newData)
  	var archs = []; var tasks = [];
- 	var taskData = $rootScope.myData.todos;
+ 	var taskData = newData.todos;
 	console.log("$rootScope.myData", taskData)
 		for (var i =0; i < taskData.length + 1; i ++){
 			var item = taskData[i];
 			if(i === taskData.length){
-				buildContacts(archs, tasks);
+				buildContacts(newData, archs, tasks);
 				return;		
 			}
 		if (item.completed === true || new Date(item.completeBy) < Date.now()){
@@ -86,7 +75,8 @@ angular.module("myApp")
 		console.log("ITEM", item)
 	}
 }
-	this.setUserInfo = function(){
+
+this.loadData = () => {
 	 var token = $cookies.get('token');
 	 if (!$rootScope.myData){
 	 	if(token ){
@@ -96,11 +86,29 @@ angular.module("myApp")
 		$rootScope._myId = localStorage.satellizer_token;
 		}
 	}
-		$rootScope.myData = loadData();
-		 $timeout( ()=>{
-		console.log("ABOUT TO ITERATE THROUGH STUFF")
-			buildTasks();
-		 }, 25)
+		setUserInfo();
+	}
+
+	let	setUserInfo  = function(){
+		console.log("$rootScope._myId", $rootScope._myId)
+		$http.get(`users/login/${$rootScope._myId}`)
+			.then(function(res){
+			//$rootScope.userData = res.data;
+			//$rootScope.myId = res.data._Id;
+			//$rootScope.myName = res.data.username;
+			//$rootScope.tasks = res.data.todos;
+			//$rootScope.myData = myData;
+			var newData = res.data;
+			console.log("RES BODY IN SERVICE",  res.data)
+			console.log("ABOUT TO ITERATE THROUGH STUFF")
+			buildTasks(newData);
+		}, function(err){ 
+			console.log(err)
+			})
+  } 
+
+
+	
  		// seprate contacts from appointments from archives
 		//buildFromContacts();
 			//var data = this.userData.todos;
@@ -128,7 +136,7 @@ angular.module("myApp")
  	// })
  		// move completed or old tasks into archives;
 
-	}
+	
 
 		this.injectTasks = function (tasks){
 		console.log("need to test injection function");
@@ -189,13 +197,18 @@ this.loadUserData = function(){
 	console.log("NEED TO SHIFT DATA GRABBING FROM MAIN CTRL TO SERVICE")
 }
 
+$rootScope.closePopUp = function(){
+	$rootScope.addThis = null;
+	$rootScope.editThis = null;
+	$state.go('main');
+}
 
-this.sortTasks = function(sortData, sortBy, reverseOrder){
+this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 		console.log("sortData2", sortData )
 		console.log("sortBy", sortBy )
+		console.log("reverseOrder", reverseOrder)
 		console.log("zeroth", sortData[0][sortBy] )
-	if (sortBy === "completeBy"){
-		// $scope.sorted2 = !$scope.sorted2;
+	if (sortBy === "completeBy" || "appointment_date"){
 		sortData.sort(function(a,b){
 			if (reverseOrder){
 				return new Date(a[sortBy]) - new Date(b[sortBy]);
@@ -203,14 +216,14 @@ this.sortTasks = function(sortData, sortBy, reverseOrder){
   	return new Date(b[sortBy]) - new Date(a[sortBy]);
 	});
 	} else {
-		// $scope.sorted = !$scope.sorted;
 			sortData.sort(function(a,b){
-				return b[sortBy].toLowerCase() > a[sortBy].toLowerCase()
+				 b[sortBy].toLowerCase() > a[sortBy].toLowerCase();
 			})
 			if(reverseOrder){
-				sortData.reverse();
+				 sortData.reverse();
 			}
 		}
+	return sortData;
 	}
 })
 

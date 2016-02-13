@@ -75,6 +75,11 @@ angular.module("myApp")
   }
 })
 
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })
 //! moment.js
 //! version : 2.11.2
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -3693,13 +3698,16 @@ Za.fn=Ia.prototype;var Xd=bb(1,"add"),Yd=bb(-1,"subtract");a.defaultFormat="YYYY
 
 angular.module("myApp")
 
-.service("UtilityService", function($http, $timeout, $rootScope, $cookies, jwtHelper){
+.service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
 		this.userData;
 		$rootScope.myData;
 		this.contacts = []
  		this.tasks = [];
  		this.appointments =[];
  		this.archives = [];
+ 		this.companies = [];
+ 		this.today = [];
+ 		this.thisweek = [];
 
 //other names: Hire, get-it, Agen-do
 	$rootScope.appTitle = "Get To Work";
@@ -3708,30 +3716,12 @@ angular.module("myApp")
 	var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 	$rootScope.today = weekdays[today]; 
 	//There are only x more hours left today...
-	$rootScope.hoursLeft; 
-
-	function loadData(){	
-			var myData;
-		$http.get(`users/login/${$rootScope._myId}`)
-			.then(function(res){
-			//$rootScope.userData = res.data;
-			//$rootScope.myId = res.data._Id;
-			//$rootScope.myName = res.data.username;
-			//$rootScope.tasks = res.data.todos;
-			myData = res.data;
-			$rootScope.myData = myData;
-			console.log("RES BODY IN SERVICE",  res.data)
-
-			return myData;
-		}, function(err){ 
-			console.log(err)
-			})
-  } 
+	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
 
-	var buildContacts = ( archs, tasks) => {
+	let buildContacts = ( newData, archs, tasks) => {
 		var archives = archs; var contacts = []; var appointments = [];
-		var contactData = $rootScope.myData.contacts;
+		var contactData = newData.contacts;
  		for (var i =0; i < contactData.length + 1; i ++){
  			var item = contactData[i];
  		if (i == contactData.length){
@@ -3741,9 +3731,13 @@ angular.module("myApp")
  			this.tasks = tasks;
  			this.appointments = appointments;
  			console.log("MY CONTACTS ARE...", contacts)
- 			loadData();
+ 			$rootScope.myData = newData;
  			return;
  		}
+ 		if (item.category === 'both'){
+ 				contacts.push(item);
+ 				appointments.push(item);
+ 			}
  		if (item.category === 'Contact'){
  			contacts.push(item);
  		} else {
@@ -3758,15 +3752,15 @@ angular.module("myApp")
  		//$rootScope.myData 
 }
 
- var buildTasks = () =>{
- 	if (!$rootScope.myData)return;
+ let buildTasks = (newData) =>{
+ 	console.log("MY DATA", newData)
  	var archs = []; var tasks = [];
- 	var taskData = $rootScope.myData.todos;
+ 	var taskData = newData.todos;
 	console.log("$rootScope.myData", taskData)
 		for (var i =0; i < taskData.length + 1; i ++){
 			var item = taskData[i];
 			if(i === taskData.length){
-				buildContacts(archs, tasks);
+				buildContacts(newData, archs, tasks);
 				return;		
 			}
 		if (item.completed === true || new Date(item.completeBy) < Date.now()){
@@ -3777,7 +3771,8 @@ angular.module("myApp")
 		console.log("ITEM", item)
 	}
 }
-	this.setUserInfo = function(){
+
+this.loadData = () => {
 	 var token = $cookies.get('token');
 	 if (!$rootScope.myData){
 	 	if(token ){
@@ -3787,11 +3782,29 @@ angular.module("myApp")
 		$rootScope._myId = localStorage.satellizer_token;
 		}
 	}
-		$rootScope.myData = loadData();
-		 $timeout( ()=>{
-		console.log("ABOUT TO ITERATE THROUGH STUFF")
-			buildTasks();
-		 }, 25)
+		setUserInfo();
+	}
+
+	let	setUserInfo  = function(){
+		console.log("$rootScope._myId", $rootScope._myId)
+		$http.get(`users/login/${$rootScope._myId}`)
+			.then(function(res){
+			//$rootScope.userData = res.data;
+			//$rootScope.myId = res.data._Id;
+			//$rootScope.myName = res.data.username;
+			//$rootScope.tasks = res.data.todos;
+			//$rootScope.myData = myData;
+			var newData = res.data;
+			console.log("RES BODY IN SERVICE",  res.data)
+			console.log("ABOUT TO ITERATE THROUGH STUFF")
+			buildTasks(newData);
+		}, function(err){ 
+			console.log(err)
+			})
+  } 
+
+
+	
  		// seprate contacts from appointments from archives
 		//buildFromContacts();
 			//var data = this.userData.todos;
@@ -3819,7 +3832,7 @@ angular.module("myApp")
  	// })
  		// move completed or old tasks into archives;
 
-	}
+	
 
 		this.injectTasks = function (tasks){
 		console.log("need to test injection function");
@@ -3880,13 +3893,18 @@ this.loadUserData = function(){
 	console.log("NEED TO SHIFT DATA GRABBING FROM MAIN CTRL TO SERVICE")
 }
 
+$rootScope.closePopUp = function(){
+	$rootScope.addThis = null;
+	$rootScope.editThis = null;
+	$state.go('main');
+}
 
-this.sortTasks = function(sortData, sortBy, reverseOrder){
+this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 		console.log("sortData2", sortData )
 		console.log("sortBy", sortBy )
+		console.log("reverseOrder", reverseOrder)
 		console.log("zeroth", sortData[0][sortBy] )
-	if (sortBy === "completeBy"){
-		// $scope.sorted2 = !$scope.sorted2;
+	if (sortBy === "completeBy" || "appointment_date"){
 		sortData.sort(function(a,b){
 			if (reverseOrder){
 				return new Date(a[sortBy]) - new Date(b[sortBy]);
@@ -3894,14 +3912,14 @@ this.sortTasks = function(sortData, sortBy, reverseOrder){
   	return new Date(b[sortBy]) - new Date(a[sortBy]);
 	});
 	} else {
-		// $scope.sorted = !$scope.sorted;
 			sortData.sort(function(a,b){
-				return b[sortBy].toLowerCase() > a[sortBy].toLowerCase()
+				 b[sortBy].toLowerCase() > a[sortBy].toLowerCase();
 			})
 			if(reverseOrder){
-				sortData.reverse();
+				 sortData.reverse();
 			}
 		}
+	return sortData;
 	}
 })
 
@@ -3937,11 +3955,6 @@ angular.module("myApp")
 	// tools: email templates:
 	// call to action, we vs I vs you score
 
-	$scope.closePopUp = function(){
-		$rootScope.addThis = null;
-		$state.go("main")
-	}
-
 	$scope.addNew = function(){
 		console.log("IN ADD NEW")
 		if ($rootScope.addThis.name === 'Task') {
@@ -3967,6 +3980,9 @@ angular.module("myApp")
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
 	}
+	if ($scope.both){
+		newContact.category = 'both';
+	}
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
@@ -3981,7 +3997,7 @@ angular.module("myApp")
 	.then(function(res){
 			$rootScope.addThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-			//UtilityService.setUserData;
+			UtilityService.loadData();
 			$state.go('main')
 	},function(err){
 			console.log(err);
@@ -4006,9 +4022,8 @@ angular.module("myApp")
 		.then(function(res){
 			$rootScope.addThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
-			task.taskId = res.data;
-			$rootScope.tasks.push(task);
-			$state.go('main')
+			$state.go('main');
+			UtilityService.loadData();
 	},function(err){
 			console.log(err);
 		})
@@ -4040,6 +4055,7 @@ angular.module("myApp")
 					console.log(res.data, "logged in")
 					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
 					//localStorage.dd_id = res.data.user;
+					UtilityService.loadData();
 					$state.go("main");
 				} // if satellizer token in local storage
 			})
@@ -4092,7 +4108,7 @@ $http.post('/auth/pwLogin', user)
 		console.log("RES AFTER LOGIN",res);
 		//localStorage.setItem('satellizer_token', res.data.id)
 		//localStorage.setItem('dd_id', res.data.id)
-		UtilityService.setUserInfo();
+		UtilityService.loadData();
 		$state.go('main')
 	}).catch(function(err){
 		swal({
@@ -4127,28 +4143,23 @@ $http.post('/auth/pwLogin', user)
 
 angular.module("myApp")
 
-.controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http) {
+.controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http, UtilityService) {
 	if (!$rootScope.editThis){
 		$state.go('main');
 	}
 	// hide or show modal
-	$scope.addEdit = true;
-	console.log("ADDEDIT", $scope.addEdit)
-
-	$scope.closePopUp = function(){
-		$state.go('main');
-	}
-
-
+	//$scope.addEdit = true;
+	//console.log("ADDEDIT", $scope.addEdit)
 
 	console.log("$rootScope.editThis", $rootScope.editThis);
   $scope.task_name = $rootScope.editThis.task_name;
   $scope.task_description = $rootScope.editThis.task_description;
-  //$scope.completeBy = $rootScope.editThis.completeBy;
+  console.log($scope.completeBy, "$scope.completeBy")
+  $scope.completeBy = new Date($rootScope.editThis.completeBy) || Date.now();
   $scope.frequency = $rootScope.editThis.frequency;
   $scope.additional_info = $rootScope.editThis.additional_info;
 
-  $scope.submitTask = function(){
+  $scope.editTask = function(){
 		console.log("item to edit", $rootScope.editThis)
 			var task = {};
 			$scope.todo = true;
@@ -4159,7 +4170,7 @@ angular.module("myApp")
 			task.frequency = $scope.frequency || "";
 			task.completeBy = $scope.completeBy || "";
 			task.email_reminder = $scope.task_email_reminder || "";
-			task.additional_info = $scope.task_additional_info || "";
+			task.additional_info = $scope.additional_info || "";
 			task.completed = false;
 			task.task_type = "todo";
 			console.log("EDIT TASK", task);
@@ -4168,8 +4179,8 @@ angular.module("myApp")
 			},10)
 		.then(function(res){
 			console.log("RES BODY IN EDIT", res);
+			UtilityService.loadData();
 			$state.go('main');
-			location.reload();
 			}, function(err){
 				console.log(err);
 			})
@@ -4180,26 +4191,23 @@ angular.module("myApp")
 })
 
 
-.directive('taskModal', function(){
-  return{
-    templateUrl: "partials/task-modal.html"
-  }
-})
+
 
 
 "use strict";
 
 angular.module("myApp")
 
-.controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
-	 UtilityService.setUserInfo();
-	 if (!$rootScope._myId){
+.controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log, $cookies){
+	var cookies = $cookies.get('token');
+	var satToken = localStorage.satellizer_token
+	 if (!cookies && !satToken){
 			$state.go("home");
 			return;
 	 } 
 
 	$rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
-  UtilityService.setUserInfo();
+  UtilityService.loadData();
 
 //myData is set in Utility service
   $rootScope.$watch('myData', function(newData, oldData){
@@ -4207,7 +4215,15 @@ angular.module("myApp")
   		console.log("LOADED DATAAAAA", newData);
   		updateView(newData);
   	}
+  }) 
+
+   $scope.$watch('rowData', function(newData, oldData){
+  	if ($scope.rowData){	
+  		console.log("NEW ROW DATA", newData);
+  	}
   })
+
+
 
 //category is set in the navCtrl upon drop-down 'cat' change
   $rootScope.$watch('category', function(newCategory, oldCategory){
@@ -4281,9 +4297,9 @@ angular.module("myApp")
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
-	 			tHeads.col5= "Done?";
+	 			tHeads.col5= "put back on agenda";
 	 			tHeads.col6= "Edit/Delete"; 
-	 			tHeads.col7= "archive";
+	 			tHeads.col7= "un-archive";
 	 			// if(){
 	 			// 	$scope.r_1 = "task_name";
 	 			// }
@@ -4309,7 +4325,8 @@ angular.module("myApp")
 	}
 
 	$scope.deleteItem = function(item){
-		if (item.category === 'Task'){
+		console.log("DELETE ITEM")
+		if (item.category === 'todo'){
 			deleteTask(item);
 		} else {
 			console.log("DELETE CONTACT/ APPT")
@@ -4318,28 +4335,65 @@ angular.module("myApp")
 	}
 
 	function deleteTask(item){
-		console.log("item to delete", item._id)
 		var taskId = item._id;
 		var userId = item.user_id; 
-		$http.post("/tasks/delete", {taskId: taskId}) 
+		$http.post("/tasks/delete", {taskId: taskId, userId: userId}) 
 		.then(function(res){
 			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadData();
+			UtilityService.loadData();
 		}, function(err){console.log(err)})
 		//add sweet alert to confirm before deleting
 	}	
 
 	function deleteContact(item){
-		console.log("item to delete", item._id)
-		var contactId = item._id;
-		var userId = item.user_id; 
-		$http.post("/contacts/delete", {contactId: contactId}) 
-		.then(function(res){
-			console.log("RESPONSE FROM DELETE REQ", res.data);
-			loadData();
-		}, function(err){console.log(err)})
-		//add sweet alert to confirm before deleting
-	}
+		var removeWhich;
+		var one = $scope.currentView;
+		var both = one === 'Contacts' ? one + " and Appointments" : one + " and Contacts";
+		one = "just " + one;
+		swal({   title: "Where do you want to delete from",
+		   text: "...",
+		      type: "warning",   
+		      showCancelButton: true,
+		       confirmButtonColor: "#DD6B55",
+		       // is confirm
+		       confirmButtonText: one,
+		       // else 
+		       cancelButtonText: both,
+		       closeOnConfirm: true,
+		       closeOnCancel: true },
+		       function(which){   
+		       if (which) {    
+		      	if (one.indexOf('Contacts') > -1){
+		      		removeWhich = 'Contact'
+		      	} else {
+		      		removeWhich = 'Appointment'
+		      	}
+						console.log(removeWhich, item)
+						postDelete(removeWhich, item)
+		       //swal("Deleting Contact!", "This person will be removed.", "success");  
+		       } else {  
+		       removeWhich = 'both';  
+		       //swal("Deleting Appointment", "This appointment will be removed", "success");
+					console.log(removeWhich, item)
+		      postDelete(removeWhich, item)
+		        } 
+			});
+	}   
+		      
+		function postDelete(removeWhich, item){
+			console.log("REMOVE WHICH 2", removeWhich)
+			console.log("item to delete", item._id)
+			var contactId = item._id;
+			var userId = item.user_id; 
+			$http.post("/contacts/delete", {contactId: contactId, userId: userId, removals: removeWhich}) 
+			.then(function(res){
+				console.log("RESPONSE FROM DELETE REQ", res.data);
+				UtilityService.loadData();
+			}, function(err){console.log(err)})
+			//add sweet alert to confirm before deleting	
+		}      
+	
+	
 
 
 
@@ -4386,7 +4440,7 @@ angular.module("myApp")
 		$http.put("tasks/archive", {taskId: item._id}) 
 		.then(function(res){
 			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			UtilityService.setUserInfo();
+			UtilityService.loadData();
 		}, function(err){console.log(err)})			
 	}
 	 
@@ -4395,7 +4449,7 @@ angular.module("myApp")
 		$http.put("tasks/unarchive", {taskId: item._id}) 
 		.then(function(res){
 			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			UtilityService.setUserInfo();
+			UtilityService.loadData();
 		}, function(err){console.log(err)})			
 	} 
 
@@ -4405,24 +4459,49 @@ angular.module("myApp")
 	  $state.go("main.edit");
 	}
 
-// sort
+// sort tasks or reverse order by column (col) clicked
 $scope.sortTasks = function(col){
-	console.log("SORTA")
-	var col = col;
 		if(!$rootScope.myData){
 		return;
-		var reverseOrder;
 	}
+	$scope.rowData = null;
+	console.log("SORTA", col);
+	console.log("CURRENT VIEW", $scope.currentView)
+	var col = col;
+	var sortData; 
+	var reverseOrder;
+	if ($scope.currentView === 'Tasks'){
+		sortData = UtilityService.tasks;
+	}
+	if ($scope.currentView === 'Contacts'){
+		sortData = UtilityService.contacts;;
+	}
+	 if ($scope.currentView === 'Appointments'){
+		sortData = UtilityService.appointments;;
+	} 	
+	 if ($scope.currentView === 'Archives'){
+		sortData = UtilityService.archives;;
+	} 
 	if (col === "date"){
 		$scope.sorted2 = !$scope.sorted2;
-		col = 'completeBy';
 		reverseOrder = $scope.sorted2 ? true : false;
+			if ($scope.currentView === "Tasks"){
+				col = 'completeBy';
+			} else {
+				col = 'next_appt_date';
+			}
 	} else if(col === "name") {
-		$scope.sorted = !$scope.sorted;
-		col = 'task_name';
-		reverseOrder = $scope.sorted ? true : false;
+			$scope.sorted = !$scope.sorted;
+			reverseOrder = $scope.sorted ? true : false;
+			if ($scope.currentView === "Tasks"){
+				col = 'task_name';
+			} else if ($scope.currentView === "Tasks"){
+				col = 'contact_name';
+			} else if ($scope.currentView === "Companies"){
+				col = 'company_name';
+			}
 	}
-	UtilityService.sortTasks($rootScope.tasks, col, reverseOrder);
+	$scope.rowData = UtilityService.sortTasks(sortData, col, reverseOrder);
 }
 })
 
@@ -4536,35 +4615,35 @@ function assembleSearch(searchArray, searchTerm){
 }
 
 var searchCases = function(cat){
-	var data = $rootScope.userData; 
-	console.log("data", data);
+	//var data = $rootScope.myData; 
+	console.log("SEARCH CAT", cat);
 		if (cat === 'Tasks'){
-			var searchArray = data.todos;
+			var searchArray = UtilityService.tasks;
 			var searchTerm = "task_name";
 			console.log("SEARCH ARRAY1", searchArray);
 		} else if (cat === 'Archives'){
-			var searchArray = data.archives;
-			var searchTerm;
+			var searchArray = UtilityService.archives;
+			var searchTerm = "contact_name"
 			console.log("archives coming soon")
 		} else if (cat === 'Today'){
-			var searchArray = $rootScope.today;
-			var searchTerm;
+			var searchArray = UtilityService.today;
+			var searchTerm = "task_name";
 			console.log("TODAY coming soon")
 		} else if (cat === 'This Week'){
-			var searchArray = $rootScope.week;
-			var searchTerm;
+			var searchArray = UtilityService.thisweek;
+			var searchTerm = "contact_name";
 			console.log("THIS WEEK coming soon")
 		} else if (cat === 'Appointments'){
-			var searchArray = data.appointments;
-			var searchTerm;
+			var searchArray = UtilityService.appointments;
+			var searchTerm = "contact_name";
 			console.log("appointments coming soon")
 		}else if (cat === 'Contacts'){
-			var searchArray = data.contacts;
-			var searchTerm;
+			var searchArray = UtilityService.contacts;
+			var searchTerm = "contact_name";
 			console.log("contacts coming soon")
-		}else if (cat === 'Tools'){
-			var searchArray = $rootScope.tools;
-			var searchTerm;
+		}else if (cat === 'Companies'){
+			var searchArray = UtilityService.companies;
+			var searchTerm = "company_name";
 			console.log("prolly be a while til I have tools")
 		}
 		return {searchArray: searchArray, searchTerm: searchTerm}
