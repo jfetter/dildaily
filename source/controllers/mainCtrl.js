@@ -50,7 +50,11 @@ angular.module("myApp")
 
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads || $scope.currentView === 'Tasks'){
+	 if (!$scope.tHeads || $scope.currentView === 'Today'){
+	 		console.log("TODAY", UtilityService.today);
+	 } else if ($scope.currentView === 'This Week'){
+	 		console.log("THIS WEEK", UtilityService.thisWeek);
+	 } else if ($scope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
@@ -113,7 +117,8 @@ angular.module("myApp")
 	 			$scope.r_4 = "completeBy";
 	 			$scope.rowData = UtilityService.archives;
 	 			$scope.tHeads = tHeads;
-	 	}
+	 	} 
+
 	 }
 	}
 

@@ -10,8 +10,9 @@ angular.module("myApp")
  		this.appointments =[];
  		this.archives = [];
  		this.companies = [];
- 		this.today = [];
- 		this.thisweek = [];
+ 		this.today = {};
+ 		this.thisweek = {};
+
 
 //other names: Hire, get-it, Agen-do
 	$rootScope.appTitle = "Get To Work";
@@ -22,6 +23,43 @@ angular.module("myApp")
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
+			 	let buildDay = (appointments, tasks, newData) =>{
+			 		//console.log("APPOINTMENTS", appointments, "TASKS", tasks)
+				//var appTasks = UtilityService.appointments.concat(UtilityService.tasks);
+				var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
+				var plusDay = (Date.now() + (86400 * 1000));
+				for (var h = 0; h < tasks.length + 1; h ++){
+		 				if (h === tasks.length ){
+		 				this.today.tasks = todayTasks;
+		 			//	console.log("this.today", this.today)
+		 			} else {
+					//console.log("H", h)
+		 			var item = tasks[h];
+		 			//console.log(item, "ITEM")
+		 			if (new Date(item.completeBy) <= plusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
+		 				todayTasks.push(item);
+		 			}
+				}
+
+		 		for (var i =0; i < appointments.length + 1; i ++){
+		 			var item = appointments[i];
+		 			if (i === appointments.length ){
+		 				this.today.appointments = todayAppts;
+		 				this.today.followUps = todayFollowUps;
+		 			} else{
+			 			if (new Date(item.next_appt_date) <= plusDay){
+			 				todayAppts.push(item);
+			 			} else if (new Date(item.followup_date) <= plusDay){
+			 				todayFollowUps.push(item);
+			 			}
+				 	}
+		 		}
+			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
+			 		console.log(this.today, "TODAYYY")
+			 		$rootScope.myData = newData;
+			 	}
+		 	}
+		}
 
 	let buildContacts = ( newData, archs, tasks) => {
 		var archives = archs; var contacts = []; var appointments = [];
@@ -29,13 +67,14 @@ angular.module("myApp")
  		for (var i =0; i < contactData.length + 1; i ++){
  			var item = contactData[i];
  		if (i == contactData.length){
-
  			this.archives = archives;
  			this.contacts = contacts;
  			this.tasks = tasks;
  			this.appointments = appointments;
  			console.log("MY CONTACTS ARE...", contacts)
- 			$rootScope.myData = newData;
+ 			//$rootScope.myData = newData;
+ 			buildDay(appointments, tasks, newData);
+ 			//buildWeek(tasks, appointments);
  			return;
  		}
  		if (item.category === 'both'){
@@ -51,7 +90,7 @@ angular.module("myApp")
  			appointments.push(item)
  			}
  		}
-		console.log("ITEM", item)
+		//console.log("ITEM", item)
  	}
  		//$rootScope.myData 
 }
@@ -60,7 +99,6 @@ angular.module("myApp")
  	console.log("MY DATA", newData)
  	var archs = []; var tasks = [];
  	var taskData = newData.todos;
-	console.log("$rootScope.myData", taskData)
 		for (var i =0; i < taskData.length + 1; i ++){
 			var item = taskData[i];
 			if(i === taskData.length){
@@ -72,22 +110,9 @@ angular.module("myApp")
 		} else {
 			tasks.push(item)
 		}
-		console.log("ITEM", item)
+		//console.log("ITEM", item)
 	}
 }
-
-this.loadData = () => {
-	 var token = $cookies.get('token');
-	 if (!$rootScope.myData){
-	 	if(token ){
-	 	var allMyInfo = (jwtHelper.decodeToken(token))
-		$rootScope._myId = allMyInfo._id;
-	} else if (localStorage.satellizer_token){
-		$rootScope._myId = localStorage.satellizer_token;
-		}
-	}
-		setUserInfo();
-	}
 
 	let	setUserInfo  = function(){
 		console.log("$rootScope._myId", $rootScope._myId)
@@ -105,7 +130,22 @@ this.loadData = () => {
 		}, function(err){ 
 			console.log(err)
 			})
-  } 
+  }
+
+this.loadData = () => {
+	 var token = $cookies.get('token');
+	 if (!$rootScope.myData){
+	 	if(token ){
+	 	var allMyInfo = (jwtHelper.decodeToken(token))
+		$rootScope._myId = allMyInfo._id;
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+	}
+		setUserInfo();
+	}
+
+ 
 
 
 	
