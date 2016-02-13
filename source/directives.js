@@ -29,6 +29,11 @@ angular.module("myApp")
     templateUrl: "directives/appointment-form.html"
   }
 })
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
 
 // .directive('taskModal', function(){
 //   return{

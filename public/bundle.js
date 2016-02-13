@@ -74,6 +74,11 @@ angular.module("myApp")
     templateUrl: "directives/appointment-form.html"
   }
 })
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
 
 // .directive('taskModal', function(){
 //   return{
@@ -4246,7 +4251,7 @@ angular.module("myApp")
 			return;
 	 } 
 
-	$rootScope.category = $rootScope.category ? $rootScope.category :'Tasks';
+	$rootScope.category = $rootScope.category ? $rootScope.category :'Today';
   UtilityService.loadData();
 
 //myData is set in Utility service
@@ -4263,34 +4268,35 @@ angular.module("myApp")
   	}
   })
 
-
-
 //category is set in the navCtrl upon drop-down 'cat' change
   $rootScope.$watch('category', function(newCategory, oldCategory){
   	console.log(newCategory, "= newCategory in watch")
-  	$scope.currentView = newCategory;
+  	$rootScope.currentView = newCategory;
   	if ($rootScope.myData){	
   		updateView($rootScope.myData);
   	} else{
   }
 });
 
-
 	 function updateView(data){
 	 		if (!$rootScope.myData){return}
-	 		if ($scope.currentView == undefined){
+	 		if ($rootScope.currentView == undefined){
 	 			console.log("CATEGORY IS UNDEFINED")
-	 			$scope.currentView = 'Tasks';
+	 			$rootScope.currentView = 'Today';
 	 		} 
 	 		console.log("DAATAAA IN UPDATE VIEW", data)
 
 	 			 var tHeads = {};
 	 			 var rowData = {}; 
-	 if (!$scope.tHeads || $scope.currentView === 'Today'){
+	 if ($rootScope.currentView === 'Today'){
+	 		$scope.dayView1 = "Tasks";
+	 		$scope.dayView2 = "Appointments";
+	 		$scope.dayView3 = "Follow Ups";
+
 	 		console.log("TODAY", UtilityService.today);
-	 } else if ($scope.currentView === 'This Week'){
+	 } else if ($rootScope.currentView === 'This Week'){
 	 		console.log("THIS WEEK", UtilityService.thisWeek);
-	 } else if ($scope.currentView === 'Tasks'){
+	 } else if ($rootScope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
 	 			tHeads.col2= "Description"; 
@@ -4300,29 +4306,29 @@ angular.module("myApp")
 	 			tHeads.col6= "Edit/Delete"; 
 	 			tHeads.col7= "archive";
 	 			//rowData.task_name = $rootScope.task.task_name;
-	 			$scope.r_1 = "task_name";
-	 			$scope.r_2 = "task_description";
-	 			$scope.r_3 = "frequency";
-	 			$scope.r_4 = "completeBy";
+	 			$rootScope.r_1 = "task_name";
+	 			$rootScope.r_2 = "task_description";
+	 			$rootScope.r_3 = "frequency";
+	 			$rootScope.r_4 = "completeBy";
 	 			$scope.rowData = UtilityService.tasks;
 	 			console.log("ROW DATA", $scope.rowData)
 	 			$scope.tHeads = tHeads;
 	 } else{
-	 		if ($scope.currentView === 'Appointments'){
+	 		if ($rootScope.currentView === 'Appointments'){
 	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "Company"; 
 	 			tHeads.col3= "Contact Method"; 
 	 			tHeads.col4= "Date";
 	 			tHeads.col5= "Time";
 	 			tHeads.col6= "Edit/Delete";  
-	 			$scope.r_1 = "contact_name";
-	 			$scope.r_2 = "company_name";
-	 			$scope.r_3 = "contact_method";
-	 			$scope.r_4 = "next_appt_date";
-	 			$scope.r_5 = "appointment_time";
+	 			$rootScope.r_1 = "contact_name";
+	 			$rootScope.r_2 = "company_name";
+	 			$rootScope.r_3 = "contact_method";
+	 			$rootScope.r_4 = "next_appt_date";
+	 			$rootScope.r_5 = "appointment_time";
 	 			$scope.rowData = UtilityService.appointments;
 	 			$scope.tHeads = tHeads;
-	 		} else if ($scope.currentView === 'Contacts'){
+	 		} else if ($rootScope.currentView === 'Contacts'){
 	 			tHeads.col1= "Contact Name";
 	 			tHeads.col2= "phone";
 	 			tHeads.col3= "email"; 
@@ -4336,7 +4342,7 @@ angular.module("myApp")
 	 			$scope.r_5 = "company_name";
 	 			$scope.rowData = UtilityService.contacts;
 	 			$scope.tHeads = tHeads;
-	 	} else if ($scope.currentView === 'Archives'){
+	 	} else if ($rootScope.currentView === 'Archives'){
 	 			tHeads.col1= "Name";
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
@@ -4392,7 +4398,7 @@ angular.module("myApp")
 
 	function deleteContact(item){
 		var removeWhich;
-		var one = $scope.currentView;
+		var one = $rootScope.currentView;
 		var both = one === 'Contacts' ? one + " and Appointments" : one + " and Contacts";
 		one = "just " + one;
 		swal({   title: "Where do you want to delete from",
@@ -4511,26 +4517,26 @@ $scope.sortTasks = function(col){
 	}
 	$scope.rowData = null;
 	console.log("SORTA", col);
-	console.log("CURRENT VIEW", $scope.currentView)
+	console.log("CURRENT VIEW", $rootScope.currentView)
 	var col = col;
 	var sortData; 
 	var reverseOrder;
-	if ($scope.currentView === 'Tasks'){
+	if ($rootScope.currentView === 'Tasks'){
 		sortData = UtilityService.tasks;
 	}
-	if ($scope.currentView === 'Contacts'){
+	if ($rootScope.currentView === 'Contacts'){
 		sortData = UtilityService.contacts;;
 	}
-	 if ($scope.currentView === 'Appointments'){
+	 if ($rootScope.currentView === 'Appointments'){
 		sortData = UtilityService.appointments;;
 	} 	
-	 if ($scope.currentView === 'Archives'){
+	 if ($rootScope.currentView === 'Archives'){
 		sortData = UtilityService.archives;;
 	} 
 	if (col === "date"){
 		$scope.sorted2 = !$scope.sorted2;
 		reverseOrder = $scope.sorted2 ? true : false;
-			if ($scope.currentView === "Tasks"){
+			if ($rootScope.currentView === "Tasks"){
 				col = 'completeBy';
 			} else {
 				col = 'next_appt_date';
@@ -4538,11 +4544,11 @@ $scope.sortTasks = function(col){
 	} else if(col === "name") {
 			$scope.sorted = !$scope.sorted;
 			reverseOrder = $scope.sorted ? true : false;
-			if ($scope.currentView === "Tasks"){
+			if ($rootScope.currentView === "Tasks"){
 				col = 'task_name';
-			} else if ($scope.currentView === "Tasks"){
+			} else if ($rootScope.currentView === "Tasks"){
 				col = 'contact_name';
-			} else if ($scope.currentView === "Companies"){
+			} else if ($rootScope.currentView === "Companies"){
 				col = 'company_name';
 			}
 	}
@@ -4752,6 +4758,81 @@ $scope.showAll = function(){
 	}
 
 })
+
+"use strict";
+
+angular.module("myApp")
+
+.controller("subCtrl1", function($scope, $rootScope, UtilityService){
+	  $rootScope.$watch('currentView', function(newView, oldView){
+  	//console.log(newView, "= new View in sub");
+		$scope.colH1 = 'Task Name';
+		$scope.colH2 = 'Description';
+		$scope.colH3 = 'Frequency';
+		$scope.colH4 = 'Complete By';
+		$scope.colH5 = 'Done?';
+		$scope.colH6 = "Edit/Delete"
+		$scope.td_1 = "task_name";
+		$scope.td_2 = "task_description";
+		$scope.td_3 = "frequency";
+		$scope.td_4 = "completeBy";
+		if (newView == 'This Week'){
+			$scope.dayRowData = UtilityService.thisWeek.tasks
+		} else if (newView  == 'Today') {
+			$scope.dayRowData = UtilityService.today.tasks
+		console.log("DAY ROW DATA TOP", $scope.dayRowData)
+		}
+	});
+})
+
+.controller("subCtrl2", function($scope, $rootScope, UtilityService){
+	UtilityService.loadData();
+	$rootScope.$watch('currentView', function(newView, oldView){
+		$scope.colH1 = 'Contact Name';
+		$scope.colH2 = 'Company';
+		$scope.colH3 = 'Contact Method';
+		$scope.colH4 = 'Date';
+		$scope.colH5 = 'Time';
+		$scope.colH6 = "Edit/Delete"
+		$scope.td_1 = "contact_name";
+		$scope.td_2 = "company_name";
+		$scope.td_3 = "contact_method";
+		$scope.td_4 = "next_appt_date";
+		$scope.td_5 = "appointment_time";
+		if (newView == 'This Week'){
+			$scope.dayRowData = UtilityService.thisWeek.appointments
+		console.log("DAY ROW DATA Middle", $scope.dayRowData)
+		} else if (newView == 'Today') {
+			$scope.dayRowData = UtilityService.today.appointments
+		}
+	});
+})
+
+.controller("subCtrl3", function($scope, $rootScope, UtilityService){
+	$rootScope.$watch('currentView', function(newView, oldView){
+		$scope.colH1 = 'Contact Name';
+		$scope.colH2 = 'Company';
+		$scope.colH3 = 'Contact Method';
+		$scope.colH4 = 'Date';
+		$scope.colH5 = 'Time';
+		$scope.colH6 = "Edit/Delete"
+		$scope.td_1 = "contact_name";
+		$scope.td_2 = "company_name";
+		$scope.td_3 = "contact_method";
+		$scope.td_4 = "next_appt_date";
+		$scope.td_5 = "appointment_time";
+		console.log("SUB 3 ROOT CUR VIEW", $rootScope.currentView)
+		if (newView == 'This Week'){
+			$scope.dayRowData = UtilityService.thisWeek.followUps
+		} else if (newView == 'Today') {
+			$scope.dayRowData = UtilityService.today.followUps
+		console.log("DAY ROW DATA BOTTOM", $scope.dayRowData)
+		}
+	});
+})
+
+
+
 
 angular.module("myApp")
 

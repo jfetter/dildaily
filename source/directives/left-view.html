@@ -1,34 +1,16 @@
-				<table class="table table-bordered table-striped daily-table">
-					<tr>
-						<th class="col-sm-2" ng-click=sortTasks('name')> {{tHeads.col1}} <span>&nbsp;</span><span ng-hide="!sorted">&#9660;</span><span ng-hide="sorted">&#9650;</span> </th>
-						<th class="col-sm-2"> {{tHeads.col2}}</th>
-						<th class="col-sm-2"> {{tHeads.col3}} </th>
-						<th class="col-sm-2" ng-click="sortTasks('date')" >{{tHeads.col4}}<span>&nbsp;</span><span ng-hide="!sorted2">&#9660;</span><span ng-hide="sorted2" >&#9650;</span> </th>
-						<th class="col-sm-2"> {{tHeads.col5}}</th>
-						<th class="col-sm-2 text-center"> 
-							<div class="">
-								<span class="">{{tHeads.col6}}</span>
-							</div>
-						</th>
-					</tr>
-					<!-- need to set up to track by item._id !!!! -->
-					<tr class="row-data" ng-class='striking(item)' ng-repeat="item in rowData track by $index">
-						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item[r_1]}} </span></td>
-							<td class="col-sm-2">{{item[r_2]}}</td>
-							<td class="col-sm-2">{{item[r_3]}}</td>
-							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
-							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
-							<td class="col-sm-2">{{item[r_4] | amDateFormat:'ll'}}</td>
-							<!-- <td class="col-sm-2">{{item.}}</td> -->
-							<td class="table-icons text-center">
-		  					<div class="">
-									<a ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
-									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
-								</div>
-						</td>
-							<td class="col-sm-2 text-center"> 
-								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
-								<i class="fa fa-trash" ng-click="deleteItem(item)"></i>
-							</td>
-					</tr>	
-		</table>
+<div>
+	<h2 class="row">{{currentView}}: </h2>
+	<p class= "col-sm-4">double click {{tHeads.col1}} for details</p>
+	<div ng-show="currentView == 'Today' || currentView == 'This Week'">
+		<h3>{{dayView1}}:</h3>
+	</div>
+	<main-table ng-controller="subCtrl1"/>
+</div>
+<div ng-hide="currentView != 'Today' && currentView != 'This Week'">
+	<h3 class="row">{{dayView2}}:</h3>
+	<main-table ng-controller="subCtrl2"/>
+</div>
+<div ng-hide="currentView != 'Today' && currentView != 'This Week'">
+	<h3 class="row">{{dayView3}}:</h3>
+	<main-table ng-controller="subCtrl3"/>
+</div>

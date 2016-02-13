@@ -1,0 +1,63 @@
+				<table class="table table-bordered table-striped daily-table">
+					<tr>
+						<th ng-show="currentView == 'Today' || currentView == 'This Week' ">{{colH1}}</th>
+						<th ng-hide="currentView == 'Today' || currentView == 'This Week' "class="col-sm-2" ng-click=sortTasks('name')> {{tHeads.col1}} <span>&nbsp;</span><span ng-hide="!sorted">&#9660;</span><span ng-hide="sorted">&#9650;</span> </th>
+						<th ng-show="currentView == 'Today' || currentView == 'This Week' ">{{colH2}}</th>
+						<th ng-hide="currentView == 'Today' || currentView == 'This Week' " class="col-sm-2"> {{tHeads.col2}}</th>
+
+						<th ng-show="currentView == 'Today' || currentView == 'This Week' ">{{colH3}}</th>
+						<th ng-hide="currentView == 'Today' || currentView == 'This Week' " class="col-sm-2"> {{tHeads.col3}} </th>
+
+						<th class="col-sm-2" ng-click="sortTasks('date')" ><span ng-show="currentView == 'Today' || currentView == 'This Week' ">{{colH4}}</span><span ng-hide="currentView == 'Today' || currentView == 'This Week' ">{{tHeads.col4}}</span><span >&nbsp;</span><span ng-hide="!sorted2">&#9660;</span><span ng-hide="sorted2" >&#9650;</span> </th>
+						<th ng-show="currentView == 'Today' || currentView == 'This Week' "> {{colH5}}</th>
+						<th ng-hide="currentView == 'Today' || currentView == 'This Week' "class="col-sm-2"> {{tHeads.col5}}</th>
+						<th ng-show="dayView">Contact Method</th>
+						<th class="col-sm-2 text-center"> 
+							<div class="">
+								<span class="">{{tHeads.col6}}</span>
+								<span ng-show="currentView == 'Today' || currentView == 'This'" class="row-data">{{colH6}}</span>
+							</div>
+						</th>
+					</tr>
+					<tr ng-show="currentView == 'Today' || currentView == 'This'" class="row-data" ng-class='striking(item)' ng-repeat="item in dayRowData track by $index">
+						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item[td_1]}} </span></td>
+							<td class="col-sm-2">{{item[td_2]}}</td>
+							<td class="col-sm-2">{{item[td_3]}}</td>
+							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
+							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
+							<td class="col-sm-2">{{item[td_4] | amDateFormat:'ll'}}</td>
+							<!-- <td class="col-sm-2">{{item.}}</td> -->
+							<td class="table-icons text-center">
+		  					<div class="">
+									<a ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
+									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
+								</div>
+						</td>
+							<td class="col-sm-2 text-center"> 
+								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
+								<i class="fa fa-trash" ng-click="deleteItem(item)"></i>
+							</td>
+					</tr>
+
+					<tr ng-hide="currentView == 'Today' || currentView == 'This Week' " class="row-data" ng-class='striking(item)' ng-repeat="item in rowData track by $index">
+						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item[r_1]}} </span></td>
+							<td class="col-sm-2">{{item[r_2]}}</td>
+							<td class="col-sm-2">{{item[r_3]}}</td>
+							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
+							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
+							<td class="col-sm-2">{{item[r_4] | amDateFormat:'ll'}}</td>
+							<td ng-show="">{{item[r_5]}}</td>
+							<!-- <td class="col-sm-2">{{item.}}</td> -->
+							<td class="table-icons text-center">
+		  					<div class="">
+									<a ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
+									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
+								</div>
+						</td>
+							<td class="col-sm-2 text-center"> 
+								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
+								<i class="fa fa-trash" ng-click="deleteItem(item)"></i>
+							</td>
+					</tr>					
+					
+				
