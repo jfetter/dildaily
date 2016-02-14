@@ -25,7 +25,7 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	.state("main.completed", {url:"/completed", templateUrl:"templates/completed.html", controller:"mainCtrl"})	
 	.state("main.edit", {url:"/edit", templateUrl:"templates/input-form.html", controller:"editCtrl"})
 	.state("main.add", {url:"/add", templateUrl:"templates/input-form.html", controller:"addCtrl"})
-	.state("main.tools", {url:"/add", templateUrl:"templates/input-form.html", controller:"toolsCtrl"})
+	.state("main.tools", {url:"/tools", templateUrl:"directives/tools.html", controller:"toolsCtrl"})
 	// to display addl details 
 	.state("main.details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})	
 })
@@ -43,48 +43,6 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 
 
 
-"use strict";
-
-angular.module("myApp")
-
-.directive("right-view",function(){
-	return{
-		templateUrl: "templates/right-view.html"
-	}
-})
-
-.directive('leftView', function(){
-  return{
-    templateUrl: "directives/left-view.html"
-  }
-})
-
-.directive('taskForm', function(){
-  return{
-    templateUrl: "directives/task-form.html"
-  }
-})
-  .directive('contactForm', function(){
-  return{
-    templateUrl: "directives/contact-form.html"
-  }
-})
-.directive('appointmentForm', function(){
-  return{
-    templateUrl: "directives/appointment-form.html"
-  }
-})
-.directive('mainTable', function(){
-  return{
-    templateUrl: "directives/main-table.html"
-  }
-})
-
-// .directive('taskModal', function(){
-//   return{
-//     templateUrl: "partials/task-modal.html"
-//   }
-// })
 //! moment.js
 //! version : 2.11.2
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -3713,9 +3671,36 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
+ 		this.twitter;
+ 		this.git;
+ 		this.wordPress;
+ 		this.linkedin;
+ 		this.stackOverflow;
+ 		this.angellist;
+ 		
+ 		this.wordPress
+ 		var plusDay = (Date.now() + (86400 * 1000));
+		var minusDay = (Date.now() - (86400 * 1000));
 
 
-//other names: Hire, get-it, Agen-do
+	this.archive = (item) =>{
+		console.log(item, "ARCHIVING THIS GUY")
+		$http.put("tasks/archive", {taskId: item._id}) 
+		.then((res) =>{
+			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)})			
+	}
+	 
+		this.unArchive = (item)=>{
+		console.log(item, "UNARCHIVING THIS GUY")
+		$http.put("tasks/unarchive", {taskId: item._id}) 
+		.then((res)=>{
+			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)})			
+	} 
+
 	$rootScope.appTitle = "Get To Work";
 	$rootScope.tagLine = "the agenda for job seekers"
 	var today = new Date().getDay();
@@ -3724,37 +3709,43 @@ angular.module("myApp")
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-			 	let buildDay = (appointments, tasks, newData) =>{
+	let buildTools = () =>{
+
+	}
+
+
+	let buildDay = (appointments, tasks, newData) =>{
 			 		//console.log("APPOINTMENTS", appointments, "TASKS", tasks)
 				//var appTasks = UtilityService.appointments.concat(UtilityService.tasks);
-				var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
-				var plusDay = (Date.now() + (86400 * 1000));
-				for (var h = 0; h < tasks.length + 1; h ++){
-		 				if (h === tasks.length ){
-		 				this.today.tasks = todayTasks;
+		var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
+		// 86400000 milliseconds in one day
+
+			for (var h = 0; h < tasks.length + 1; h ++){
+		 		if (h === tasks.length ){
+		 			this.today.tasks = todayTasks;
 		 			//	console.log("this.today", this.today)
-		 			} else {
+		 		} else {
 					//console.log("H", h)
 		 			var item = tasks[h];
 		 			//console.log(item, "ITEM")
-		 			if (new Date(item.completeBy) <= plusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
+		 			if (new Date(item.completeBy) <= plusDay && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
 		 				todayTasks.push(item);
 		 			}
 				}
 
-		 		for (var i =0; i < appointments.length + 1; i ++){
+		 	for (var i =0; i < appointments.length + 1; i ++){
 		 			var item = appointments[i];
-		 			if (i === appointments.length ){
+		 		if (i === appointments.length ){
 		 				this.today.appointments = todayAppts;
 		 				this.today.followUps = todayFollowUps;
-		 			} else{
-			 			if (new Date(item.next_appt_date) <= plusDay){
+		 		} else{
+			 		if (new Date(item.next_appt_date) <= plusDay){
 			 				todayAppts.push(item);
-			 			} else if (new Date(item.followup_date) <= plusDay){
-			 				todayFollowUps.push(item);
-			 			}
-				 	}
-		 		}
+			 		} else if (new Date(item.followup_date) <= plusDay){
+			 			todayFollowUps.push(item);
+			 		}
+				}
+		 	}
 			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
 			 		console.log(this.today, "TODAYYY")
 			 		$rootScope.myData = newData;
@@ -3806,14 +3797,22 @@ angular.module("myApp")
 				buildContacts(newData, archs, tasks);
 				return;		
 			}
-		if (item.completed === true || new Date(item.completeBy) < Date.now()){
+			// put daily tasks back into circulation after a day and weekly after a week
+		if ((item.completed === true && item.frequency === 'daily' && new Date(item.completion_date) >= Date.now() ) ||
+			 (item.completed === true && item.frequency === 'weekly' && new Date(item.completion_date) >= Date.now() + (7 * plusDay)) ){
+			this.unarchive(item);
+			item.push(tasks)
+		} else if (item.completed === true ){
+		//|| new Date(item.completeBy) < Date.now()
 			archs.push(item)
-		} else {
+		}else {
 			tasks.push(item)
 		}
 		//console.log("ITEM", item)
 	}
 }
+
+
 
 	let	setUserInfo  = function(){
 		console.log("$rootScope._myId", $rootScope._myId)
@@ -3847,47 +3846,6 @@ this.loadData = () => {
 	}
 
  
-
-
-	
- 		// seprate contacts from appointments from archives
-		//buildFromContacts();
-			//var data = this.userData.todos;
-	// $rootScope.myData.todos.forEach(item=>{
-	// console.log("FOR EACH TODO:", item)
-	// 	if (item.completed === true || new Date(item.completeBy) < Date.now()){
-	// 		this.archives.push(item)
-	// 	} else {
-	// 		this.tasks.push(item)
-	// 	}
-	// })
-
-			//var data = this.userData.contacts;
- 	// 	$rootScope.myData.contacts.forEach(item =>{
-		// console.log("EACH CONTACT:", item)
- 	// 	if (item.category === 'Contact'){
- 	// 		this.contacts.push(item);
- 	// 	} else {
- 	// 	if (new Date(item.appointment_date) < Date.now()){
- 	// 		this.archives.push(item)
- 	// 	} else {
- 	// 		this.appointments.push(item)
- 	// 		}
- 	// 	}
- 	// })
- 		// move completed or old tasks into archives;
-
-	
-
-		this.injectTasks = function (tasks){
-		console.log("need to test injection function");
-		// tasks.forEach(function(task){
-		// 	if (Date.now() > task.completeBy && nowTasks.indexOf(task) === -1){
-		// 		nowTasks.push(task);
-		// 	}
-		// })
-	}
-
 	this.cleanOldTasks = function (){
 		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
 	}
@@ -3983,6 +3941,50 @@ this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 });
 
 
+"use strict";
+
+angular.module("myApp")
+
+.directive("right-view",function(){
+	return{
+		templateUrl: "templates/right-view.html"
+	}
+})
+
+.directive('leftView', function(){
+  return{
+    templateUrl: "directives/left-view.html"
+  }
+})
+
+.directive('taskForm', function(){
+  return{
+    templateUrl: "directives/task-form.html"
+  }
+})
+  .directive('contactForm', function(){
+  return{
+    templateUrl: "directives/contact-form.html"
+  }
+})
+
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
+
+// .directive('tools', function(){
+//   return{
+//     templateUrl: "directives/tools.html"
+//   }
+// })
+
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })
 
 "use strict";
 
@@ -4000,6 +4002,11 @@ angular.module("myApp")
 	// tools: email templates:
 	// call to action, we vs I vs you score
 
+	   $scope.$watch('appt_date', function(newData, oldData){
+	   	// set follow up for 3 days after appointment
+  	$scope.followup_date = new Date(newData) + (Date.now() + (86400 * 1000 * 3))
+  })
+
 	$scope.addNew = function(){
 		console.log("IN ADD NEW")
 		if ($rootScope.addThis.name === 'Task') {
@@ -4011,13 +4018,13 @@ angular.module("myApp")
 		}
 	}
 
-	var addContact = function(type){
-		$rootScope.addThis = null;
+	var addContact = function(item){
+
 		$scope.todo = false; 
 		//var myId = $rootScope.myId; 
-		console.log("in addAPPT OR CONTACT. TYPE:", type)
+		console.log("in addAPPT OR CONTACT. TYPE:", $rootScope.editThis.category )
 		var newContact = {};
-	if (type === "Contact"){
+	if ($rootScope.editThis.category === "Contact"){
 		newContact.contact_notes = $scope.contact_notes;
 		newContact.category = 'Contact';
 	}else{
@@ -4028,6 +4035,7 @@ angular.module("myApp")
 	if ($scope.both){
 		newContact.category = 'both';
 	}
+		
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
@@ -4040,7 +4048,7 @@ angular.module("myApp")
 		newContact.followup_date = $scope.followup_date;
 		$http.post("/contacts/newcontact", newContact )
 	.then(function(res){
-			$rootScope.addThis = null;
+			$rootScope.editThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
 			UtilityService.loadData();
 			$state.go('main')
@@ -4091,6 +4099,83 @@ angular.module("myApp")
 			$state.go("main");
 			return;
 	} 
+
+	//job hunting tasks to inject upon signup
+	var plusWeek = Date.now() + (86400 * 1000 * 7);
+	var plusDay = Date.now() + (86400 * 1000);
+
+	var tasks = [
+	{task_name: "5 tweets", 
+	task_description: "use #, @  links to articles etcto get more attention", 
+	frequency: "daily", 
+	completeBy: plusDay,
+	additional_info: "",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	{task_name: "Linked In", 
+	task_description: "send 35 connect requests", 
+	frequency: "daily", 
+	completeBy: plusDay,
+	additional_info: "try to connect with CTOs, senior developers, recruiters etc",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	{task_name: "Angel List", 
+	task_description: "follow 10 companies", 
+	frequency: "daily", 
+	completeBy: plusDay,
+	additional_info: "reach out to startups you're interested in",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	{task_name: "Git Hub", 
+	task_description: "keep punch-card green", 
+	frequency: "daily", 
+	completeBy: plusDay,
+	additional_info: "commit frequently",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	{task_name: "Quora and Stack Overflow", 
+	task_description: "pose or answer a question", 
+	frequency: "daily", 
+	completeBy: plusDay,
+	additional_info: "work with CH1 to exchange Q&A",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	{task_name: "Apply to job postings", 
+	task_description: "Apply to as many companies as you have time to thoroughly follow up with", 
+	frequency: "daily", 
+	completeBy: plusDay,
+	additional_info: "",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	{task_name: "Blog", 
+	task_description: "write a blog entry about something you've used or learned", 
+	frequency: "weekly", 
+	completeBy: plusWeek,
+	additional_info: "tweet it out give a mention to any companies mentioned, make sure to include pics and tags in post",
+	category: "todo",
+	completed: false,
+	completion_date: null},
+	]
+
+	let injectJobHunt = (myId)=>{
+		tasks.forEach(function(item){
+			item.user_id = myId;
+			$http.post("/tasks/newtodo", item)
+			.then(function(res){
+				console.log(res)
+			}, function(err){
+				console.log(err);
+			})
+		})
+	}
+
+
 ///// stuff for satelizer oauth login /////
 
 	$scope.authenticate = function(provider){
@@ -4100,6 +4185,8 @@ angular.module("myApp")
 					console.log(res.data, "logged in")
 					///MONGOOSE USER ID EXTRACTED AND STORED ON ROOTSCOPE///
 					//localStorage.dd_id = res.data.user;
+					var myId = localStorage.satellizer_token;
+					injectJobHunt(myId);
 					UtilityService.loadData();
 					$state.go("main");
 				} // if satellizer token in local storage
@@ -4123,7 +4210,9 @@ $scope.signup = function(){
 	if (user.password === password2){
 		$http.post("auth/signup", user)
 	  .then(function(res) {
-	  	console.log(res)
+	  	var myId = res.data;
+	  	console.log(res.data)
+	  	injectJobHunt(myId);
 	  	$state.go('home');
 	  })
 	  .catch(function(err) {
@@ -4196,7 +4285,7 @@ angular.module("myApp")
 	//$scope.addEdit = true;
 	//console.log("ADDEDIT", $scope.addEdit)
 
-	console.log("$rootScope.editThis", $rootScope.editThis);
+	//console.log("$rootScope.editThis", $rootScope.editThis);
   $scope.task_name = $rootScope.editThis.task_name;
   $scope.task_description = $rootScope.editThis.task_description;
   console.log($scope.completeBy, "$scope.completeBy")
@@ -4231,6 +4320,59 @@ angular.module("myApp")
 			})
 		}
 
+		$scope.contact_name = $rootScope.editThis.contact_name;
+		$scope.company_name = $rootScope.editThis.company_name;
+		$scope.contact_method = $rootScope.editThis.contact_method;
+		$scope.appt_date = new Date($rootScope.editThis.next_appt_date) || Date.now();
+		$scope.appointment_time = $rootScope.editThis.appointment_time;
+		$scope.contact_email = $rootScope.editThis.contact_email;
+		$scope.linkedin = $rootScope.editThis.linkedin;
+		$scope.last_contact_date = new Date($rootScope.editThis.last_contact_date) || Date.now(); 
+		$scope.followup_date = new Date($rootScope.editThis.followup_date) || Date.now();
+		$scope.contact_notes = $rootScope.editThis.contact_notes;
+		$scope.appt_notes = $rootScope.editThis.appt_notes;
+		$scope.appt_time = $rootScope.editThis.appt_time;
+		$scope.contact_method = $rootScope.editThis.contact_method;
+		$scope.recurrence = $rootScope.editThis.frequency;
+		$scope.contact_phn = $rootScope.editThis.contact_phn
+
+	$scope.editContact = function(){
+		console.log("CONTACT to edit", $rootScope.editThis)
+		var newContact = {};
+if ($rootScope.editThis.category === "Contact"){
+		newContact.contact_notes = $scope.contact_notes;
+		newContact.category = 'Contact';
+	}else{
+		newContact.category = 'Appointment';
+		newContact.appt_notes = $scope.appt_notes;
+		newContact.recurrence = $scope.recurrence;
+	}
+	if ($scope.both){
+		newContact.category = 'both';
+	}
+		newContact.contactId = $rootScope.editThis._id;
+	  newContact.user_id = $rootScope._myId;
+		newContact.next_appt_date = $scope.appt_date;
+		newContact.contact_name = $scope.contact_name;
+		newContact.company_name = $scope.company_name;
+		newContact.appointment_time = $scope.appt_time;
+		newContact.contact_phn = $scope.contact_phn;
+		newContact.contact_email = $scope.contact_email;
+		newContact.linkedin = $scope.linkedin;
+		newContact.contact_method = $scope.contact_method;
+		newContact.followup_date = $scope.followup_date;
+		$timeout(function(){
+			$http.put("/contacts/edit", newContact)
+			},10)
+		.then(function(res){
+			console.log("RES BODY IN EDIT", res);
+			UtilityService.loadData();
+			$state.go('main');
+			}, function(err){
+				console.log(err);
+			})
+		}
+
 
 
 })
@@ -4251,6 +4393,8 @@ angular.module("myApp")
 			return;
 	 } 
 
+	$scope.randomKindness = UtilityService.addKind(); 
+
 	$rootScope.category = $rootScope.category ? $rootScope.category :'Today';
   UtilityService.loadData();
 
@@ -4266,7 +4410,7 @@ angular.module("myApp")
   	if ($scope.rowData){	
   		console.log("NEW ROW DATA", newData);
   	}
-  })
+  })  
 
 //category is set in the navCtrl upon drop-down 'cat' change
   $rootScope.$watch('category', function(newCategory, oldCategory){
@@ -4347,7 +4491,7 @@ angular.module("myApp")
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
-	 			tHeads.col5= "put back on agenda";
+	 			tHeads.col5= "Return To Agenda";
 	 			tHeads.col6= "Edit/Delete"; 
 	 			tHeads.col7= "un-archive";
 	 			// if(){
@@ -4365,7 +4509,6 @@ angular.module("myApp")
 	}
 
 
-	UtilityService.injectTasks();
 	UtilityService.cleanOldTasks();
 	UtilityService.addKind();
 
@@ -4443,11 +4586,6 @@ angular.module("myApp")
 			}, function(err){console.log(err)})
 			//add sweet alert to confirm before deleting	
 		}      
-	
-	
-
-
-
 
 	// convert into mongoose
  	$rootScope.addBtns = [{name:'Task', classIs:'btn-info'}, 
@@ -4479,30 +4617,12 @@ angular.module("myApp")
 		item.completed = !item.completed;
 		if (item.completed){
 			$timeout(function(){
-			archive(item)}, 1000)
+			UtilityService.archive(item)}, 1000)
 		} else {
 			$timeout(function(){
-			unArchive(item)}, 1000)
+			UtilityService.unArchive(item)}, 1000)
 		}		
 	}
-
-	var archive = function(item){
-		console.log(item, "ARCHIVING THIS GUY")
-		$http.put("tasks/archive", {taskId: item._id}) 
-		.then(function(res){
-			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			UtilityService.loadData();
-		}, function(err){console.log(err)})			
-	}
-	 
-		var unArchive = function(item){
-		console.log(item, "UNARCHIVING THIS GUY")
-		$http.put("tasks/unarchive", {taskId: item._id}) 
-		.then(function(res){
-			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			UtilityService.loadData();
-		}, function(err){console.log(err)})			
-	} 
 
 	$scope.goToEdit = function(item){
 		console.log("ITEM", item)
@@ -4628,6 +4748,19 @@ angular.module("myApp")
 	// hide login or logout button
 
 	$scope.cats = UtilityService.cats;
+	
+	$scope.selectTools = ["", "Flash Cards", "Social Media"];
+
+	$scope.$watch('toolBelt', function(newVal, oldVal ){
+		console.log("NEW TOOL", newVal);
+		goToTool();
+	})
+
+	var goToTool = function(){
+		console.log("toolBelt", $scope.toolBelt);
+		$rootScope.toolBelt = $scope.toolBelt;
+		$state.go("main.tools");
+	}
 
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
@@ -4654,14 +4787,11 @@ angular.module("myApp")
 
 	//if ($scope.searchArray.length){$scope.searchArray.sort()};
 function assembleSearch(searchArray, searchTerm){
-	// $timeout(function(){
 		if (!searchArray || !searchTerm) return;
 		console.log("searchArray", searchArray)
 		$scope.searchArray = [];
 		searchArray.forEach(function(item){
 			$scope.searchArray.push(item[searchTerm])	
-	// },10)
-		
 	})
 }
 
@@ -4772,6 +4902,7 @@ angular.module("myApp")
 		$scope.colH4 = 'Complete By';
 		$scope.colH5 = 'Done?';
 		$scope.colH6 = "Edit/Delete"
+		$scope.colH7 = "Archive"
 		$scope.td_1 = "task_name";
 		$scope.td_2 = "task_description";
 		$scope.td_3 = "frequency";
@@ -4839,4 +4970,57 @@ angular.module("myApp")
 .controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
 	console.log("make flash cards, contact list, company list, email templates etc...")
 	
+	$scope.showInputForm = function(){
+		console.log("SHOW INPUT")
+		$scope.addCards = true;
+	}
+
+	$scope.addFlash = function(){
+
+	}
+
+	$scope.removeFlash = function(){
+
+	}	
+
+	$scope.playCards = function(){
+		$scope.addCards= false;
+	}
+
+	$scope.links = [
+	{name: "twitter",
+	url: UtilityService.twitter || null},	
+	{name: "gitHub",
+	url: UtilityService.git || null},
+
+
+
+	]; 
+
+
+	// $scope.twitter = UtilityService.twitter;
+	// $scope.git = UtilityService.git;
+	// $scope.wordPress = UtilityService.wordPress;
+	// $scope.linkedin = UtilityService.linkedin;
+	// $scope.stackOverflow = UtilityService.stackOverflow;
+	// $scope.angellist = UtilityService.angellist;
+
+
+
+	$scope.addSocial = function(){
+
+	}	
+
+	$scope.removeSocial = function(){
+
+	}
+
+	$scope.closeTool = function(){
+		$scope.addCards= false;
+		$rootScope.toolBelt = null;
+		$state.go("main");
+	}
+
+
+
 })

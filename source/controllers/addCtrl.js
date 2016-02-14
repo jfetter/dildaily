@@ -15,6 +15,11 @@ angular.module("myApp")
 	// tools: email templates:
 	// call to action, we vs I vs you score
 
+	   $scope.$watch('appt_date', function(newData, oldData){
+	   	// set follow up for 3 days after appointment
+  	$scope.followup_date = new Date(newData) + (Date.now() + (86400 * 1000 * 3))
+  })
+
 	$scope.addNew = function(){
 		console.log("IN ADD NEW")
 		if ($rootScope.addThis.name === 'Task') {
@@ -26,13 +31,13 @@ angular.module("myApp")
 		}
 	}
 
-	var addContact = function(type){
-		$rootScope.addThis = null;
+	var addContact = function(item){
+
 		$scope.todo = false; 
 		//var myId = $rootScope.myId; 
-		console.log("in addAPPT OR CONTACT. TYPE:", type)
+		console.log("in addAPPT OR CONTACT. TYPE:", $rootScope.editThis.category )
 		var newContact = {};
-	if (type === "Contact"){
+	if ($rootScope.editThis.category === "Contact"){
 		newContact.contact_notes = $scope.contact_notes;
 		newContact.category = 'Contact';
 	}else{
@@ -43,6 +48,7 @@ angular.module("myApp")
 	if ($scope.both){
 		newContact.category = 'both';
 	}
+		
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
@@ -55,7 +61,7 @@ angular.module("myApp")
 		newContact.followup_date = $scope.followup_date;
 		$http.post("/contacts/newcontact", newContact )
 	.then(function(res){
-			$rootScope.addThis = null;
+			$rootScope.editThis = null;
 			console.log("LOOK WHAT I BROUGHT BACK",res.data);
 			UtilityService.loadData();
 			$state.go('main')

@@ -10,6 +10,8 @@ angular.module("myApp")
 			return;
 	 } 
 
+	$scope.randomKindness = UtilityService.addKind(); 
+
 	$rootScope.category = $rootScope.category ? $rootScope.category :'Today';
   UtilityService.loadData();
 
@@ -25,7 +27,7 @@ angular.module("myApp")
   	if ($scope.rowData){	
   		console.log("NEW ROW DATA", newData);
   	}
-  })
+  })  
 
 //category is set in the navCtrl upon drop-down 'cat' change
   $rootScope.$watch('category', function(newCategory, oldCategory){
@@ -106,7 +108,7 @@ angular.module("myApp")
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
-	 			tHeads.col5= "put back on agenda";
+	 			tHeads.col5= "Return To Agenda";
 	 			tHeads.col6= "Edit/Delete"; 
 	 			tHeads.col7= "un-archive";
 	 			// if(){
@@ -124,7 +126,6 @@ angular.module("myApp")
 	}
 
 
-	UtilityService.injectTasks();
 	UtilityService.cleanOldTasks();
 	UtilityService.addKind();
 
@@ -202,11 +203,6 @@ angular.module("myApp")
 			}, function(err){console.log(err)})
 			//add sweet alert to confirm before deleting	
 		}      
-	
-	
-
-
-
 
 	// convert into mongoose
  	$rootScope.addBtns = [{name:'Task', classIs:'btn-info'}, 
@@ -238,30 +234,12 @@ angular.module("myApp")
 		item.completed = !item.completed;
 		if (item.completed){
 			$timeout(function(){
-			archive(item)}, 1000)
+			UtilityService.archive(item)}, 1000)
 		} else {
 			$timeout(function(){
-			unArchive(item)}, 1000)
+			UtilityService.unArchive(item)}, 1000)
 		}		
 	}
-
-	var archive = function(item){
-		console.log(item, "ARCHIVING THIS GUY")
-		$http.put("tasks/archive", {taskId: item._id}) 
-		.then(function(res){
-			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			UtilityService.loadData();
-		}, function(err){console.log(err)})			
-	}
-	 
-		var unArchive = function(item){
-		console.log(item, "UNARCHIVING THIS GUY")
-		$http.put("tasks/unarchive", {taskId: item._id}) 
-		.then(function(res){
-			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			UtilityService.loadData();
-		}, function(err){console.log(err)})			
-	} 
 
 	$scope.goToEdit = function(item){
 		console.log("ITEM", item)

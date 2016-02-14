@@ -24,16 +24,18 @@ angular.module("myApp")
     templateUrl: "directives/contact-form.html"
   }
 })
-.directive('appointmentForm', function(){
-  return{
-    templateUrl: "directives/appointment-form.html"
-  }
-})
+
 .directive('mainTable', function(){
   return{
     templateUrl: "directives/main-table.html"
   }
 })
+
+// .directive('tools', function(){
+//   return{
+//     templateUrl: "directives/tools.html"
+//   }
+// })
 
 // .directive('taskModal', function(){
 //   return{

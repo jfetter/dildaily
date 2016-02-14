@@ -18,6 +18,8 @@ var userSchema = Schema({
 	todos: [{ type: Schema.Types.ObjectId, ref: 'Todo' }],
 	appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
 	contacts: [{type: Schema.Types.ObjectId, ref: 'Contact'}],
+	flash_cards:{type: Array, default: []},
+	social_media: {type: Array, default: []},
 	github: String,
 	facebook: String
 })

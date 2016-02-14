@@ -16,6 +16,12 @@
 		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
 			
 			<div ui-view class="add-edit-view"></div>
+		<span class="row">
+			<span class="col-sm-12">
+				<a ng-hide="addThis" ng-repeat="button in addBtns" ng-click="addNew(button)" ui-sref="main.add" class="btn" ng-class="button.classIs">Add New {{button.name}}</a>
+			</span>
+		</span>
+</div>
 		
 		</div>
 	</div>
@@ -30,27 +36,21 @@
 		<div class="col-sm-6 daily">
 			<div class="row daily-row">
 				</div>
-				<div>
+				<div ng-hide="toolBelt">
 					<left-view />
 				</div>
 				<div> 
 					<right-view />
 				</div >
 		<div class="col-sm-6">
-			<div ng-show="false">
+			<div ng-show="toolBelt">
 			<tools />
 			</div>
-			<div ng-show="false">
-			<searchDisplay />
-			</div>
-			<div ng-show="false">
-			<archives />
-			</div>
+
+
 		</div>
-		<span class="row">
-			<span class="col-sm-12">
-				<a ng-hide="addThis" ng-repeat="button in addBtns" ng-click="addNew(button)" ui-sref="main.add" class="btn" ng-class="button.classIs">Add New {{button.name}}</a>
-			</span>
-		</span>
-</div>
+	<div class="row">
+		<span><h4>Random Act Of Kindness:</h4>{{randomKindness}}</span>
+	</div>
+
 </div>

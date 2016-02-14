@@ -14,8 +14,7 @@
 					<input ng-model="company_name" type="text" placeholder="contact's company" class="input-descript">
 				</td>
 				<td class="add-appt-date">
-					<label ng-show="addThis.name === 'Contact'" for="last-contact-date">Date of Next Appt</label>
-					<label ng-show="addThis.name === 'Appointment'" for="Date">Appt Date</label>
+					<label ng-show="addThis.name === 'Contact' || addThis.name === 'Appointment' || editThis.category === 'Contact' || editThis.category === 'Appointment' " for="last-contact-date">Date of Next Appt</label>
 					<input required ng-model="appt_date" type="date" class="input-date" required>
 				</td>				
 				<td class="add-task-time">
@@ -54,11 +53,11 @@
 					<input required ng-model="linkedin" type="text" class="input-date" placeholder="linkedin.com/in/fnamelname">
 				</td>				
 				<td class="add-appt-fu">
-					<label ng-hide="addThis.name === 'Appointment'" for="followup_date">Date of Last Contact</label>
-					<label ng-show="addThis.name === 'Appointment'" for="followup_date">Follow Up Date</label>
+					<label ng-hide="editThis || addThis.name === 'Appointment'" for="followup_date">Date of Last Contact</label>
+					<label ng-show="addThis.name === 'Appointment' || editThis.category === 'Appointment'" for="followup_date">Follow Up Date</label>
 					<input ng-model="followup_date" type="date" class="input-date" required>
 				</td>
-				<td ng-show="addThis.name === 'Appointment'">
+				<td ng-show="addThis.name === 'Appointment' || editThis.category ==='Appointment'">
 						<label for="addContact">Save As Contact?</label>
 						<input type="checkbox" ng-model="both" ng-change="both = !both" >
 					</td>
@@ -83,7 +82,7 @@
 					</td>
 				<td class="addCancel-task-butt" >
 					<button ng-hide="editThis" class="add-task-btn btn btn-sm" ng-click="addNew()" ng-class="addThis.classIs">Add New {{addThis.name}}</button>
-					<button ng-show="editThis" class="add-task-btn btn btn-sm btn-success" ng-click="addNew()" >Done Editing</button>
+					<button ng-show="editThis" class="add-task-btn btn btn-sm btn-success" ng-click="editContact()" >Done Editing</button>
 					<button ng-click="closePopUp()" class="cancel-add-btn btn btn-sm btn-danger">Cancel</button>
 				</td>
 				</tr>

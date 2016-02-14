@@ -14,8 +14,8 @@
 						<th ng-show="dayView">Contact Method</th>
 						<th class="col-sm-2 text-center"> 
 							<div class="">
-								<span class="">{{tHeads.col6}}</span>
-								<span ng-show="currentView == 'Today' || currentView == 'This'" class="row-data">{{colH6}}</span>
+								<span ng-hide="currentView == 'Today' || currentView == 'This Week'" class="">{{tHeads.col6}}</span>
+								<span ng-show="currentView == 'Today' || currentView == 'This Week'" class="row-data">{{colH6}}</span>
 							</div>
 						</th>
 					</tr>
@@ -26,17 +26,14 @@
 							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
 							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
 							<td class="col-sm-2">{{item[td_4] | amDateFormat:'ll'}}</td>
-							<!-- <td class="col-sm-2">{{item.}}</td> -->
-							<td class="table-icons text-center">
-		  					<div class="">
-									<a ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
-									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
-								</div>
+							<td ng-if="colH1 === 'Contact Name'">{{item[td_5] | amDateFormat: 'h:hh' }} </td>
+							<td ng-if="colH1 ==='Task Name'" class="table-icons text-center">
+								<a ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{colH7}}</a>
 						</td>
-							<td class="col-sm-2 text-center"> 
-								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
-								<i class="fa fa-trash" ng-click="deleteItem(item)"></i>
-							</td>
+						<td class="col-sm-2 text-center"> 
+							<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
+							<i class="fa fa-trash" ng-click="deleteItem(item)"></i>
+						</td>
 					</tr>
 
 					<tr ng-hide="currentView == 'Today' || currentView == 'This Week' " class="row-data" ng-class='striking(item)' ng-repeat="item in rowData track by $index">
@@ -46,14 +43,14 @@
 							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
 							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
 							<td class="col-sm-2">{{item[r_4] | amDateFormat:'ll'}}</td>
-							<td ng-show="">{{item[r_5]}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
-							<td class="table-icons text-center">
-		  					<div class="">
-									<a ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
+								<td ng-show = "currentView !='Tasks' && currentView !='Archives'">{{item[r_5] | amDateFormat: 'h:hh' }} 
+								</td>
+								
+							<td ng-if="currentView ==='Tasks' || currentView ==='Archives'" class="table-icons text-center">
+									<a  ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
 									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
-								</div>
-						</td>
+							</td>
 							<td class="col-sm-2 text-center"> 
 								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 
 								<i class="fa fa-trash" ng-click="deleteItem(item)"></i>

@@ -5,7 +5,6 @@ var router = express.Router();
 var User = require("../models/user")
 var Todo = require('../models/todo');
 // var Archive = require('../models/archive')
-var Appointment = require('../models/appointment')
 var Contact = require('../models/contact');
 
 router.post("/newtodo", function(req, res){
@@ -13,7 +12,7 @@ router.post("/newtodo", function(req, res){
 	var todo = new Todo(req.body)
 	console.log(todo)
 	todo.save((err, savedTask) => {
-		console.log("savedTask", savedTask)
+		//console.log("savedTask", savedTask)
 		if (err)res.status(400).send(err);
 		var taskId = savedTask._id;
 		User.findByIdAndUpdate(userId, {$push: {todos: taskId}} ,function(err, foundUser){

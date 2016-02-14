@@ -21,7 +21,7 @@ var User = require('../models/user');
 
 router.post('/signup', function(req, res){
   User.register(req.body, function(err, user){
-    res.send(user)
+    res.send(user._id)
   })
 })
 

@@ -11,6 +11,7 @@ angular.module("myApp")
 		$scope.colH4 = 'Complete By';
 		$scope.colH5 = 'Done?';
 		$scope.colH6 = "Edit/Delete"
+		$scope.colH7 = "Archive"
 		$scope.td_1 = "task_name";
 		$scope.td_2 = "task_description";
 		$scope.td_3 = "frequency";

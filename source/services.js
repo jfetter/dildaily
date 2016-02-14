@@ -12,9 +12,36 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
+ 		this.twitter;
+ 		this.git;
+ 		this.wordPress;
+ 		this.linkedin;
+ 		this.stackOverflow;
+ 		this.angellist;
+ 		
+ 		this.wordPress
+ 		var plusDay = (Date.now() + (86400 * 1000));
+		var minusDay = (Date.now() - (86400 * 1000));
 
 
-//other names: Hire, get-it, Agen-do
+	this.archive = (item) =>{
+		console.log(item, "ARCHIVING THIS GUY")
+		$http.put("tasks/archive", {taskId: item._id}) 
+		.then((res) =>{
+			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)})			
+	}
+	 
+		this.unArchive = (item)=>{
+		console.log(item, "UNARCHIVING THIS GUY")
+		$http.put("tasks/unarchive", {taskId: item._id}) 
+		.then((res)=>{
+			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)})			
+	} 
+
 	$rootScope.appTitle = "Get To Work";
 	$rootScope.tagLine = "the agenda for job seekers"
 	var today = new Date().getDay();
@@ -23,37 +50,43 @@ angular.module("myApp")
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-			 	let buildDay = (appointments, tasks, newData) =>{
+	let buildTools = () =>{
+
+	}
+
+
+	let buildDay = (appointments, tasks, newData) =>{
 			 		//console.log("APPOINTMENTS", appointments, "TASKS", tasks)
 				//var appTasks = UtilityService.appointments.concat(UtilityService.tasks);
-				var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
-				var plusDay = (Date.now() + (86400 * 1000));
-				for (var h = 0; h < tasks.length + 1; h ++){
-		 				if (h === tasks.length ){
-		 				this.today.tasks = todayTasks;
+		var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
+		// 86400000 milliseconds in one day
+
+			for (var h = 0; h < tasks.length + 1; h ++){
+		 		if (h === tasks.length ){
+		 			this.today.tasks = todayTasks;
 		 			//	console.log("this.today", this.today)
-		 			} else {
+		 		} else {
 					//console.log("H", h)
 		 			var item = tasks[h];
 		 			//console.log(item, "ITEM")
-		 			if (new Date(item.completeBy) <= plusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
+		 			if (new Date(item.completeBy) <= plusDay && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
 		 				todayTasks.push(item);
 		 			}
 				}
 
-		 		for (var i =0; i < appointments.length + 1; i ++){
+		 	for (var i =0; i < appointments.length + 1; i ++){
 		 			var item = appointments[i];
-		 			if (i === appointments.length ){
+		 		if (i === appointments.length ){
 		 				this.today.appointments = todayAppts;
 		 				this.today.followUps = todayFollowUps;
-		 			} else{
-			 			if (new Date(item.next_appt_date) <= plusDay){
+		 		} else{
+			 		if (new Date(item.next_appt_date) <= plusDay){
 			 				todayAppts.push(item);
-			 			} else if (new Date(item.followup_date) <= plusDay){
-			 				todayFollowUps.push(item);
-			 			}
-				 	}
-		 		}
+			 		} else if (new Date(item.followup_date) <= plusDay){
+			 			todayFollowUps.push(item);
+			 		}
+				}
+		 	}
 			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
 			 		console.log(this.today, "TODAYYY")
 			 		$rootScope.myData = newData;
@@ -105,14 +138,22 @@ angular.module("myApp")
 				buildContacts(newData, archs, tasks);
 				return;		
 			}
-		if (item.completed === true || new Date(item.completeBy) < Date.now()){
+			// put daily tasks back into circulation after a day and weekly after a week
+		if ((item.completed === true && item.frequency === 'daily' && new Date(item.completion_date) >= Date.now() ) ||
+			 (item.completed === true && item.frequency === 'weekly' && new Date(item.completion_date) >= Date.now() + (7 * plusDay)) ){
+			this.unarchive(item);
+			item.push(tasks)
+		} else if (item.completed === true ){
+		//|| new Date(item.completeBy) < Date.now()
 			archs.push(item)
-		} else {
+		}else {
 			tasks.push(item)
 		}
 		//console.log("ITEM", item)
 	}
 }
+
+
 
 	let	setUserInfo  = function(){
 		console.log("$rootScope._myId", $rootScope._myId)
@@ -146,47 +187,6 @@ this.loadData = () => {
 	}
 
  
-
-
-	
- 		// seprate contacts from appointments from archives
-		//buildFromContacts();
-			//var data = this.userData.todos;
-	// $rootScope.myData.todos.forEach(item=>{
-	// console.log("FOR EACH TODO:", item)
-	// 	if (item.completed === true || new Date(item.completeBy) < Date.now()){
-	// 		this.archives.push(item)
-	// 	} else {
-	// 		this.tasks.push(item)
-	// 	}
-	// })
-
-			//var data = this.userData.contacts;
- 	// 	$rootScope.myData.contacts.forEach(item =>{
-		// console.log("EACH CONTACT:", item)
- 	// 	if (item.category === 'Contact'){
- 	// 		this.contacts.push(item);
- 	// 	} else {
- 	// 	if (new Date(item.appointment_date) < Date.now()){
- 	// 		this.archives.push(item)
- 	// 	} else {
- 	// 		this.appointments.push(item)
- 	// 		}
- 	// 	}
- 	// })
- 		// move completed or old tasks into archives;
-
-	
-
-		this.injectTasks = function (tasks){
-		console.log("need to test injection function");
-		// tasks.forEach(function(task){
-		// 	if (Date.now() > task.completeBy && nowTasks.indexOf(task) === -1){
-		// 		nowTasks.push(task);
-		// 	}
-		// })
-	}
-
 	this.cleanOldTasks = function (){
 		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
 	}

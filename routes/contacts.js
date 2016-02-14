@@ -4,7 +4,6 @@ var express = require('express');
 var router = express.Router();
 var User = require("../models/user")
 var Todo = require('../models/todo');
-var Appointment = require('../models/appointment')
 var Contact = require('../models/contact');
 
 router.post("/newcontact", function(req, res){
@@ -51,37 +50,32 @@ router.post("/delete", function(req, res){
 	}
 })
 
-// router.post("/delete", function(req, res){
-// 	var userId = req.body.userId;
-// 	var taskId = req.body.taskId;
-// 	console.log("delete from user:", userId, "task:", taskId)
-// 		User.findById(userId, function(err, foundUser){
-// 			if (err || !foundUser) return res.status(400).send(err || "no user found");
-// 			console.log("TODOS BEFORE DELETE", foundUser.todos)
-// 			foundUser.todos.splice(foundUser.todos.indexOf(taskId),1)
-// 			console.log("TODOS AFTER DELETE", foundUser.todos)
-// 			foundUser.save(foundUser, function(err, updatedUser){
-// 				if (err) return res.status(400).send(err)
-// 					console.log("USER TASK REMOVED. OFF TO REMOVE TODO NOW...")
-// 				Todo.findByIdAndRemove(taskId, function (err, deletedTask ){
-//     		res.status(err ? 400 : 200).send(err || "task deleted!!");
-// 			})
-// 		})
-// 	})
-// })
-
 router.put("/edit", (req, res) =>{
 	console.log("EDIT REQ BODY !!!!!", req.body)
-	var task = req.body;
-	Todo.findByIdAndUpdate(task.taskId,function(err, updatedEntry){
-		console.log("TASK IN EDIT", updatedEntry)
-		res.status(err ? 400 : 200).send(err || `Entry: ${updatedEntry} edited`);
+	var contact = req.body;
+	Contact.findByIdAndUpdate(contact.contactId, contact, {upsert:true},
+		function(err, contact){
+		if (err || !contact) return res.status(400).send(err || "no contact found")
+		console.log("contact IN EDIT", contact)
+		res.status( 200).send(err || `Entry: ${contact} edited`);
 	})
 })
 
-// router.get("/", function(req, res){
-// 	console.log("req.body from TASK router get", req);
-// 	res.render("index")
+// router.put("/edit", (req, res) =>{
+// 	console.log("EDIT REQ BODY !!!!!", req.body)
+// 	var task = req.body;
+// 	Contact.findByIdAndUpdate(task.taskId, {
+// 		$set:{ task_name: task.task_name ,
+// 		task_description: task.task_description, 
+// 		frequency: task.frequency,
+// 		 completeBy: task.completeBy, 
+// 		 email_reminder: task.email_reminder, 
+// 		 additional_info: task.additional_info, 
+// 		 completed: task.completed } 
+// 	},function(err, task){
+// 		console.log("TASK IN EDIT", task)
+// 		res.status(err ? 400 : 200).send(err || `task ${task} edited`);
+// 	})
 // })
 
 module.exports = router; 

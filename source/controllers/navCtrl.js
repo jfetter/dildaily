@@ -6,6 +6,19 @@ angular.module("myApp")
 	// hide login or logout button
 
 	$scope.cats = UtilityService.cats;
+	
+	$scope.selectTools = ["", "Flash Cards", "Social Media"];
+
+	$scope.$watch('toolBelt', function(newVal, oldVal ){
+		console.log("NEW TOOL", newVal);
+		goToTool();
+	})
+
+	var goToTool = function(){
+		console.log("toolBelt", $scope.toolBelt);
+		$rootScope.toolBelt = $scope.toolBelt;
+		$state.go("main.tools");
+	}
 
 	$scope.loginButton = function(){
 		return UtilityService.loggedIn();
@@ -32,14 +45,11 @@ angular.module("myApp")
 
 	//if ($scope.searchArray.length){$scope.searchArray.sort()};
 function assembleSearch(searchArray, searchTerm){
-	// $timeout(function(){
 		if (!searchArray || !searchTerm) return;
 		console.log("searchArray", searchArray)
 		$scope.searchArray = [];
 		searchArray.forEach(function(item){
 			$scope.searchArray.push(item[searchTerm])	
-	// },10)
-		
 	})
 }
 

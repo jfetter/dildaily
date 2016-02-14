@@ -27,7 +27,10 @@
       <span ng-show="loginButton()"class="col-sm-6">
         <a ng-click="logOut()" class=" col-sm-2">Log Out</a>
         <a ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn col-sm-2">{{appTitle}}</a>
-        <a ui-sref="main.tools"class="col-sm-2" >Tools</a>
+        <label for="toolBelt">Tools:</label>
+        <select ng-model="toolBelt" class="col-sm-2" placeholder="tools">
+        <option ng-repeat="tool in selectTools track by $index" value="{{tool}}">{{tool}}</option>
+        </select>
       </span>
       <span ng-show="loginButton()" class="searchBar pull-right col-sm-6">
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-2" name="cat" id="cat">

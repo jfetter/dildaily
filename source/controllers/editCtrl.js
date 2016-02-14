@@ -10,7 +10,7 @@ angular.module("myApp")
 	//$scope.addEdit = true;
 	//console.log("ADDEDIT", $scope.addEdit)
 
-	console.log("$rootScope.editThis", $rootScope.editThis);
+	//console.log("$rootScope.editThis", $rootScope.editThis);
   $scope.task_name = $rootScope.editThis.task_name;
   $scope.task_description = $rootScope.editThis.task_description;
   console.log($scope.completeBy, "$scope.completeBy")
@@ -35,6 +35,59 @@ angular.module("myApp")
 			console.log("EDIT TASK", task);
 		$timeout(function(){
 			$http.put("/tasks/edit", task)
+			},10)
+		.then(function(res){
+			console.log("RES BODY IN EDIT", res);
+			UtilityService.loadData();
+			$state.go('main');
+			}, function(err){
+				console.log(err);
+			})
+		}
+
+		$scope.contact_name = $rootScope.editThis.contact_name;
+		$scope.company_name = $rootScope.editThis.company_name;
+		$scope.contact_method = $rootScope.editThis.contact_method;
+		$scope.appt_date = new Date($rootScope.editThis.next_appt_date) || Date.now();
+		$scope.appointment_time = $rootScope.editThis.appointment_time;
+		$scope.contact_email = $rootScope.editThis.contact_email;
+		$scope.linkedin = $rootScope.editThis.linkedin;
+		$scope.last_contact_date = new Date($rootScope.editThis.last_contact_date) || Date.now(); 
+		$scope.followup_date = new Date($rootScope.editThis.followup_date) || Date.now();
+		$scope.contact_notes = $rootScope.editThis.contact_notes;
+		$scope.appt_notes = $rootScope.editThis.appt_notes;
+		$scope.appt_time = $rootScope.editThis.appt_time;
+		$scope.contact_method = $rootScope.editThis.contact_method;
+		$scope.recurrence = $rootScope.editThis.frequency;
+		$scope.contact_phn = $rootScope.editThis.contact_phn
+
+	$scope.editContact = function(){
+		console.log("CONTACT to edit", $rootScope.editThis)
+		var newContact = {};
+if ($rootScope.editThis.category === "Contact"){
+		newContact.contact_notes = $scope.contact_notes;
+		newContact.category = 'Contact';
+	}else{
+		newContact.category = 'Appointment';
+		newContact.appt_notes = $scope.appt_notes;
+		newContact.recurrence = $scope.recurrence;
+	}
+	if ($scope.both){
+		newContact.category = 'both';
+	}
+		newContact.contactId = $rootScope.editThis._id;
+	  newContact.user_id = $rootScope._myId;
+		newContact.next_appt_date = $scope.appt_date;
+		newContact.contact_name = $scope.contact_name;
+		newContact.company_name = $scope.company_name;
+		newContact.appointment_time = $scope.appt_time;
+		newContact.contact_phn = $scope.contact_phn;
+		newContact.contact_email = $scope.contact_email;
+		newContact.linkedin = $scope.linkedin;
+		newContact.contact_method = $scope.contact_method;
+		newContact.followup_date = $scope.followup_date;
+		$timeout(function(){
+			$http.put("/contacts/edit", newContact)
 			},10)
 		.then(function(res){
 			console.log("RES BODY IN EDIT", res);
