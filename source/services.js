@@ -12,17 +12,30 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
- 		this.twitter;
- 		this.git;
- 		this.wordPress;
- 		this.linkedin;
- 		this.stackOverflow;
- 		this.angellist;
+
  		
- 		this.wordPress
  		var plusDay = (Date.now() + (86400 * 1000));
 		var minusDay = (Date.now() - (86400 * 1000));
 
+	this.modifyTools = (toolType, array) =>{
+		console.log(`IN MODIFY ${toolType} for ${$rootScope.myData._id} sending ${array}`)
+		var id = $rootScope.myData._id;
+		var newArray = {}; 
+		newArray.array = array;
+		newArray.toolType = toolType;
+		newArray.modify = {toolType: array}
+		newArray.userId = id;
+		console.log(newArray)
+		$http.post("users/tools/update", newArray)
+		.then(res=>{
+			console.log("res.data", res.data);
+			//$rootScope.flashCards = res.data.flash_cards;
+			//$rootScope.socialLinks = res.data.social_media;
+		},err=>{
+			console.log(err);
+		})
+
+	}
 
 	this.archive = (item) =>{
 		console.log(item, "ARCHIVING THIS GUY")
@@ -30,7 +43,8 @@ angular.module("myApp")
 		.then((res) =>{
 			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
 			this.loadData();
-		}, (err)=>{console.log(err)})			
+		}, (err)=>{console.log(err)
+		})			
 	}
 	 
 		this.unArchive = (item)=>{
@@ -155,16 +169,18 @@ angular.module("myApp")
 
 
 
-	let	setUserInfo  = function(){
+	let	setUserInfo  = () =>{
 		console.log("$rootScope._myId", $rootScope._myId)
 		$http.get(`users/login/${$rootScope._myId}`)
-			.then(function(res){
+			.then(res=>{
 			//$rootScope.userData = res.data;
 			//$rootScope.myId = res.data._Id;
 			//$rootScope.myName = res.data.username;
 			//$rootScope.tasks = res.data.todos;
 			//$rootScope.myData = myData;
 			var newData = res.data;
+			$rootScope.flashCards = res.data.flash_cards;
+			$rootScope.socialLinks= res.data.social_media;
 			console.log("RES BODY IN SERVICE",  res.data)
 			console.log("ABOUT TO ITERATE THROUGH STUFF")
 			buildTasks(newData);

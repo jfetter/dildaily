@@ -3,21 +3,103 @@ angular.module("myApp")
 .controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
 	console.log("make flash cards, contact list, company list, email templates etc...")
 	
+	$scope.cards = $rootScope.flashCards || [];
+	$scope.socialLinks = UtilityService.socialLinks;
+	$rootScope.toolBelt = $rootScope.toolBelt || "Flash Cards"
+
+	$rootScope.$watch('flashCards', function(newData, oldData){
+		console.log("new cards", newData);
+		$scope.cards = newData;
+	})
+
 	$scope.showInputForm = function(){
 		console.log("SHOW INPUT")
 		$scope.addCards = true;
 	}
 
-	$scope.addFlash = function(){
-
+	var modifyTools = function(){
+		console.log("SENDING OFF CHANGES TOOLS", $rootScope.toolBelt);
+		var toolType;
+		var array; 
+		if ($rootScope.toolBelt === "Flash Cards"){
+			console.log("MODIFYING FLASH")
+			toolType = "flash_cards"
+			array = $scope.cards;
+		} else if ($rootScope.toolBelt === "Social Media"){
+			toolType = "social_media";
+			array = $scope.SocialLinks;
+		}
+		UtilityService.modifyTools(toolType, array)
 	}
 
-	$scope.removeFlash = function(){
+	$scope.addFlash = function(){
+		$scope.addCards = true;
+		$scope.playCards = false;
+		var newCard = {};
+		newCard.question = $scope.question;
+		newCard.answer = $scope.answer;
+		$scope.cards.push(newCard);
+		$scope.question = "";
+		$scope.answer = "";
+		modifyTools();
+	}
 
-	}	
+	// $scope.editMe = function(item, index){
+	// 	if ($scope.toolBelt == "Flash Cards"){
+	// 	console.log(item, "ITEMMM")
+	// 		$scope.question = item.question;
+	// 		$scope.answer = item.answer;
+	// 	} else if ($scope.toolBelt == "Social Media"){
+	// 	 	console.log("IN EDIT SOCIAL MEDIA")
+	// 	}
+	// 	$scope.addCards = true;
+	// 	$scope.addFlash	// 	$scope.deleteTool(index);	
+	// }
 
-	$scope.playCards = function(){
-		$scope.addCards= false;
+	// var editTool = function(){
+	// 	$scope.
+	// 	var array;
+	// 	console.log("ITEM", item, "INDEX", index)
+	// 	if ($scope.toolBelt == "Flash Cards"){
+	// 		//index = $scope.cards.indexOf(item);
+	// 		array = $scope.cards;
+	// 	} else if ($scope.toolBelt === "Social Media"){
+	// 		//index = $scope.cards.indexOf(item);
+	// 		array = $scope.SocialLinks;
+	// 	}
+	// 	console.log("ARRAY BEFORE", array)
+	// 	array.splice(index, 1, item);
+	// 	console.log("ARRAY AFTER", array)
+	// 	modifyTools();
+	// }	
+
+	$scope.deleteTool = function(index){
+		var index;
+		var array;
+		if ($scope.toolBelt == "Flash Cards"){
+			array = $scope.cards;
+		} else if ($scope.toolBelt == "Social Media"){
+			//index = $scope.cards.indexOf(item);
+			array = $scope.SocialLinks;
+		}
+			console.log("ARRAY BEFORE", array)
+			array.splice(index, 1);
+			console.log("ARRAY AFTER", array)
+			modifyTools();
+	}
+
+	$scope.quest = true;
+	$scope.dealCard = function(){
+		$scope.addCards = false;
+		$scope.playCards = true;
+		$scope.quest = true;
+		$scope.showCard = nextQuestion();
+	}
+
+	var nextQuestion = function(){
+		var cards = $scope.cards; 
+		var index = Math.floor((Math.random()* cards.length));
+		return cards[index];
 	}
 
 	$scope.links = [
@@ -48,8 +130,10 @@ angular.module("myApp")
 
 	}
 
-	$scope.closeTool = function(){
-		$scope.addCards= false;
+	$scope.closeTools = function(){
+		console.log("CLOSE TOOLs")
+		$scope.playCards = null;
+		$scope.addCards= null;
 		$rootScope.toolBelt = null;
 		$state.go("main");
 	}

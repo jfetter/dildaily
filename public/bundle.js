@@ -3671,17 +3671,30 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
- 		this.twitter;
- 		this.git;
- 		this.wordPress;
- 		this.linkedin;
- 		this.stackOverflow;
- 		this.angellist;
+
  		
- 		this.wordPress
  		var plusDay = (Date.now() + (86400 * 1000));
 		var minusDay = (Date.now() - (86400 * 1000));
 
+	this.modifyTools = (toolType, array) =>{
+		console.log(`IN MODIFY ${toolType} for ${$rootScope.myData._id} sending ${array}`)
+		var id = $rootScope.myData._id;
+		var newArray = {}; 
+		newArray.array = array;
+		newArray.toolType = toolType;
+		newArray.modify = {toolType: array}
+		newArray.userId = id;
+		console.log(newArray)
+		$http.post("users/tools/update", newArray)
+		.then(res=>{
+			console.log("res.data", res.data);
+			//$rootScope.flashCards = res.data.flash_cards;
+			//$rootScope.socialLinks = res.data.social_media;
+		},err=>{
+			console.log(err);
+		})
+
+	}
 
 	this.archive = (item) =>{
 		console.log(item, "ARCHIVING THIS GUY")
@@ -3689,7 +3702,8 @@ angular.module("myApp")
 		.then((res) =>{
 			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
 			this.loadData();
-		}, (err)=>{console.log(err)})			
+		}, (err)=>{console.log(err)
+		})			
 	}
 	 
 		this.unArchive = (item)=>{
@@ -3814,16 +3828,18 @@ angular.module("myApp")
 
 
 
-	let	setUserInfo  = function(){
+	let	setUserInfo  = () =>{
 		console.log("$rootScope._myId", $rootScope._myId)
 		$http.get(`users/login/${$rootScope._myId}`)
-			.then(function(res){
+			.then(res=>{
 			//$rootScope.userData = res.data;
 			//$rootScope.myId = res.data._Id;
 			//$rootScope.myName = res.data.username;
 			//$rootScope.tasks = res.data.todos;
 			//$rootScope.myData = myData;
 			var newData = res.data;
+			$rootScope.flashCards = res.data.flash_cards;
+			$rootScope.socialLinks= res.data.social_media;
 			console.log("RES BODY IN SERVICE",  res.data)
 			console.log("ABOUT TO ITERATE THROUGH STUFF")
 			buildTasks(newData);
@@ -3941,50 +3957,6 @@ this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 });
 
 
-"use strict";
-
-angular.module("myApp")
-
-.directive("right-view",function(){
-	return{
-		templateUrl: "templates/right-view.html"
-	}
-})
-
-.directive('leftView', function(){
-  return{
-    templateUrl: "directives/left-view.html"
-  }
-})
-
-.directive('taskForm', function(){
-  return{
-    templateUrl: "directives/task-form.html"
-  }
-})
-  .directive('contactForm', function(){
-  return{
-    templateUrl: "directives/contact-form.html"
-  }
-})
-
-.directive('mainTable', function(){
-  return{
-    templateUrl: "directives/main-table.html"
-  }
-})
-
-// .directive('tools', function(){
-//   return{
-//     templateUrl: "directives/tools.html"
-//   }
-// })
-
-// .directive('taskModal', function(){
-//   return{
-//     templateUrl: "partials/task-modal.html"
-//   }
-// })
 
 "use strict";
 
@@ -4970,21 +4942,103 @@ angular.module("myApp")
 .controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
 	console.log("make flash cards, contact list, company list, email templates etc...")
 	
+	$scope.cards = $rootScope.flashCards || [];
+	$scope.socialLinks = UtilityService.socialLinks;
+	$rootScope.toolBelt = $rootScope.toolBelt || "Flash Cards"
+
+	$rootScope.$watch('flashCards', function(newData, oldData){
+		console.log("new cards", newData);
+		$scope.cards = newData;
+	})
+
 	$scope.showInputForm = function(){
 		console.log("SHOW INPUT")
 		$scope.addCards = true;
 	}
 
-	$scope.addFlash = function(){
-
+	var modifyTools = function(){
+		console.log("SENDING OFF CHANGES TOOLS", $rootScope.toolBelt);
+		var toolType;
+		var array; 
+		if ($rootScope.toolBelt === "Flash Cards"){
+			console.log("MODIFYING FLASH")
+			toolType = "flash_cards"
+			array = $scope.cards;
+		} else if ($rootScope.toolBelt === "Social Media"){
+			toolType = "social_media";
+			array = $scope.SocialLinks;
+		}
+		UtilityService.modifyTools(toolType, array)
 	}
 
-	$scope.removeFlash = function(){
+	$scope.addFlash = function(){
+		$scope.addCards = true;
+		$scope.playCards = false;
+		var newCard = {};
+		newCard.question = $scope.question;
+		newCard.answer = $scope.answer;
+		$scope.cards.push(newCard);
+		$scope.question = "";
+		$scope.answer = "";
+		modifyTools();
+	}
 
-	}	
+	// $scope.editMe = function(item, index){
+	// 	if ($scope.toolBelt == "Flash Cards"){
+	// 	console.log(item, "ITEMMM")
+	// 		$scope.question = item.question;
+	// 		$scope.answer = item.answer;
+	// 	} else if ($scope.toolBelt == "Social Media"){
+	// 	 	console.log("IN EDIT SOCIAL MEDIA")
+	// 	}
+	// 	$scope.addCards = true;
+	// 	$scope.addFlash	// 	$scope.deleteTool(index);	
+	// }
 
-	$scope.playCards = function(){
-		$scope.addCards= false;
+	// var editTool = function(){
+	// 	$scope.
+	// 	var array;
+	// 	console.log("ITEM", item, "INDEX", index)
+	// 	if ($scope.toolBelt == "Flash Cards"){
+	// 		//index = $scope.cards.indexOf(item);
+	// 		array = $scope.cards;
+	// 	} else if ($scope.toolBelt === "Social Media"){
+	// 		//index = $scope.cards.indexOf(item);
+	// 		array = $scope.SocialLinks;
+	// 	}
+	// 	console.log("ARRAY BEFORE", array)
+	// 	array.splice(index, 1, item);
+	// 	console.log("ARRAY AFTER", array)
+	// 	modifyTools();
+	// }	
+
+	$scope.deleteTool = function(index){
+		var index;
+		var array;
+		if ($scope.toolBelt == "Flash Cards"){
+			array = $scope.cards;
+		} else if ($scope.toolBelt == "Social Media"){
+			//index = $scope.cards.indexOf(item);
+			array = $scope.SocialLinks;
+		}
+			console.log("ARRAY BEFORE", array)
+			array.splice(index, 1);
+			console.log("ARRAY AFTER", array)
+			modifyTools();
+	}
+
+	$scope.quest = true;
+	$scope.dealCard = function(){
+		$scope.addCards = false;
+		$scope.playCards = true;
+		$scope.quest = true;
+		$scope.showCard = nextQuestion();
+	}
+
+	var nextQuestion = function(){
+		var cards = $scope.cards; 
+		var index = Math.floor((Math.random()* cards.length));
+		return cards[index];
 	}
 
 	$scope.links = [
@@ -5015,8 +5069,10 @@ angular.module("myApp")
 
 	}
 
-	$scope.closeTool = function(){
-		$scope.addCards= false;
+	$scope.closeTools = function(){
+		console.log("CLOSE TOOLs")
+		$scope.playCards = null;
+		$scope.addCards= null;
 		$rootScope.toolBelt = null;
 		$state.go("main");
 	}
@@ -5024,3 +5080,47 @@ angular.module("myApp")
 
 
 })
+"use strict";
+
+angular.module("myApp")
+
+.directive("right-view",function(){
+	return{
+		templateUrl: "templates/right-view.html"
+	}
+})
+
+.directive('leftView', function(){
+  return{
+    templateUrl: "directives/left-view.html"
+  }
+})
+
+.directive('taskForm', function(){
+  return{
+    templateUrl: "directives/task-form.html"
+  }
+})
+  .directive('contactForm', function(){
+  return{
+    templateUrl: "directives/contact-form.html"
+  }
+})
+
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
+
+// .directive('tools', function(){
+//   return{
+//     templateUrl: "directives/tools.html"
+//   }
+// })
+
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })

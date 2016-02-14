@@ -7,8 +7,29 @@ var Contact = require("../models/contact");
 var User = require('../models/user');
 var Todo = require("../models/todo");
 
-router.post("/", function(req, res){
-	console.log("req.body from user router post", req.body)
+//add to tools
+router.post("/tools/update", function(req, res){
+	console.log(req.body)
+	var userId = req.body.userId;
+	var toolType = req.body.toolType;
+	var newArray = req.body.array;
+	if (toolType === "flash_cards"){
+		console.log(`NEW ${toolType} : ${newArray} for ${userId}`);
+		User.findByIdAndUpdate(userId, {$set: {flash_cards: newArray}}, function(err, modifiedUser){
+			if ( err || !modifiedUser) return res.status(400).send(err)
+			modifiedUser.password = null;
+			console.log("USER AFTER UPDATE", modifiedUser)
+			res.status(200).send(modifiedUser);
+		})	
+	}else if (toolType === "social_media")	{
+		console.log(`NEW ${toolType} : ${newArray} for ${userId}`);
+		User.findByIdAndUpdate(userId, {$set: {flash_cards: newArray}}, function(err, modifiedUser){
+			if ( err || !modifiedUser) return res.status(400).send(err)
+			modifiedUser.password = null;
+			console.log("USER AFTER UPDATE", modifiedUser)
+			res.status(200).send(modifiedUser);
+		})	
+	}
 })
 
 ///LOGIN///
@@ -22,15 +43,7 @@ router.get("/login/:id", (req, res) => {
 })
 
 
-//add to tools
-router.post("/addTool", function(req, res){
-	//User.findByIdAndUpdate()
-	console.log("NEW FLASH CARD or SOC MEDIA", req.body);
-})
 
 
-router.post("/delete", function(req, res){
-	console.log("REMOVING Social Media", req.body);
-})
 
 module.exports = router; 

@@ -19,7 +19,7 @@ var userSchema = Schema({
 	appointments: [{ type: Schema.Types.ObjectId, ref: 'Appointment' }],
 	contacts: [{type: Schema.Types.ObjectId, ref: 'Contact'}],
 	flash_cards:{type: Array, default: []},
-	social_media: {type: Array, default: []},
+	social_media: {type: Object, default: {}},
 	github: String,
 	facebook: String
 })

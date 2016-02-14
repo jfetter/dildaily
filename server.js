@@ -27,7 +27,6 @@ app.use("/users", require("./routes/users"));
 app.use("/tasks", require("./routes/tasks"))
 app.use("/auth", require("./routes/auth"));
 app.use("/archives", require("./routes/archives"));
-app.use("/tools", require("./routes/tools"));
 app.use("/contacts", require("./routes/contacts"));
 
 app.use(function(req, res){

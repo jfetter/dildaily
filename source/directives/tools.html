@@ -1,20 +1,45 @@
 <div>
-	<button class="btn btn-success" ng-click="showInputForm()">Add New Cards</button>
-	<button class="btn btn-info" ng-click="playCards()">Play Cards</button>
-	<button class="btn btn-danger" ng-click="closeTool()">Close</button>
-	<form ng-show="addCards" action="submit">	
-		<input ng-show="toolBelt === 'Flash Cards'" type="text" ng-model="newCard" placeholder="input question">
-		<input ng-show="toolBelt === 'Flash Cards'" type="text" ng-model="newCard" placeholder="input answer">
-		<button class="btn btn-warning btn-sm" action="">submit</button>
-	</form>
-	<div class="cardQuestion">{{card.question}}</div>
-	<div class="cardAnswer">{{card.answer}}</div>
+		<button class="btn btn-danger" ng-click="closeTools()">Close Tools</button>
+	<div ng-show="toolBelt === 'Flash Cards'">
+		<div >
+			<button class="btn btn-success" ng-click="showInputForm()">Add New Cards</button>
+			<button class="btn btn-info" ng-click="dealCard()">Play Cards</button>
+			<div ng-show="addCards" >	
+				<input  type="text" ng-model="question" placeholder="input question or term" >
+				<br><br>
+				<textarea class="textarea" rows="5" type="text" ng-model="answer" placeholder="input answer or explanation" > </textarea>
+				<br>
+
+				<span>
+				<button ng-disabled="!question && !answer" ng-click="addFlash()"class="btn btn-warning btn-sm" >submit</button>
+			<!-- 	<button class="btn btn-info btn-sm" ng-click="modifyTools()">Done Modifying Deck</button> -->
+				</span>
+			</div>
+			<div ng-hide="playCards" class="cards-QA-List" ng-repeat="card in cards track by $index">
+				<span >
+					{{card.question}} : {{card.answer}}
+				</span>
+			<!-- 		<i class="fa fa-pencil modal-button" ng-click="editMe(card, $index)"></i>  -->
+					<i class="fa fa-trash" ng-click="deleteTool($index)"></i>
+				</span>
+			</div>
+		</div >
+			<div class="playCards-container" ng-show="playCards && !addCards">
+				<div ng-show="quest && playCards" class="card-question"  ng-click="quest = false" >
+					<span>{{showCard.question}}</span>
+				</div>
+				<div ng-hide="quest && playCards" class="card-answer" ng-click="dealCard()">
+					<span>{{showCard.answer}}</span>	
+			</div>
+		</div>
+
+		</div>
 	<div>
 	<!-- 	<span ng-repeat="link in links">
 			<input ng-show="!{{link.url}}" type="text" ng-model="{{link}}Link" placeholder="input your {{link.name}}link">
 			<a ng-show="{{link.url}}" ng-href="{{link.url}}" class="twitter" target="_blank"><i class="fa fa-{{link.name}}"></i></a>
 		</span> -->
-			
+
 <!-- 			<a ng-show="wordPress" ng-href="{{wordPress}}" target="_blank" class="wordpress"><i class="fa fa-wordpress"></i></a>
 			<a ng-show="git" ng-href="{{git}}" target="_blank" class="git"><i class="fa fa-git-square"></i></a>
 			<a ng-show="linkedin" ng-href="{{linkedin}}"target="_blank" class="linkedin"><i class="fa fa-linkedin-square"></i></a>
