@@ -17,7 +17,7 @@ angular.module("myApp")
 
 	   $scope.$watch('appt_date', function(newData, oldData){
 	   	// set follow up for 3 days after appointment
-  	$scope.followup_date = new Date(newData) + (Date.now() + (86400 * 1000 * 3))
+  	//$scope.followup_date = new Date(newData) + (Date.now() + (86400 * 1000 * 3))
   })
 
 	$scope.addNew = function(){
@@ -35,12 +35,12 @@ angular.module("myApp")
 
 		$scope.todo = false; 
 		//var myId = $rootScope.myId; 
-		console.log("in addAPPT OR CONTACT. TYPE:", $rootScope.editThis.category )
+		console.log("in addAPPT OR CONTACT. TYPE:" , $rootScope.addThis.name)
 		var newContact = {};
-	if ($rootScope.editThis.category === "Contact"){
+	if ($rootScope.addThis.name === "Contact"){
 		newContact.contact_notes = $scope.contact_notes;
 		newContact.category = 'Contact';
-	}else{
+	}else if ($rootScope.addThis.name === "Appointment"){
 		newContact.category = 'Appointment';
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;

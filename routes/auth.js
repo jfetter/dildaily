@@ -21,7 +21,14 @@ var User = require('../models/user');
 
 router.post('/signup', function(req, res){
   User.register(req.body, function(err, user){
-    res.send(user._id)
+    if(user){
+      user.password = null;
+      var token = jwt.encode(user, process.env.JWT_SECRET);
+      console.log(token, "TOKEN")
+      res.cookie('token', token).send(user._id)
+    } else{
+      res.status(400).send('Incorrect email or Password!')
+    }
   })
 })
 
