@@ -9,27 +9,32 @@
 				<br><br>
 				<textarea class="textarea" rows="5" type="text" ng-model="answer" placeholder="input answer or explanation" > </textarea>
 				<br>
-
+				<input class="link" ng-model="cardLink" type="text" placeholder="url to answer">
+				<br>
 				<span>
 				<button ng-disabled="!question && !answer" ng-click="addFlash()"class="btn btn-warning btn-sm" >submit</button>
 			<!-- 	<button class="btn btn-info btn-sm" ng-click="modifyTools()">Done Modifying Deck</button> -->
 				</span>
 			</div>
 			<div ng-hide="playCards" class="cards-QA-List" ng-repeat="card in cards track by $index">
-				<span >
-					{{card.question}} : {{card.answer}}
+				<span class="inner-cards">
+						<i class="fa fa-trash" ng-click="deleteTool($index)"></i>
+					<span >
+						{{card.question}} : <br> {{card.answer}} <br> {{card.cardLink}}
+					</span>
 				</span>
 			<!-- 		<i class="fa fa-pencil modal-button" ng-click="editMe(card, $index)"></i>  -->
-					<i class="fa fa-trash" ng-click="deleteTool($index)"></i>
 				</span>
 			</div>
 		</div >
 			<div class="playCards-container" ng-show="playCards && !addCards">
+				<h3>click to change to answer or next card</h3>
 				<div ng-show="quest && playCards" class="card-question"  ng-click="quest = false" >
 					<span>{{showCard.question}}</span>
 				</div>
 				<div ng-hide="quest && playCards" class="card-answer" ng-click="dealCard()">
-					<span>{{showCard.answer}}</span>	
+					<span hide="!showCard.link">{{showCard.answer}} 	</span>
+					<a target="_blank" href="{{showCard.cardLink}}" style="color: black"> {{showCard.cardLink}} </a>
 			</div>
 		</div>
 

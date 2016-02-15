@@ -17,9 +17,8 @@ angular.module("myApp")
  		var plusDay = (Date.now() + (86400 * 1000));
 		var minusDay = (Date.now() - (86400 * 1000));
 
-	this.modifyTools = (toolType, array) =>{
-		console.log(`IN MODIFY ${toolType} for ${$rootScope.myData._id} sending ${array}`)
-		var id = $rootScope.myData._id;
+	this.modifyTools = (toolType, array, id) =>{
+		console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
 		var newArray = {}; 
 		newArray.array = array;
 		newArray.toolType = toolType;

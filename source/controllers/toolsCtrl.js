@@ -29,18 +29,21 @@ angular.module("myApp")
 			toolType = "social_media";
 			array = $scope.SocialLinks;
 		}
-		UtilityService.modifyTools(toolType, array)
+		UtilityService.modifyTools(toolType, array, $rootScope.myData._id)
 	}
 
 	$scope.addFlash = function(){
 		$scope.addCards = true;
 		$scope.playCards = false;
+
 		var newCard = {};
+		newCard.cardLink = $scope.cardLink;
 		newCard.question = $scope.question;
 		newCard.answer = $scope.answer;
 		$scope.cards.push(newCard);
 		$scope.question = "";
 		$scope.answer = "";
+		$scope.cardLink = "";
 		modifyTools();
 	}
 
@@ -135,7 +138,7 @@ angular.module("myApp")
 		$scope.playCards = null;
 		$scope.addCards= null;
 		$rootScope.toolBelt = null;
-		$state.go("main");
+		$state.go("home");
 	}
 
 

@@ -1,18 +1,22 @@
 /*.task-form-cont{
 	border: 3px solid white;
 }*/
-.card-question{
-	padding: 5%;
-	background-color: red;
-	border: 2px solid black;
-	font-size: 24px;
-}
-
-.card-answer{
+.card-question, .card-answer{
+	border-radius: 7px;
 	padding: 5%;
 	background-color: white;
 	border: 2px solid black;
 	font-size: 24px;
+}
+
+
+.cards-QA-List{
+	max-height: 40%;
+	overflow-y: scroll;
+}
+
+.inner-cards{
+	overflow-x: scroll;
 }
 
 .details{

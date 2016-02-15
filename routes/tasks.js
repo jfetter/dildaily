@@ -7,6 +7,36 @@ var Todo = require('../models/todo');
 // var Archive = require('../models/archive')
 var Contact = require('../models/contact');
 
+router.post("/userSetup", function(req, res){
+	var userId = req.body.myId;
+	var tasks = req.body.inject;
+	console.log(tasks, "TASKSSSSS")
+	var cards = req.body.cards;
+	User.findByIdAndUpdate(userId, {$set: {flash_cards: cards}}, function(err, modifiedUser){
+		if ( err || !modifiedUser) return res.status(400).send(err)
+		//modifiedUser.password = null;
+		console.log("USER AFTER UPDATE", modifiedUser);	
+		var counter = 0;	
+		tasks.forEach(function(todo){
+			counter ++;
+			var todo = new Todo(todo)
+			todo.user_Id = userId;
+			console.log(todo)
+			console.log(counter);
+		todo.save((err, savedTask) => {
+			console.log("savedTask", savedTask)
+			if (err)res.status(400).send(err);
+			var taskId = savedTask._id;
+			User.findByIdAndUpdate(userId, {$push: {todos: taskId}} ,function(err, foundUser){
+				if (err) res.status(400).send(err.message);
+				console.log("FOUND USER TODOS!!!!!!!!", foundUser.todos)
+				console.log("FOUND USER:", foundUser, "TASK ID", taskId)
+			})
+		})
+	})
+	})	
+})
+
 router.post("/newtodo", function(req, res){
 	var userId = req.body.user_id
 	var todo = new Todo(req.body)
