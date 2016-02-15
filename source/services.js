@@ -12,6 +12,7 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
+ 		this.socialLinks = {};
  		
  		var plusDay = (Date.now() + (86400 * 1000));
 		var minusDay = (Date.now() - (86400 * 1000));
@@ -213,8 +214,15 @@ angular.module("myApp")
 			//$rootScope.tasks = res.data.todos;
 			//$rootScope.myData = myData;
 			var newData = res.data;
+			var newLinks = newData.social_media || {};
 			$rootScope.flashCards = res.data.flash_cards;
-			$rootScope.socialLinks= res.data.social_media;
+			var socialLinks = {};
+			socialLinks.twitter = newLinks.twitter || "?";
+			socialLinks.git = newLinks.git || "?";
+			socialLinks.wordPress = newLinks.wordPress || "?";
+			socialLinks.linkedin = newLinks.stackOverflow || "?";
+			socialLinks.angellist = newLinks.angellist || "?";
+			$rootScope.socialLinks= socialLinks;
 			console.log("RES BODY IN SERVICE",  res.data)
 			console.log("ABOUT TO ITERATE THROUGH STUFF")
 			buildTasks(newData);

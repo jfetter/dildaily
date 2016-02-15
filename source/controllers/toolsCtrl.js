@@ -4,12 +4,39 @@ angular.module("myApp")
 	console.log("make flash cards, contact list, company list, email templates etc...")
 	
 	$scope.cards = $rootScope.flashCards || [];
-	$scope.socialLinks = UtilityService.socialLinks;
+
+	var makeLinks = function(obj){
+		var socArr = [];
+		for (var key in obj){
+			if(obj[key] === '?'){
+				socArr.push(key)
+			} else{
+				socArr.push(obj[key])
+			};
+			socArr.push(obj)
+	}
+			console.log(socArr);
+			return socArr;
+}
+
+	//[
+	// {twitter: UtilityService.socialLinks.twitter},
+	// {git: UtilityService.socialLinks.git},
+	// {wordPress: UtilityService.socialLinks.wordPress},
+	// {linkedin: UtilityService.socialLinks.linkedin },
+	// {stackOverflow: UtilityService.socialLinks.stackOverflow},
+	// {angellist: UtilityService.socialLinks.angellist}
+	//]
+
 	$rootScope.toolBelt = $rootScope.toolBelt || "Flash Cards"
 
 	$rootScope.$watch('flashCards', function(newData, oldData){
 		console.log("new cards", newData);
 		$scope.cards = newData;
+	})
+	$rootScope.$watch('socialLinks', function(newData, oldData){
+		console.log("Social Links", newData);
+		$scope.socials = makeLinks(newData);
 	})
 
 	$scope.showInputForm = function(){
@@ -27,7 +54,7 @@ angular.module("myApp")
 			array = $scope.cards;
 		} else if ($rootScope.toolBelt === "Social Media"){
 			toolType = "social_media";
-			array = $scope.SocialLinks;
+			array = $scope.Socials;
 		}
 		UtilityService.modifyTools(toolType, array, $rootScope.myData._id)
 	}
@@ -106,24 +133,6 @@ angular.module("myApp")
 		var index = Math.floor((Math.random()* cards.length));
 		return cards[index];
 	}
-
-	$scope.links = [
-	{name: "twitter",
-	url: UtilityService.twitter || null},	
-	{name: "gitHub",
-	url: UtilityService.git || null},
-
-
-
-	]; 
-
-
-	// $scope.twitter = UtilityService.twitter;
-	// $scope.git = UtilityService.git;
-	// $scope.wordPress = UtilityService.wordPress;
-	// $scope.linkedin = UtilityService.linkedin;
-	// $scope.stackOverflow = UtilityService.stackOverflow;
-	// $scope.angellist = UtilityService.angellist;
 
 
 
