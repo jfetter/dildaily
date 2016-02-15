@@ -12,7 +12,6 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
-
  		
  		var plusDay = (Date.now() + (86400 * 1000));
 		var minusDay = (Date.now() - (86400 * 1000));
@@ -46,7 +45,7 @@ angular.module("myApp")
 		})			
 	}
 	 
-		this.unArchive = (item)=>{
+	this.unArchive = (item)=>{
 		console.log(item, "UNARCHIVING THIS GUY")
 		$http.put("tasks/unarchive", {taskId: item._id}) 
 		.then((res)=>{
@@ -65,6 +64,41 @@ angular.module("myApp")
 
 	let buildTools = () =>{
 
+	}
+
+	let buildWeek = (appointments, tasks, newData)=>{
+		var weekTasks = []; var weekAppts = []; var weekFollowUps = [];
+			for (var h = 0; h < tasks.length + 1; h ++){
+		 		if (h === tasks.length ){
+		 			this.thisweek.tasks = weekTasks;
+		 			//	console.log("this.today", this.today)
+		 		} else {
+					//console.log("H", h)
+		 			var item = tasks[h];
+		 			//console.log(item, "ITEM")
+		 			if (new Date(item.completeBy) <= new Date(plusDay * 7) && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
+		 				weekTasks.push(item);
+		 			}
+				}
+
+		 	for (var i =0; i < appointments.length + 1; i ++){
+		 			var item = appointments[i];
+		 		if (i === appointments.length ){
+		 				this.thisweek.appointments = weekAppts;
+		 				this.thisweek.followUps = weekFollowUps;
+		 		} else{
+			 		if (new Date(item.next_appt_date) <= new Date(plusDay * 7)){
+			 				weekAppts.push(item);
+			 		} else if (new Date(item.followup_date) <= new Date (plusDay * 7)){
+			 			weekFollowUps.push(item);
+			 		}
+				}
+		 	}
+			 	if (this.thisweek.tasks && this.thisweek.appointments && this.thisweek.followUps){
+			 		console.log(this.thisweek, "THIS WEEK")
+			 		$rootScope.myData = newData;
+			 	}
+		 	}
 	}
 
 
@@ -103,6 +137,7 @@ angular.module("myApp")
 			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
 			 		console.log(this.today, "TODAYYY")
 			 		$rootScope.myData = newData;
+			 		buildWeek(appointments, tasks, newData);
 			 	}
 		 	}
 		}

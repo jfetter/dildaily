@@ -47,34 +47,36 @@ angular.module("myApp")
 		modifyTools();
 	}
 
-	// $scope.editMe = function(item, index){
-	// 	if ($scope.toolBelt == "Flash Cards"){
-	// 	console.log(item, "ITEMMM")
-	// 		$scope.question = item.question;
-	// 		$scope.answer = item.answer;
-	// 	} else if ($scope.toolBelt == "Social Media"){
-	// 	 	console.log("IN EDIT SOCIAL MEDIA")
-	// 	}
-	// 	$scope.addCards = true;
-	// 	$scope.addFlash	// 	$scope.deleteTool(index);	
-	// }
+	$scope.editMe = function(item, index){
+		if ($scope.toolBelt == "Flash Cards"){
+		console.log(item, "ITEMMM")
+			$scope.question = item.question;
+			$scope.answer = item.answer;
+			$scope.cardLink = item.cardLink;
+		} else if ($scope.toolBelt == "Social Media"){
+		 	console.log("IN EDIT SOCIAL MEDIA")
+		}
+		$scope.deleteTool(index);
+		$scope.addCards = true;
+		$scope.addFlash	// 	$scope.deleteTool(index);	
+	}
 
-	// var editTool = function(){
-	// 	$scope.
-	// 	var array;
-	// 	console.log("ITEM", item, "INDEX", index)
-	// 	if ($scope.toolBelt == "Flash Cards"){
-	// 		//index = $scope.cards.indexOf(item);
-	// 		array = $scope.cards;
-	// 	} else if ($scope.toolBelt === "Social Media"){
-	// 		//index = $scope.cards.indexOf(item);
-	// 		array = $scope.SocialLinks;
-	// 	}
-	// 	console.log("ARRAY BEFORE", array)
-	// 	array.splice(index, 1, item);
-	// 	console.log("ARRAY AFTER", array)
-	// 	modifyTools();
-	// }	
+	var editTool = function(){
+		
+		var array;
+		console.log("ITEM", item, "INDEX", index)
+		if ($scope.toolBelt == "Flash Cards"){
+			//index = $scope.cards.indexOf(item);
+			array = $scope.cards;
+		} else if ($scope.toolBelt === "Social Media"){
+			//index = $scope.cards.indexOf(item);
+			array = $scope.SocialLinks;
+		}
+		console.log("ARRAY BEFORE", array)
+		array.splice(index, 1, item);
+		console.log("ARRAY AFTER", array)
+		modifyTools();
+	}	
 
 	$scope.deleteTool = function(index){
 		var index;

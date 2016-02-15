@@ -19,12 +19,13 @@
 			<div ng-hide="playCards" class="cards-QA-List" ng-repeat="card in cards track by $index">
 				<span class="inner-cards">
 						<i class="fa fa-trash" ng-click="deleteTool($index)"></i>
+					<i class="fa fa-pencil modal-button" ng-click="editMe(card, $index)"></i> 
+						<br>
 					<span >
 						{{card.question}} : <br> {{card.answer}} <br> {{card.cardLink}}
 					</span>
 				</span>
-			<!-- 		<i class="fa fa-pencil modal-button" ng-click="editMe(card, $index)"></i>  -->
-				</span>
+				
 			</div>
 		</div >
 			<div class="playCards-container" ng-show="playCards && !addCards">

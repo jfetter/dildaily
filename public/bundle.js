@@ -3671,7 +3671,6 @@ angular.module("myApp")
  		this.companies = [];
  		this.today = {};
  		this.thisweek = {};
-
  		
  		var plusDay = (Date.now() + (86400 * 1000));
 		var minusDay = (Date.now() - (86400 * 1000));
@@ -3705,7 +3704,7 @@ angular.module("myApp")
 		})			
 	}
 	 
-		this.unArchive = (item)=>{
+	this.unArchive = (item)=>{
 		console.log(item, "UNARCHIVING THIS GUY")
 		$http.put("tasks/unarchive", {taskId: item._id}) 
 		.then((res)=>{
@@ -3724,6 +3723,41 @@ angular.module("myApp")
 
 	let buildTools = () =>{
 
+	}
+
+	let buildWeek = (appointments, tasks, newData)=>{
+		var weekTasks = []; var weekAppts = []; var weekFollowUps = [];
+			for (var h = 0; h < tasks.length + 1; h ++){
+		 		if (h === tasks.length ){
+		 			this.thisweek.tasks = weekTasks;
+		 			//	console.log("this.today", this.today)
+		 		} else {
+					//console.log("H", h)
+		 			var item = tasks[h];
+		 			//console.log(item, "ITEM")
+		 			if (new Date(item.completeBy) <= new Date(plusDay * 7) && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
+		 				weekTasks.push(item);
+		 			}
+				}
+
+		 	for (var i =0; i < appointments.length + 1; i ++){
+		 			var item = appointments[i];
+		 		if (i === appointments.length ){
+		 				this.thisweek.appointments = weekAppts;
+		 				this.thisweek.followUps = weekFollowUps;
+		 		} else{
+			 		if (new Date(item.next_appt_date) <= new Date(plusDay * 7)){
+			 				weekAppts.push(item);
+			 		} else if (new Date(item.followup_date) <= new Date (plusDay * 7)){
+			 			weekFollowUps.push(item);
+			 		}
+				}
+		 	}
+			 	if (this.thisweek.tasks && this.thisweek.appointments && this.thisweek.followUps){
+			 		console.log(this.thisweek, "THIS WEEK")
+			 		$rootScope.myData = newData;
+			 	}
+		 	}
 	}
 
 
@@ -3762,6 +3796,7 @@ angular.module("myApp")
 			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
 			 		console.log(this.today, "TODAYYY")
 			 		$rootScope.myData = newData;
+			 		buildWeek(appointments, tasks, newData);
 			 	}
 		 	}
 		}
@@ -4898,7 +4933,7 @@ angular.module("myApp")
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisWeek.tasks
+			$scope.dayRowData = UtilityService.thisweek.tasks
 		} else if (newView  == 'Today') {
 			$scope.dayRowData = UtilityService.today.tasks
 		console.log("DAY ROW DATA TOP", $scope.dayRowData)
@@ -4921,7 +4956,7 @@ angular.module("myApp")
 		$scope.td_4 = "next_appt_date";
 		$scope.td_5 = "appointment_time";
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisWeek.appointments
+			$scope.dayRowData = UtilityService.thisweek.appointments
 		console.log("DAY ROW DATA Middle", $scope.dayRowData)
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.appointments
@@ -4944,7 +4979,7 @@ angular.module("myApp")
 		$scope.td_5 = "appointment_time";
 		console.log("SUB 3 ROOT CUR VIEW", $rootScope.currentView)
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisWeek.followUps
+			$scope.dayRowData = UtilityService.thisweek.followUps
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.followUps
 		console.log("DAY ROW DATA BOTTOM", $scope.dayRowData)
@@ -5004,34 +5039,36 @@ angular.module("myApp")
 		modifyTools();
 	}
 
-	// $scope.editMe = function(item, index){
-	// 	if ($scope.toolBelt == "Flash Cards"){
-	// 	console.log(item, "ITEMMM")
-	// 		$scope.question = item.question;
-	// 		$scope.answer = item.answer;
-	// 	} else if ($scope.toolBelt == "Social Media"){
-	// 	 	console.log("IN EDIT SOCIAL MEDIA")
-	// 	}
-	// 	$scope.addCards = true;
-	// 	$scope.addFlash	// 	$scope.deleteTool(index);	
-	// }
+	$scope.editMe = function(item, index){
+		if ($scope.toolBelt == "Flash Cards"){
+		console.log(item, "ITEMMM")
+			$scope.question = item.question;
+			$scope.answer = item.answer;
+			$scope.cardLink = item.cardLink;
+		} else if ($scope.toolBelt == "Social Media"){
+		 	console.log("IN EDIT SOCIAL MEDIA")
+		}
+		$scope.deleteTool(index);
+		$scope.addCards = true;
+		$scope.addFlash	// 	$scope.deleteTool(index);	
+	}
 
-	// var editTool = function(){
-	// 	$scope.
-	// 	var array;
-	// 	console.log("ITEM", item, "INDEX", index)
-	// 	if ($scope.toolBelt == "Flash Cards"){
-	// 		//index = $scope.cards.indexOf(item);
-	// 		array = $scope.cards;
-	// 	} else if ($scope.toolBelt === "Social Media"){
-	// 		//index = $scope.cards.indexOf(item);
-	// 		array = $scope.SocialLinks;
-	// 	}
-	// 	console.log("ARRAY BEFORE", array)
-	// 	array.splice(index, 1, item);
-	// 	console.log("ARRAY AFTER", array)
-	// 	modifyTools();
-	// }	
+	var editTool = function(){
+		
+		var array;
+		console.log("ITEM", item, "INDEX", index)
+		if ($scope.toolBelt == "Flash Cards"){
+			//index = $scope.cards.indexOf(item);
+			array = $scope.cards;
+		} else if ($scope.toolBelt === "Social Media"){
+			//index = $scope.cards.indexOf(item);
+			array = $scope.SocialLinks;
+		}
+		console.log("ARRAY BEFORE", array)
+		array.splice(index, 1, item);
+		console.log("ARRAY AFTER", array)
+		modifyTools();
+	}	
 
 	$scope.deleteTool = function(index){
 		var index;
