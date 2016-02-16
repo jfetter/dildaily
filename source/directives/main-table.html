@@ -44,7 +44,7 @@
 							
 							<td class="col-sm-2">{{item[r_4] | amDateFormat:'ll'}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
-								<td >{{item[r_5] }} 
+								<td ng-show = "currentView !='Tasks' && currentView !='Completed'">{{item[r_5] }} 
 								</td>
 								
 							<td ng-if="currentView ==='Tasks' || currentView ==='Completed'" class="table-icons text-center">
