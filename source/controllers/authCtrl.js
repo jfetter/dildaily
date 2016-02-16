@@ -114,7 +114,6 @@ angular.module("myApp")
 					//localStorage.dd_id = res.data.user;
 					var myId = localStorage.satellizer_token;
 					injectJobHunt(myId);
-					injectCards(myId);
 					UtilityService.loadData();
 					$state.go("main");
 				} // if satellizer token in local storage

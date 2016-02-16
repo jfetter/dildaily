@@ -11,16 +11,16 @@ angular.module("myApp")
 		$scope.colH4 = 'Complete By';
 		$scope.colH5 = 'Done?';
 		$scope.colH6 = "Edit/Delete"
-		$scope.colH7 = "Archive"
+		$scope.colH7 = "done"
 		$scope.td_1 = "task_name";
 		$scope.td_2 = "task_description";
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisweek.tasks
+			$scope.dayRowData = $rootScope.thisweek.tasks
+		console.log("DAY ROW DATA TOP", $scope.dayRowData)
 		} else if (newView  == 'Today') {
 			$scope.dayRowData = UtilityService.today.tasks
-		console.log("DAY ROW DATA TOP", $scope.dayRowData)
 		}
 	});
 })
@@ -40,7 +40,7 @@ angular.module("myApp")
 		$scope.td_4 = "next_appt_date";
 		$scope.td_5 = "appointment_time";
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisweek.appointments
+			$scope.dayRowData = $rootScope.thisweek.appointments
 		console.log("DAY ROW DATA Middle", $scope.dayRowData)
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.appointments
@@ -63,7 +63,7 @@ angular.module("myApp")
 		$scope.td_5 = "appointment_time";
 		console.log("SUB 3 ROOT CUR VIEW", $rootScope.currentView)
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisweek.followUps
+			$scope.dayRowData = $rootScope.thisweek.followUps
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.followUps
 		console.log("DAY ROW DATA BOTTOM", $scope.dayRowData)

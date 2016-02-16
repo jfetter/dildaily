@@ -19,7 +19,7 @@
 							</div>
 						</th>
 					</tr>
-					<tr ng-show="currentView == 'Today' || currentView == 'This'" class="row-data" ng-class='striking(item)' ng-repeat="item in dayRowData track by $index">
+					<tr ng-show="currentView == 'Today' || currentView == 'This Week'" class="row-data" ng-class='striking(item)' ng-repeat="item in dayRowData track by $index">
 						<td  ng-dblclick="viewDetails()" class="col-sm-2 dailytd"><span >{{item[td_1]}} </span></td>
 							<td class="col-sm-2">{{item[td_2]}}</td>
 							<td class="col-sm-2">{{item[td_3]}}</td>

@@ -3661,12 +3661,9 @@ angular.module("myApp")
  		this.appointments =[];
  		this.archives = [];
  		this.companies = [];
- 		this.today = {};
- 		this.thisweek = {};
  		this.socialLinks = {};
  		
- 		var plusDay = (Date.now() + (86400 * 1000));
-		var minusDay = (Date.now() - (86400 * 1000));
+
 
 	this.modifyTools = (toolType, array, id) =>{
 		console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
@@ -3684,51 +3681,35 @@ angular.module("myApp")
 		},err=>{
 			console.log(err);
 		})
-
 	}
 
-	this.archive = (item) =>{
-		console.log(item, "ARCHIVING THIS GUY")
-		$http.put("tasks/archive", {taskId: item._id}) 
-		.then((res) =>{
-			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			this.loadData();
-		}, (err)=>{console.log(err)
-		})			
-	}
-	 
-	this.unArchive = (item)=>{
-		console.log(item, "UNARCHIVING THIS GUY")
-		$http.put("tasks/unarchive", {taskId: item._id}) 
-		.then((res)=>{
-			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			this.loadData();
-		}, (err)=>{console.log(err)})			
-	} 
 
 	$rootScope.appTitle = "Get To Work";
 	$rootScope.tagLine = "the agenda for job seekers"
 	var today = new Date().getDay();
-	var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-	$rootScope.today = weekdays[today]; 
+
+	//var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	//$rootScope.today = weekdays[today]; 
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-	let buildTools = () =>{
+	// let buildTools = () =>{
 
-	}
+	// }
+
+ 	$rootScope.thisweek = {};
+	var plusWeek = new Date(Date.now() + (86400 * 1000 * 7));
+	var minusWeek = new Date(Date.now() - (86400 * 1000 * 7));
 
 	let buildWeek = (appointments, tasks, newData)=>{
 		var weekTasks = []; var weekAppts = []; var weekFollowUps = [];
 			for (var h = 0; h < tasks.length + 1; h ++){
 		 		if (h === tasks.length ){
-		 			this.thisweek.tasks = weekTasks;
-		 			//	console.log("this.today", this.today)
+		 			$rootScope.thisweek.tasks = weekTasks;
 		 		} else {
-					//console.log("H", h)
 		 			var item = tasks[h];
-		 			//console.log(item, "ITEM")
-		 			if (new Date(item.completeBy) <= new Date(plusDay * 7) && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
+		 			//console.log("complete by" , new Date(item.completeBy) , "plus week", plusWeek)
+		 			if ((new Date(item.completeBy) <= plusWeek )&& !item.completion_date){
 		 				weekTasks.push(item);
 		 			}
 				}
@@ -3736,24 +3717,26 @@ angular.module("myApp")
 		 	for (var i =0; i < appointments.length + 1; i ++){
 		 			var item = appointments[i];
 		 		if (i === appointments.length ){
-		 				this.thisweek.appointments = weekAppts;
-		 				this.thisweek.followUps = weekFollowUps;
+		 				$rootScope.thisweek.appointments = weekAppts;
+		 				$rootScope.followUps = weekFollowUps;
 		 		} else{
-			 		if (new Date(item.next_appt_date) <= new Date(plusDay * 7)){
+			 		if (new Date(item.next_appt_date) <= plusWeek){
 			 				weekAppts.push(item);
-			 		} else if (new Date(item.followup_date) <= new Date (plusDay * 7)){
+			 		} if (new Date(item.followup_date) <= plusWeek){
 			 			weekFollowUps.push(item);
 			 		}
 				}
 		 	}
-			 	if (this.thisweek.tasks && this.thisweek.appointments && this.thisweek.followUps){
-			 		console.log(this.thisweek, "THIS WEEK")
+			 	if ($rootScope.thisweek.tasks && $rootScope.thisweek.appointments && $rootScope.thisweek.followUps){
+			 		console.log(this.thisweek, "THIS WEeeeeeeeeeEK")
 			 		$rootScope.myData = newData;
 			 	}
 		 	}
 	}
 
-
+	this.today = {};
+	var plusDay = new Date(Date.now() + (86400 * 1000));
+	var minusDay = new Date (Date.now() - (86400 * 1000));
 	let buildDay = (appointments, tasks, newData) =>{
 			 		//console.log("APPOINTMENTS", appointments, "TASKS", tasks)
 				//var appTasks = UtilityService.appointments.concat(UtilityService.tasks);
@@ -3787,8 +3770,7 @@ angular.module("myApp")
 				}
 		 	}
 			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
-			 		console.log(this.today, "TODAYYY")
-			 		$rootScope.myData = newData;
+			 		buildWeek(appointments, tasks, newData)
 			 		buildWeek(appointments, tasks, newData);
 			 	}
 		 	}
@@ -3895,13 +3877,33 @@ this.loadData = () => {
 		setUserInfo();
 	}
 
+
+	this.archive = (item) =>{
+		// on back end I assign complete date and complete by
+		console.log(item, "ARCHIVING THIS GUY");
+		$http.put("tasks/archive", item) 
+		.then((res) =>{
+			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)
+		})			
+	}
+	 
+	this.unArchive = (item)=>{
+		console.log(item, "UNARCHIVING THIS GUY")
+		$http.put("tasks/unarchive", {taskId: item._id}) 
+		.then((res)=>{
+			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)})			
+	}
+
  
 	this.cleanOldTasks = function (){
 		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
 	}
 
 		this.addKind = function (){
-		//var quitMessages["Are you sure; have you tried doing a kind thing?", "c'mon, deep down inside you know you think this is cute", "okay, fine, but try to do kind things on your own then"];
 	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
 		var selection = Math.floor(Math.random()*kindness.length);
 		console.log("ADD KIND INDEX", selection);
@@ -3928,14 +3930,6 @@ this.loadData = () => {
 		{name: "Companies"}, 
 		{name: "All"} ];	
 
-	this.console = function(){
-		console.log("congrats you made it to the service")
-	}
-
-//this.allViews = ["Tasks", "Appointments", "Daily Schedule", "Weekly Scheudle", "Archives"]
-//this.cat;
-//prolly take this out of service 
-// being used to hide and show login logout on nave ctrl
 	this.loggedIn = function(){
 		if ($rootScope._myId){
 			return true;
@@ -3976,7 +3970,7 @@ this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 	}
 })
 
-///authentication service using UI ROUTER AUTH STUFF
+///authentication service using UI ROUTER 
 .service('AuthService',function ($http) {
 
   this.isAuthenticated = function (params) {
@@ -3991,6 +3985,50 @@ this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 });
 
 
+"use strict";
+
+angular.module("myApp")
+
+.directive("right-view",function(){
+	return{
+		templateUrl: "templates/right-view.html"
+	}
+})
+
+.directive('leftView', function(){
+  return{
+    templateUrl: "directives/left-view.html"
+  }
+})
+
+.directive('taskForm', function(){
+  return{
+    templateUrl: "directives/task-form.html"
+  }
+})
+  .directive('contactForm', function(){
+  return{
+    templateUrl: "directives/contact-form.html"
+  }
+})
+
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
+
+// .directive('tools', function(){
+//   return{
+//     templateUrl: "directives/tools.html"
+//   }
+// })
+
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })
 
 "use strict";
 
@@ -4211,7 +4249,6 @@ angular.module("myApp")
 					//localStorage.dd_id = res.data.user;
 					var myId = localStorage.satellizer_token;
 					injectJobHunt(myId);
-					injectCards(myId);
 					UtilityService.loadData();
 					$state.go("main");
 				} // if satellizer token in local storage
@@ -4461,10 +4498,12 @@ angular.module("myApp")
 	 		$scope.dayView1 = "Tasks";
 	 		$scope.dayView2 = "Appointments";
 	 		$scope.dayView3 = "Follow Ups";
+	 } else if ($rootScope.currentView == "This Week"){
+	 		console.log("current view THIS WEEK", $rootScope.thisWeek);
+	 		$scope.dayView1 = "Tasks";
+	 		$scope.dayView2 = "Appointments";
+	 		$scope.dayView3 = "Follow Ups";
 
-	 		console.log("TODAY", UtilityService.today);
-	 } else if ($rootScope.currentView === 'This Week'){
-	 		console.log("THIS WEEK", UtilityService.thisWeek);
 	 } else if ($rootScope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
@@ -4473,7 +4512,7 @@ angular.module("myApp")
 	 			tHeads.col4= "Complete By"; 
 	 			tHeads.col5= "Done?";
 	 			tHeads.col6= "Edit/Delete"; 
-	 			tHeads.col7= "archive";
+	 			tHeads.col7= "done";
 	 			//rowData.task_name = $rootScope.task.task_name;
 	 			$rootScope.r_1 = "task_name";
 	 			$rootScope.r_2 = "task_description";
@@ -4927,16 +4966,16 @@ angular.module("myApp")
 		$scope.colH4 = 'Complete By';
 		$scope.colH5 = 'Done?';
 		$scope.colH6 = "Edit/Delete"
-		$scope.colH7 = "Archive"
+		$scope.colH7 = "done"
 		$scope.td_1 = "task_name";
 		$scope.td_2 = "task_description";
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisweek.tasks
+			$scope.dayRowData = $rootScope.thisweek.tasks
+		console.log("DAY ROW DATA TOP", $scope.dayRowData)
 		} else if (newView  == 'Today') {
 			$scope.dayRowData = UtilityService.today.tasks
-		console.log("DAY ROW DATA TOP", $scope.dayRowData)
 		}
 	});
 })
@@ -4956,7 +4995,7 @@ angular.module("myApp")
 		$scope.td_4 = "next_appt_date";
 		$scope.td_5 = "appointment_time";
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisweek.appointments
+			$scope.dayRowData = $rootScope.thisweek.appointments
 		console.log("DAY ROW DATA Middle", $scope.dayRowData)
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.appointments
@@ -4979,7 +5018,7 @@ angular.module("myApp")
 		$scope.td_5 = "appointment_time";
 		console.log("SUB 3 ROOT CUR VIEW", $rootScope.currentView)
 		if (newView == 'This Week'){
-			$scope.dayRowData = UtilityService.thisweek.followUps
+			$scope.dayRowData = $rootScope.thisweek.followUps
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.followUps
 		console.log("DAY ROW DATA BOTTOM", $scope.dayRowData)
@@ -5147,47 +5186,3 @@ angular.module("myApp")
 
 
 })
-"use strict";
-
-angular.module("myApp")
-
-.directive("right-view",function(){
-	return{
-		templateUrl: "templates/right-view.html"
-	}
-})
-
-.directive('leftView', function(){
-  return{
-    templateUrl: "directives/left-view.html"
-  }
-})
-
-.directive('taskForm', function(){
-  return{
-    templateUrl: "directives/task-form.html"
-  }
-})
-  .directive('contactForm', function(){
-  return{
-    templateUrl: "directives/contact-form.html"
-  }
-})
-
-.directive('mainTable', function(){
-  return{
-    templateUrl: "directives/main-table.html"
-  }
-})
-
-// .directive('tools', function(){
-//   return{
-//     templateUrl: "directives/tools.html"
-//   }
-// })
-
-// .directive('taskModal', function(){
-//   return{
-//     templateUrl: "partials/task-modal.html"
-//   }
-// })

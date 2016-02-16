@@ -53,10 +53,12 @@ angular.module("myApp")
 	 		$scope.dayView1 = "Tasks";
 	 		$scope.dayView2 = "Appointments";
 	 		$scope.dayView3 = "Follow Ups";
+	 } else if ($rootScope.currentView == "This Week"){
+	 		console.log("current view THIS WEEK", $rootScope.thisWeek);
+	 		$scope.dayView1 = "Tasks";
+	 		$scope.dayView2 = "Appointments";
+	 		$scope.dayView3 = "Follow Ups";
 
-	 		console.log("TODAY", UtilityService.today);
-	 } else if ($rootScope.currentView === 'This Week'){
-	 		console.log("THIS WEEK", UtilityService.thisWeek);
 	 } else if ($rootScope.currentView === 'Tasks'){
 	 			//dataPool = $rootScope.tasks;
 			 	tHeads.col1= "Task Name";
@@ -65,7 +67,7 @@ angular.module("myApp")
 	 			tHeads.col4= "Complete By"; 
 	 			tHeads.col5= "Done?";
 	 			tHeads.col6= "Edit/Delete"; 
-	 			tHeads.col7= "archive";
+	 			tHeads.col7= "done";
 	 			//rowData.task_name = $rootScope.task.task_name;
 	 			$rootScope.r_1 = "task_name";
 	 			$rootScope.r_2 = "task_description";
