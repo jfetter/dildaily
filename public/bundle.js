@@ -3844,9 +3844,9 @@ this.loadData = () => {
 		{name: 'Appointments' }, 
 		{name: 'Tasks' },
 		{name: "Completed"}, 
-		{name: "Contacts"}, 
-		{name: "Companies"}, 
-		{name: "All"} ];	
+		{name: "Contacts"}] 
+		// {name: "Companies"}, 
+		// {name: "All"} ];	
 
 	this.loggedIn = function(){
 		if ($rootScope._myId){
