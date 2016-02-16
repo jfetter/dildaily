@@ -285,10 +285,6 @@ this.loadData = () => {
 		} return false; 
 	}
 
-this.loadUserData = function(){
-	console.log("NEED TO SHIFT DATA GRABBING FROM MAIN CTRL TO SERVICE")
-}
-
 $rootScope.closePopUp = function(){
 	$rootScope.addThis = null;
 	$rootScope.editThis = null;
