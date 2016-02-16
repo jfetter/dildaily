@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "setup": "npm install",
-    "postinstall": "bower i"
+    "postinstall": "bower i && gulp build"
   },
   "engines": {
     "node": "4.2.3"
