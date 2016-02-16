@@ -18,7 +18,7 @@
 			<div ui-view class="add-edit-view"></div>
 		<span class="row">
 			<span class="col-sm-12">
-				<a ng-hide="addThis" ng-repeat="button in addBtns" ng-click="addNew(button)" ui-sref="main.add" class="btn" ng-class="button.classIs">Add New {{button.name}}</a>
+				<a ng-repeat="button in addBtns" ng-click="addNew(button)" ui-sref="main.add" class="btn" ng-class="button.classIs">Add New {{button.name}}</a>
 			</span>
 		</span>
 </div>

@@ -57,20 +57,20 @@ router.post("/newtodo", function(req, res){
 router.put("/archive", function(req, res){
 	var yesterday = (Date.now() - (86400 * 1000));
 	var nextWeek = (Date.now() + (86400 * 1000 * 7));
-	var tomorrow = (Date.now() + (86400 * 1000))
-	var completion_date;
+	var tomorrowPlus = (Date.now() + (86400 * 1000 * 2))
+	var completion_date = Date.now();
 	var taskId = req.body._id;
 	var completeBy;
 	console.log(req.body.frequency)
 	if (req.body.frequency == "daily"){
-		completeBy = new Date(tomorrow ); 
-		completion_date = null;
+		completeBy = new Date(tomorrowPlus ); 
+		//completion_date = null;
 	} else if (req.body.frequency == "weekly"){
 		completeBy = new Date (nextWeek);
-		completion_date = null;
+		//completion_date = null;
 	} else {
-		completion_date = Date.now()
-		completeBy = new Date (yesterday); 
+		//completion_date = Date.now()
+		completeBy = null; 
 	}
 	console.log("task to archive", taskId, completeBy);
 	Todo.findByIdAndUpdate(taskId, {$set: {completion_date: completion_date, completeBy: completeBy }
@@ -80,10 +80,10 @@ router.put("/archive", function(req, res){
 })
 
 router.put("/unarchive", function(req, res){
-	var completion_date = "";
+	var completeBy = Date.now();
 	var taskId = req.body.taskId;
-	console.log("task to archive", taskId);
-	Todo.findByIdAndUpdate(taskId, {$set: {completion_date: completion_date }
+	console.log("task to unarchive", taskId);
+	Todo.findByIdAndUpdate(taskId, {$set: {completion_date: null, completeBy: Date.now() }
 	}, function(err, updatedTask){
 		res.status(err ? 400 : 200).send(err || taskId)	
 	})

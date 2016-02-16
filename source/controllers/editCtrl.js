@@ -53,7 +53,11 @@ angular.module("myApp")
 		$scope.contact_email = $rootScope.editThis.contact_email;
 		$scope.linkedin = $rootScope.editThis.linkedin;
 		$scope.last_contact_date = new Date($rootScope.editThis.last_contact_date) || Date.now(); 
-		$scope.followup_date = new Date($rootScope.editThis.followup_date) || Date.now();
+		if ($rootScope.editThis.category == 'appointment'){
+			$scope.followup_date = new Date($rootScope.editThis.followup_date)  
+		} else{
+			$scope.followup_date = new Date($rootScope.editThis.last_contact_date)
+		}
 		$scope.contact_notes = $rootScope.editThis.contact_notes;
 		$scope.appt_notes = $rootScope.editThis.appt_notes;
 		$scope.appt_time = $rootScope.editThis.appt_time;

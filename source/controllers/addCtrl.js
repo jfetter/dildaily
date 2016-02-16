@@ -40,15 +40,16 @@ angular.module("myApp")
 	if ($rootScope.addThis.name === "Contact"){
 		newContact.contact_notes = $scope.contact_notes;
 		newContact.category = 'Contact';
+		newContact.last_contact_date = $scope.followup_date;
 	}else if ($rootScope.addThis.name === "Appointment"){
 		newContact.category = 'Appointment';
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
+		newCOntact.followup_date = $scope.followup_date;
 	}
 	if ($scope.both){
 		newContact.category = 'both';
 	}
-		
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
@@ -58,7 +59,6 @@ angular.module("myApp")
 		newContact.contact_email = $scope.contact_email;
 		newContact.linkedin = $scope.linkedin;
 		newContact.contact_method = $scope.contact_method;
-		newContact.followup_date = $scope.followup_date;
 		$http.post("/contacts/newcontact", newContact )
 	.then(function(res){
 			$rootScope.editThis = null;

@@ -7,7 +7,7 @@ angular.module("myApp")
 
 	$scope.cats = UtilityService.cats;
 	
-	$scope.selectTools = ["", "Flash Cards", "Social Media"];
+	$scope.selectTools = ["", "Flash Cards"]; //, "Social Media"
 
 	$scope.$watch('toolBelt', function(newVal, oldVal ){
 		console.log("NEW TOOL", newVal);
@@ -60,10 +60,10 @@ var searchCases = function(cat){
 			var searchArray = UtilityService.tasks;
 			var searchTerm = "task_name";
 			console.log("SEARCH ARRAY1", searchArray);
-		} else if (cat === 'Archives'){
-			var searchArray = UtilityService.archives;
+		} else if (cat === 'Completed'){
+			var searchArray = UtilityService.Completed;
 			var searchTerm = "contact_name"
-			console.log("archives coming soon")
+			console.log("Completed coming soon")
 		} else if (cat === 'Today'){
 			var searchArray = UtilityService.today;
 			var searchTerm = "task_name";
@@ -90,7 +90,7 @@ var searchCases = function(cat){
 var searchAllCats = function(){
 		console.log("when there are more categories set up this function")
 		// console.log("combine all arrays for search")
-		// ["tasks", "archives", "contacts", "tools"].forEach(function(category){
+		// ["tasks", "Completed", "contacts", "tools"].forEach(function(category){
 		// var cat = category;
 		// var searchObject = searchCases(cat);
 		// var searchArray = searchObject.searchArray;

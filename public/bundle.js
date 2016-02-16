@@ -3,24 +3,23 @@
 //take out nganimate and ngstorage if I dont end up using them in final product
 angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies', 'angularMoment']) 
 
-///////satellizer oauth stuff/////
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
 	
 	
+///////satellizer oauth stuff/////
 	$authProvider.github({
 		clientId: "ec5a4e91c7264952a976"
 	});
 	$authProvider.facebook({
 		clientId: "794880000635252"
 	});
-/////// end satelizer oauth section/////
 
 	$urlRouterProvider.otherwise("home");
 
 	$stateProvider
-	.state("home", {url: "/home", templateUrl:"templates/home.html" , controller:"AuthCtrl", authenticate: false})
-	.state("register", {url:"/register", templateUrl:"templates/register.html", controller:"AuthCtrl", authenticate: false})
-	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl", authenticate: false})
+	.state("home", {url: "/home", templateUrl:"templates/home.html" , controller:"AuthCtrl"})
+	.state("register", {url:"/register", templateUrl:"templates/register.html", controller:"AuthCtrl"})
+	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
 	.state("main.completed", {url:"/completed", templateUrl:"templates/completed.html", controller:"mainCtrl"})	
 	.state("main.edit", {url:"/edit", templateUrl:"templates/input-form.html", controller:"editCtrl"})
@@ -30,16 +29,7 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	.state("main.details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})	
 })
 
-////NEED TO LEARN MORE AND SET UP LOGIN STUFF
-.run(function ($rootScope, $state, AuthService) {
-  // $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
-  //   if (toState.authenticate && !AuthService.isAuthenticated()){
-  //     // User isn’t authenticated
-  //     $state.transitionTo("login");
-  //     event.preventDefault(); 
-  //   }
-  // });
-});
+
 
 
 
@@ -3654,201 +3644,142 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 angular.module("myApp")
 
 .service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
-		this.userData;
-		$rootScope.myData;
-		this.contacts = []
- 		this.tasks = [];
- 		this.appointments =[];
- 		this.archives = [];
- 		this.companies = [];
- 		this.socialLinks = {};
- 		
-
-
-	this.modifyTools = (toolType, array, id) =>{
-		console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
-		var newArray = {}; 
-		newArray.array = array;
-		newArray.toolType = toolType;
-		newArray.modify = {toolType: array}
-		newArray.userId = id;
-		console.log(newArray)
-		$http.post("users/tools/update", newArray)
-		.then(res=>{
-			console.log("res.data", res.data);
-			//$rootScope.flashCards = res.data.flash_cards;
-			//$rootScope.socialLinks = res.data.social_media;
-		},err=>{
-			console.log(err);
-		})
-	}
-
-
+	this.userData;
+	$rootScope.myData;
+	this.contacts = []
+	this.tasks = [];
+	this.appointments =[];
+	this.Completed = [];
+	this.companies = [];
+	this.socialLinks = {};
 	$rootScope.appTitle = "Get To Work";
 	$rootScope.tagLine = "the agenda for job seekers"
-	var today = new Date().getDay();
-
+	
+	//var today = new Date().getDay();
 	//var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 	//$rootScope.today = weekdays[today]; 
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-	// let buildTools = () =>{
+	this.modifyTools = (toolType, array, id) =>{
+	console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
+	var newArray = {}; 
+	newArray.array = array;
+	newArray.toolType = toolType;
+	newArray.modify = {toolType: array}
+	newArray.userId = id;
+	console.log(newArray)
+	$http.post("users/tools/update", newArray)
+	.then(res=>{
+		console.log("res.data", res.data);
+	},err=>{
+		console.log(err);
+	})
+}
 
-	// }
-
- 	$rootScope.thisweek = {};
+	this.thisweek = {};
+ 	this.today = {};
+	var plusDay = new Date(Date.now() + (86400 * 1000));
+	var minusDay = new Date (Date.now() - (86400 * 1000));
 	var plusWeek = new Date(Date.now() + (86400 * 1000 * 7));
 	var minusWeek = new Date(Date.now() - (86400 * 1000 * 7));
 
-	let buildWeek = (appointments, tasks, newData)=>{
-		var weekTasks = []; var weekAppts = []; var weekFollowUps = [];
-			for (var h = 0; h < tasks.length + 1; h ++){
-		 		if (h === tasks.length ){
-		 			$rootScope.thisweek.tasks = weekTasks;
-		 		} else {
-		 			var item = tasks[h];
-		 			//console.log("complete by" , new Date(item.completeBy) , "plus week", plusWeek)
-		 			if ((new Date(item.completeBy) <= plusWeek )&& !item.completion_date){
-		 				weekTasks.push(item);
-		 			}
-				}
-
-		 	for (var i =0; i < appointments.length + 1; i ++){
-		 			var item = appointments[i];
-		 		if (i === appointments.length ){
-		 				$rootScope.thisweek.appointments = weekAppts;
-		 				$rootScope.followUps = weekFollowUps;
-		 		} else{
-			 		if (new Date(item.next_appt_date) <= plusWeek){
-			 				weekAppts.push(item);
-			 		} if (new Date(item.followup_date) <= plusWeek){
-			 			weekFollowUps.push(item);
-			 		}
-				}
-		 	}
-			 	if ($rootScope.thisweek.tasks && $rootScope.thisweek.appointments && $rootScope.thisweek.followUps){
-			 		console.log(this.thisweek, "THIS WEeeeeeeeeeEK")
-			 		$rootScope.myData = newData;
-			 	}
-		 	}
-	}
-
-	this.today = {};
-	var plusDay = new Date(Date.now() + (86400 * 1000));
-	var minusDay = new Date (Date.now() - (86400 * 1000));
-	let buildDay = (appointments, tasks, newData) =>{
-			 		//console.log("APPOINTMENTS", appointments, "TASKS", tasks)
-				//var appTasks = UtilityService.appointments.concat(UtilityService.tasks);
-		var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
-		// 86400000 milliseconds in one day
-
-			for (var h = 0; h < tasks.length + 1; h ++){
-		 		if (h === tasks.length ){
-		 			this.today.tasks = todayTasks;
-		 			//	console.log("this.today", this.today)
-		 		} else {
-					//console.log("H", h)
-		 			var item = tasks[h];
-		 			//console.log(item, "ITEM")
-		 			if (new Date(item.completeBy) <= plusDay && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
-		 				todayTasks.push(item);
-		 			}
-				}
-
-		 	for (var i =0; i < appointments.length + 1; i ++){
-		 			var item = appointments[i];
-		 		if (i === appointments.length ){
-		 				this.today.appointments = todayAppts;
-		 				this.today.followUps = todayFollowUps;
-		 		} else{
-			 		if (new Date(item.next_appt_date) <= plusDay){
-			 				todayAppts.push(item);
-			 		} else if (new Date(item.followup_date) <= plusDay){
-			 			todayFollowUps.push(item);
-			 		}
-				}
-		 	}
-			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
-			 		buildWeek(appointments, tasks, newData)
-			 		buildWeek(appointments, tasks, newData);
-			 	}
-		 	}
-		}
-
-	let buildContacts = ( newData, archs, tasks) => {
-		var archives = archs; var contacts = []; var appointments = [];
-		var contactData = newData.contacts;
+	let buildContacts = (newData) => {
+		var contactData = newData.contacts; 
+		var appointments = []; var contacts = [];
+		var todayAppts = []; var todayFollowUps = []; var weekAppts = []; var weekFollowUps = [];
+ 		//after last item has been put into appropriate array trigger watched scope change
  		for (var i =0; i < contactData.length + 1; i ++){
  			var item = contactData[i];
  		if (i == contactData.length){
- 			this.archives = archives;
+ 			this.today.appointments = todayAppts;
+ 			this.today.followUps = todayFollowUps;
+ 			this.thisweek.appointments = weekAppts;
+ 			this.thisweek.followUps = weekFollowUps;
  			this.contacts = contacts;
- 			this.tasks = tasks;
  			this.appointments = appointments;
- 			console.log("MY CONTACTS ARE...", contacts)
- 			//$rootScope.myData = newData;
- 			buildDay(appointments, tasks, newData);
- 			//buildWeek(tasks, appointments);
+ 			//in main ctrl, the change in rootScope.my data will trigger update view function 
+ 			// which will update the scope.
+ 			//buildDay(appointments, tasks, newData);
+ 			$rootScope.myData = newData;
  			return;
  		}
  		if (item.category === 'both'){
- 				contacts.push(item);
- 				appointments.push(item);
+ 			contacts.push(item);
+ 			appointments.push(item);
  			}
  		if (item.category === 'Contact'){
  			contacts.push(item);
- 		} else {
- 		if (new Date(item.appointment_date) < Date.now()){
- 			archives.push(item)
- 		} else {
+ 		} 
+ 		if (item.category === 'Appointment') {
  			appointments.push(item)
- 			}
  		}
-		//console.log("ITEM", item)
- 	}
- 		//$rootScope.myData 
+ 		if (item.recurrence === 'daily') {
+				item.next_appt_date = Date().now();
+		}
+		if (item.recurrence === 'weekly' && (new Date(item.next_appt_date) <= minusWeek)) {
+				item.next_appt_date = plusWeek;
+		}
+ 		if (new Date(item.next_appt_date) <= plusWeek){
+			weekAppts.push(item);
+		} if (new Date(item.followup_date) <= plusWeek){
+			weekFollowUps.push(item);
+		} 		
+		if (new Date(item.next_appt_date) <= plusDay){
+			todayAppts.push(item);
+		} if (new Date(item.followup_date) <= plusDay){
+			todayFollowUps.push(item);
+		}
+	}
 }
 
  let buildTasks = (newData) =>{
  	console.log("MY DATA", newData)
- 	var archs = []; var tasks = [];
  	var taskData = newData.todos;
+	var todayTasks = [];var weekTasks = []; var tasks = []; var Completed = [];
 		for (var i =0; i < taskData.length + 1; i ++){
 			var item = taskData[i];
+			//after done setting up Completed for tasks, build contacts
+			// (do not know which build will finish first so must do them sequentially)
 			if(i === taskData.length){
-				buildContacts(newData, archs, tasks);
+				this.today.tasks = todayTasks;
+				this.thisweek.tasks = weekTasks;
+				this.tasks = tasks;
+				this.Completed = Completed;
+				buildContacts(newData);
 				return;		
 			}
-			// put daily tasks back into circulation after a day and weekly after a week
-		if ((item.completed === true && item.frequency === 'daily' && new Date(item.completion_date) >= Date.now() ) ||
-			 (item.completed === true && item.frequency === 'weekly' && new Date(item.completion_date) >= Date.now() + (7 * plusDay)) ){
-			this.unarchive(item);
-			item.push(tasks)
-		} else if (item.completed === true ){
-		//|| new Date(item.completeBy) < Date.now()
-			archs.push(item)
-		}else {
-			tasks.push(item)
+			// keep daily and weekly tasks in circulation unless they have been marked as complete
+			if (item.frequency === 'daily' && new Date(item.completeBy) <= Date.now() ) {
+				item.completeBy = plusDay;
+				item.completion_date = null;
+			}
+			if (item.frequency === 'weekly' && new Date(item.completeBy) <= Date.now()) {
+				item.completeBy = plusWeek;
+				item.completion_date = null;
+			}
+			//add current tasks to weekly and daily view
+				console.log("complete by",new Date(item.completeBy), "plus day", plusDay, "completion date", item.completion_date )
+			if (new Date(item.completeBy) <= plusDay && item.completion_date == null){
+		 		todayTasks.push(item);
+		 	}
+		 	if (new Date(item.completeBy) <= plusWeek && item.completion_date == null){
+		 		weekTasks.push(item);
+		 	}
+			if (item.completion_date != null){
+				Completed.push(item);
+			} else {
+				tasks.push(item);
+			}
 		}
-		//console.log("ITEM", item)
 	}
-}
-
-
 
 	let	setUserInfo  = () =>{
-		console.log("$rootScope._myId", $rootScope._myId)
 		$http.get(`users/login/${$rootScope._myId}`)
 			.then(res=>{
-			//$rootScope.userData = res.data;
-			//$rootScope.myId = res.data._Id;
-			//$rootScope.myName = res.data.username;
-			//$rootScope.tasks = res.data.todos;
-			//$rootScope.myData = myData;
 			var newData = res.data;
-			var newLinks = newData.social_media || {};
 			$rootScope.flashCards = res.data.flash_cards;
+			var newLinks = newData.social_media || {};
 			var socialLinks = {};
 			socialLinks.twitter = newLinks.twitter || "?";
 			socialLinks.git = newLinks.git || "?";
@@ -3857,11 +3788,10 @@ angular.module("myApp")
 			socialLinks.angellist = newLinks.angellist || "?";
 			$rootScope.socialLinks= socialLinks;
 			console.log("RES BODY IN SERVICE",  res.data)
-			console.log("ABOUT TO ITERATE THROUGH STUFF")
 			buildTasks(newData);
 		}, function(err){ 
-			console.log(err)
-			})
+			console.error(err)
+		})
   }
 
 this.loadData = () => {
@@ -3898,18 +3828,6 @@ this.loadData = () => {
 		}, (err)=>{console.log(err)})			
 	}
 
- 
-	this.cleanOldTasks = function (){
-		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
-	}
-
-		this.addKind = function (){
-	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
-		var selection = Math.floor(Math.random()*kindness.length);
-		console.log("ADD KIND INDEX", selection);
-		return kindness[selection];
-	}
-
 	this.removeCookies = function(){
 		var token = $cookies.get('token');
 		if(token){
@@ -3925,7 +3843,7 @@ this.loadData = () => {
 		{name: "This Week" }, 
 		{name: 'Appointments' }, 
 		{name: 'Tasks' },
-		{name: "Archives"}, 
+		{name: "Completed"}, 
 		{name: "Contacts"}, 
 		{name: "Companies"}, 
 		{name: "All"} ];	
@@ -3964,21 +3882,17 @@ this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 		}
 	return sortData;
 	}
+
+	this.addKind = function (){
+ 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+	var selection = Math.floor(Math.random()*kindness.length);
+	console.log("ADD KIND INDEX", selection);
+	return kindness[selection];
+}
+
 })
 
-///authentication service using UI ROUTER 
-.service('AuthService',function ($http) {
 
-  this.isAuthenticated = function (params) {
-      if(typeof localStorage.token === 'undefined'){
-        return false;    
-      }else if(localStorage.token == null){
-          return false;
-      }else{
-          return true;
-      }
-  }
-});
 
 
 
@@ -4023,15 +3937,16 @@ angular.module("myApp")
 	if ($rootScope.addThis.name === "Contact"){
 		newContact.contact_notes = $scope.contact_notes;
 		newContact.category = 'Contact';
+		newContact.last_contact_date = $scope.followup_date;
 	}else if ($rootScope.addThis.name === "Appointment"){
 		newContact.category = 'Appointment';
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
+		newCOntact.followup_date = $scope.followup_date;
 	}
 	if ($scope.both){
 		newContact.category = 'both';
 	}
-		
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
 		newContact.contact_name = $scope.contact_name;
@@ -4041,7 +3956,6 @@ angular.module("myApp")
 		newContact.contact_email = $scope.contact_email;
 		newContact.linkedin = $scope.linkedin;
 		newContact.contact_method = $scope.contact_method;
-		newContact.followup_date = $scope.followup_date;
 		$http.post("/contacts/newcontact", newContact )
 	.then(function(res){
 			$rootScope.editThis = null;
@@ -4342,7 +4256,11 @@ angular.module("myApp")
 		$scope.contact_email = $rootScope.editThis.contact_email;
 		$scope.linkedin = $rootScope.editThis.linkedin;
 		$scope.last_contact_date = new Date($rootScope.editThis.last_contact_date) || Date.now(); 
-		$scope.followup_date = new Date($rootScope.editThis.followup_date) || Date.now();
+		if ($rootScope.editThis.category == 'appointment'){
+			$scope.followup_date = new Date($rootScope.editThis.followup_date)  
+		} else{
+			$scope.followup_date = new Date($rootScope.editThis.last_contact_date)
+		}
 		$scope.contact_notes = $rootScope.editThis.contact_notes;
 		$scope.appt_notes = $rootScope.editThis.appt_notes;
 		$scope.appt_time = $rootScope.editThis.appt_time;
@@ -4411,6 +4329,7 @@ angular.module("myApp")
 
 	$rootScope.category = $rootScope.category ? $rootScope.category :'Today';
   UtilityService.loadData();
+  UtilityService.addKind();
 
 //myData is set in Utility service
   $rootScope.$watch('myData', function(newData, oldData){
@@ -4502,14 +4421,14 @@ angular.module("myApp")
 	 			$scope.r_5 = "company_name";
 	 			$scope.rowData = UtilityService.contacts;
 	 			$scope.tHeads = tHeads;
-	 	} else if ($rootScope.currentView === 'Archives'){
+	 	} else if ($rootScope.currentView === 'Completed'){
 	 			tHeads.col1= "Name";
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
 	 			tHeads.col5= "Return To Agenda";
 	 			tHeads.col6= "Edit/Delete"; 
-	 			tHeads.col7= "un-archive";
+	 			tHeads.col7= "Not Done!";
 	 			// if(){
 	 			// 	$scope.r_1 = "task_name";
 	 			// }
@@ -4517,18 +4436,12 @@ angular.module("myApp")
 	 			$scope.r_2 = "task_description";
 	 			$scope.r_3 = "frequency";
 	 			$scope.r_4 = "completeBy";
-	 			$scope.rowData = UtilityService.archives;
+	 			$scope.rowData = UtilityService.Completed;
 	 			$scope.tHeads = tHeads;
 	 	} 
 
 	 }
 	}
-
-
-	UtilityService.cleanOldTasks();
-	UtilityService.addKind();
-
-	
 
 	$scope.viewDetails = function(){
 		console.log("make a directive to show details")
@@ -4631,7 +4544,7 @@ angular.module("myApp")
 	// $scope.striker = 'un-strike';
 	$scope.checkOff = function(item){
 		item.completed = !item.completed;
-		if (item.completed){
+		if (item.completion_date == null){
 			$timeout(function(){
 			UtilityService.archive(item)}, 1000)
 		} else {
@@ -4666,8 +4579,8 @@ $scope.sortTasks = function(col){
 	 if ($rootScope.currentView === 'Appointments'){
 		sortData = UtilityService.appointments;;
 	} 	
-	 if ($rootScope.currentView === 'Archives'){
-		sortData = UtilityService.archives;;
+	 if ($rootScope.currentView === 'Completed'){
+		sortData = UtilityService.Completed;;
 	} 
 	if (col === "date"){
 		$scope.sorted2 = !$scope.sorted2;
@@ -4765,7 +4678,7 @@ angular.module("myApp")
 
 	$scope.cats = UtilityService.cats;
 	
-	$scope.selectTools = ["", "Flash Cards", "Social Media"];
+	$scope.selectTools = ["", "Flash Cards"]; //, "Social Media"
 
 	$scope.$watch('toolBelt', function(newVal, oldVal ){
 		console.log("NEW TOOL", newVal);
@@ -4818,10 +4731,10 @@ var searchCases = function(cat){
 			var searchArray = UtilityService.tasks;
 			var searchTerm = "task_name";
 			console.log("SEARCH ARRAY1", searchArray);
-		} else if (cat === 'Archives'){
-			var searchArray = UtilityService.archives;
+		} else if (cat === 'Completed'){
+			var searchArray = UtilityService.Completed;
 			var searchTerm = "contact_name"
-			console.log("archives coming soon")
+			console.log("Completed coming soon")
 		} else if (cat === 'Today'){
 			var searchArray = UtilityService.today;
 			var searchTerm = "task_name";
@@ -4848,7 +4761,7 @@ var searchCases = function(cat){
 var searchAllCats = function(){
 		console.log("when there are more categories set up this function")
 		// console.log("combine all arrays for search")
-		// ["tasks", "archives", "contacts", "tools"].forEach(function(category){
+		// ["tasks", "Completed", "contacts", "tools"].forEach(function(category){
 		// var cat = category;
 		// var searchObject = searchCases(cat);
 		// var searchArray = searchObject.searchArray;
@@ -4924,7 +4837,7 @@ angular.module("myApp")
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
 		if (newView == 'This Week'){
-			$scope.dayRowData = $rootScope.thisweek.tasks
+			$scope.dayRowData = UtilityService.thisweek.tasks
 		console.log("DAY ROW DATA TOP", $scope.dayRowData)
 		} else if (newView  == 'Today') {
 			$scope.dayRowData = UtilityService.today.tasks
@@ -4947,7 +4860,7 @@ angular.module("myApp")
 		$scope.td_4 = "next_appt_date";
 		$scope.td_5 = "appointment_time";
 		if (newView == 'This Week'){
-			$scope.dayRowData = $rootScope.thisweek.appointments
+			$scope.dayRowData = UtilityService.thisweek.appointments
 		console.log("DAY ROW DATA Middle", $scope.dayRowData)
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.appointments
@@ -4970,7 +4883,7 @@ angular.module("myApp")
 		$scope.td_5 = "appointment_time";
 		console.log("SUB 3 ROOT CUR VIEW", $rootScope.currentView)
 		if (newView == 'This Week'){
-			$scope.dayRowData = $rootScope.thisweek.followUps
+			$scope.dayRowData = UtilityService.thisweek.followUps
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.followUps
 		console.log("DAY ROW DATA BOTTOM", $scope.dayRowData)

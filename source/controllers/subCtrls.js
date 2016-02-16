@@ -17,7 +17,7 @@ angular.module("myApp")
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
 		if (newView == 'This Week'){
-			$scope.dayRowData = $rootScope.thisweek.tasks
+			$scope.dayRowData = UtilityService.thisweek.tasks
 		console.log("DAY ROW DATA TOP", $scope.dayRowData)
 		} else if (newView  == 'Today') {
 			$scope.dayRowData = UtilityService.today.tasks
@@ -40,7 +40,7 @@ angular.module("myApp")
 		$scope.td_4 = "next_appt_date";
 		$scope.td_5 = "appointment_time";
 		if (newView == 'This Week'){
-			$scope.dayRowData = $rootScope.thisweek.appointments
+			$scope.dayRowData = UtilityService.thisweek.appointments
 		console.log("DAY ROW DATA Middle", $scope.dayRowData)
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.appointments
@@ -63,7 +63,7 @@ angular.module("myApp")
 		$scope.td_5 = "appointment_time";
 		console.log("SUB 3 ROOT CUR VIEW", $rootScope.currentView)
 		if (newView == 'This Week'){
-			$scope.dayRowData = $rootScope.thisweek.followUps
+			$scope.dayRowData = UtilityService.thisweek.followUps
 		} else if (newView == 'Today') {
 			$scope.dayRowData = UtilityService.today.followUps
 		console.log("DAY ROW DATA BOTTOM", $scope.dayRowData)

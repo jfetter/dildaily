@@ -41,15 +41,15 @@
 							<td class="col-sm-2">{{item[r_2]}}</td>
 							<td class="col-sm-2">{{item[r_3]}}</td>
 							<!-- ng-show="item.completeBy == 2016-02-04T08:00:00.000Z" -->
-							<td  ng-hide="true" class="blankCompleteBy">	&nbsp;</td>
+							
 							<td class="col-sm-2">{{item[r_4] | amDateFormat:'ll'}}</td>
 							<!-- <td class="col-sm-2">{{item.}}</td> -->
-								<td ng-show = "currentView !='Tasks' && currentView !='Archives'">{{item[r_5] | amDateFormat: 'h:hh' }} 
+								<td >{{item[r_5] }} 
 								</td>
 								
-							<td ng-if="currentView ==='Tasks' || currentView ==='Archives'" class="table-icons text-center">
+							<td ng-if="currentView ==='Tasks' || currentView ==='Completed'" class="table-icons text-center">
 									<a  ng-if="currentView === 'Tasks'" ng-click="checkOff(item)"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>	
-									<a ng-show="currentView === 'Archives'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
+									<a ng-show="currentView === 'Completed'" ng-click="checkOff(item); striker = 'un-strike'"  class=" btn btn-sm btn-success row">{{tHeads.col7}}</a>
 							</td>
 							<td class="col-sm-2 text-center"> 
 								<i class="fa fa-pencil modal-button" ng-click="goToEdit(item)"></i> 

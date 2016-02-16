@@ -34,7 +34,6 @@
 					</select>
 					<label for="recurs">Recurs?</label>
 					<select ng-model="recurrence" id="recurs" placeholder="desciprtion" class="input-recurrence">
-						<option value="once" selected="selected">once</option>
 						<option value="weekly">weekly</option>
 						<option value="daily">daily</option>
 					</select>
@@ -53,7 +52,7 @@
 					<input required ng-model="linkedin" type="text" class="input-date" placeholder="linkedin.com/in/fnamelname">
 				</td>				
 				<td class="add-appt-fu">
-					<label ng-hide="editThis || addThis.name === 'Appointment'" for="followup_date">Date of Last Contact</label>
+					<label ng-hide="addThis.name === 'Appointment' " for="followup_date">Date of Last Contact</label>
 					<label ng-show="addThis.name === 'Appointment' || editThis.category === 'Appointment'" for="followup_date">Follow Up Date</label>
 					<input ng-model="followup_date" type="date" class="input-date" required>
 				</td>

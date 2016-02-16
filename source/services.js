@@ -3,201 +3,142 @@
 angular.module("myApp")
 
 .service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
-		this.userData;
-		$rootScope.myData;
-		this.contacts = []
- 		this.tasks = [];
- 		this.appointments =[];
- 		this.archives = [];
- 		this.companies = [];
- 		this.socialLinks = {};
- 		
-
-
-	this.modifyTools = (toolType, array, id) =>{
-		console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
-		var newArray = {}; 
-		newArray.array = array;
-		newArray.toolType = toolType;
-		newArray.modify = {toolType: array}
-		newArray.userId = id;
-		console.log(newArray)
-		$http.post("users/tools/update", newArray)
-		.then(res=>{
-			console.log("res.data", res.data);
-			//$rootScope.flashCards = res.data.flash_cards;
-			//$rootScope.socialLinks = res.data.social_media;
-		},err=>{
-			console.log(err);
-		})
-	}
-
-
+	this.userData;
+	$rootScope.myData;
+	this.contacts = []
+	this.tasks = [];
+	this.appointments =[];
+	this.Completed = [];
+	this.companies = [];
+	this.socialLinks = {};
 	$rootScope.appTitle = "Get To Work";
 	$rootScope.tagLine = "the agenda for job seekers"
-	var today = new Date().getDay();
-
+	
+	//var today = new Date().getDay();
 	//var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 	//$rootScope.today = weekdays[today]; 
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-	// let buildTools = () =>{
+	this.modifyTools = (toolType, array, id) =>{
+	console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
+	var newArray = {}; 
+	newArray.array = array;
+	newArray.toolType = toolType;
+	newArray.modify = {toolType: array}
+	newArray.userId = id;
+	console.log(newArray)
+	$http.post("users/tools/update", newArray)
+	.then(res=>{
+		console.log("res.data", res.data);
+	},err=>{
+		console.log(err);
+	})
+}
 
-	// }
-
- 	$rootScope.thisweek = {};
+	this.thisweek = {};
+ 	this.today = {};
+	var plusDay = new Date(Date.now() + (86400 * 1000));
+	var minusDay = new Date (Date.now() - (86400 * 1000));
 	var plusWeek = new Date(Date.now() + (86400 * 1000 * 7));
 	var minusWeek = new Date(Date.now() - (86400 * 1000 * 7));
 
-	let buildWeek = (appointments, tasks, newData)=>{
-		var weekTasks = []; var weekAppts = []; var weekFollowUps = [];
-			for (var h = 0; h < tasks.length + 1; h ++){
-		 		if (h === tasks.length ){
-		 			$rootScope.thisweek.tasks = weekTasks;
-		 		} else {
-		 			var item = tasks[h];
-		 			//console.log("complete by" , new Date(item.completeBy) , "plus week", plusWeek)
-		 			if ((new Date(item.completeBy) <= plusWeek )&& !item.completion_date){
-		 				weekTasks.push(item);
-		 			}
-				}
-
-		 	for (var i =0; i < appointments.length + 1; i ++){
-		 			var item = appointments[i];
-		 		if (i === appointments.length ){
-		 				$rootScope.thisweek.appointments = weekAppts;
-		 				$rootScope.followUps = weekFollowUps;
-		 		} else{
-			 		if (new Date(item.next_appt_date) <= plusWeek){
-			 				weekAppts.push(item);
-			 		} if (new Date(item.followup_date) <= plusWeek){
-			 			weekFollowUps.push(item);
-			 		}
-				}
-		 	}
-			 	if ($rootScope.thisweek.tasks && $rootScope.thisweek.appointments && $rootScope.thisweek.followUps){
-			 		console.log(this.thisweek, "THIS WEeeeeeeeeeEK")
-			 		$rootScope.myData = newData;
-			 	}
-		 	}
-	}
-
-	this.today = {};
-	var plusDay = new Date(Date.now() + (86400 * 1000));
-	var minusDay = new Date (Date.now() - (86400 * 1000));
-	let buildDay = (appointments, tasks, newData) =>{
-			 		//console.log("APPOINTMENTS", appointments, "TASKS", tasks)
-				//var appTasks = UtilityService.appointments.concat(UtilityService.tasks);
-		var todayTasks = []; var todayAppts = []; var todayFollowUps = []; 
-		// 86400000 milliseconds in one day
-
-			for (var h = 0; h < tasks.length + 1; h ++){
-		 		if (h === tasks.length ){
-		 			this.today.tasks = todayTasks;
-		 			//	console.log("this.today", this.today)
-		 		} else {
-					//console.log("H", h)
-		 			var item = tasks[h];
-		 			//console.log(item, "ITEM")
-		 			if (new Date(item.completeBy) <= plusDay && new Date(item.completeBy) >= minusDay || item.frequency === 'daily' || item.frequency === 'weekly'){
-		 				todayTasks.push(item);
-		 			}
-				}
-
-		 	for (var i =0; i < appointments.length + 1; i ++){
-		 			var item = appointments[i];
-		 		if (i === appointments.length ){
-		 				this.today.appointments = todayAppts;
-		 				this.today.followUps = todayFollowUps;
-		 		} else{
-			 		if (new Date(item.next_appt_date) <= plusDay){
-			 				todayAppts.push(item);
-			 		} else if (new Date(item.followup_date) <= plusDay){
-			 			todayFollowUps.push(item);
-			 		}
-				}
-		 	}
-			 	if (this.today.tasks && this.today.appointments && this.today.followUps){
-			 		buildWeek(appointments, tasks, newData)
-			 		buildWeek(appointments, tasks, newData);
-			 	}
-		 	}
-		}
-
-	let buildContacts = ( newData, archs, tasks) => {
-		var archives = archs; var contacts = []; var appointments = [];
-		var contactData = newData.contacts;
+	let buildContacts = (newData) => {
+		var contactData = newData.contacts; 
+		var appointments = []; var contacts = [];
+		var todayAppts = []; var todayFollowUps = []; var weekAppts = []; var weekFollowUps = [];
+ 		//after last item has been put into appropriate array trigger watched scope change
  		for (var i =0; i < contactData.length + 1; i ++){
  			var item = contactData[i];
  		if (i == contactData.length){
- 			this.archives = archives;
+ 			this.today.appointments = todayAppts;
+ 			this.today.followUps = todayFollowUps;
+ 			this.thisweek.appointments = weekAppts;
+ 			this.thisweek.followUps = weekFollowUps;
  			this.contacts = contacts;
- 			this.tasks = tasks;
  			this.appointments = appointments;
- 			console.log("MY CONTACTS ARE...", contacts)
- 			//$rootScope.myData = newData;
- 			buildDay(appointments, tasks, newData);
- 			//buildWeek(tasks, appointments);
+ 			//in main ctrl, the change in rootScope.my data will trigger update view function 
+ 			// which will update the scope.
+ 			//buildDay(appointments, tasks, newData);
+ 			$rootScope.myData = newData;
  			return;
  		}
  		if (item.category === 'both'){
- 				contacts.push(item);
- 				appointments.push(item);
+ 			contacts.push(item);
+ 			appointments.push(item);
  			}
  		if (item.category === 'Contact'){
  			contacts.push(item);
- 		} else {
- 		if (new Date(item.appointment_date) < Date.now()){
- 			archives.push(item)
- 		} else {
+ 		} 
+ 		if (item.category === 'Appointment') {
  			appointments.push(item)
- 			}
  		}
-		//console.log("ITEM", item)
- 	}
- 		//$rootScope.myData 
+ 		if (item.recurrence === 'daily') {
+				item.next_appt_date = Date().now();
+		}
+		if (item.recurrence === 'weekly' && (new Date(item.next_appt_date) <= minusWeek)) {
+				item.next_appt_date = plusWeek;
+		}
+ 		if (new Date(item.next_appt_date) <= plusWeek){
+			weekAppts.push(item);
+		} if (new Date(item.followup_date) <= plusWeek){
+			weekFollowUps.push(item);
+		} 		
+		if (new Date(item.next_appt_date) <= plusDay){
+			todayAppts.push(item);
+		} if (new Date(item.followup_date) <= plusDay){
+			todayFollowUps.push(item);
+		}
+	}
 }
 
  let buildTasks = (newData) =>{
  	console.log("MY DATA", newData)
- 	var archs = []; var tasks = [];
  	var taskData = newData.todos;
+	var todayTasks = [];var weekTasks = []; var tasks = []; var Completed = [];
 		for (var i =0; i < taskData.length + 1; i ++){
 			var item = taskData[i];
+			//after done setting up Completed for tasks, build contacts
+			// (do not know which build will finish first so must do them sequentially)
 			if(i === taskData.length){
-				buildContacts(newData, archs, tasks);
+				this.today.tasks = todayTasks;
+				this.thisweek.tasks = weekTasks;
+				this.tasks = tasks;
+				this.Completed = Completed;
+				buildContacts(newData);
 				return;		
 			}
-			// put daily tasks back into circulation after a day and weekly after a week
-		if ((item.completed === true && item.frequency === 'daily' && new Date(item.completion_date) >= Date.now() ) ||
-			 (item.completed === true && item.frequency === 'weekly' && new Date(item.completion_date) >= Date.now() + (7 * plusDay)) ){
-			this.unarchive(item);
-			item.push(tasks)
-		} else if (item.completed === true ){
-		//|| new Date(item.completeBy) < Date.now()
-			archs.push(item)
-		}else {
-			tasks.push(item)
+			// keep daily and weekly tasks in circulation unless they have been marked as complete
+			if (item.frequency === 'daily' && new Date(item.completeBy) <= Date.now() ) {
+				item.completeBy = plusDay;
+				item.completion_date = null;
+			}
+			if (item.frequency === 'weekly' && new Date(item.completeBy) <= Date.now()) {
+				item.completeBy = plusWeek;
+				item.completion_date = null;
+			}
+			//add current tasks to weekly and daily view
+				console.log("complete by",new Date(item.completeBy), "plus day", plusDay, "completion date", item.completion_date )
+			if (new Date(item.completeBy) <= plusDay && item.completion_date == null){
+		 		todayTasks.push(item);
+		 	}
+		 	if (new Date(item.completeBy) <= plusWeek && item.completion_date == null){
+		 		weekTasks.push(item);
+		 	}
+			if (item.completion_date != null){
+				Completed.push(item);
+			} else {
+				tasks.push(item);
+			}
 		}
-		//console.log("ITEM", item)
 	}
-}
-
-
 
 	let	setUserInfo  = () =>{
-		console.log("$rootScope._myId", $rootScope._myId)
 		$http.get(`users/login/${$rootScope._myId}`)
 			.then(res=>{
-			//$rootScope.userData = res.data;
-			//$rootScope.myId = res.data._Id;
-			//$rootScope.myName = res.data.username;
-			//$rootScope.tasks = res.data.todos;
-			//$rootScope.myData = myData;
 			var newData = res.data;
-			var newLinks = newData.social_media || {};
 			$rootScope.flashCards = res.data.flash_cards;
+			var newLinks = newData.social_media || {};
 			var socialLinks = {};
 			socialLinks.twitter = newLinks.twitter || "?";
 			socialLinks.git = newLinks.git || "?";
@@ -206,11 +147,10 @@ angular.module("myApp")
 			socialLinks.angellist = newLinks.angellist || "?";
 			$rootScope.socialLinks= socialLinks;
 			console.log("RES BODY IN SERVICE",  res.data)
-			console.log("ABOUT TO ITERATE THROUGH STUFF")
 			buildTasks(newData);
 		}, function(err){ 
-			console.log(err)
-			})
+			console.error(err)
+		})
   }
 
 this.loadData = () => {
@@ -247,18 +187,6 @@ this.loadData = () => {
 		}, (err)=>{console.log(err)})			
 	}
 
- 
-	this.cleanOldTasks = function (){
-		console.log("make a function that will clean out old tasks... also set up a place for configuring that on the html")
-	}
-
-		this.addKind = function (){
-	 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
-		var selection = Math.floor(Math.random()*kindness.length);
-		console.log("ADD KIND INDEX", selection);
-		return kindness[selection];
-	}
-
 	this.removeCookies = function(){
 		var token = $cookies.get('token');
 		if(token){
@@ -274,7 +202,7 @@ this.loadData = () => {
 		{name: "This Week" }, 
 		{name: 'Appointments' }, 
 		{name: 'Tasks' },
-		{name: "Archives"}, 
+		{name: "Completed"}, 
 		{name: "Contacts"}, 
 		{name: "Companies"}, 
 		{name: "All"} ];	
@@ -313,19 +241,15 @@ this.sortTasks = (sortData, sortBy, reverseOrder) =>{
 		}
 	return sortData;
 	}
+
+	this.addKind = function (){
+ 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+	var selection = Math.floor(Math.random()*kindness.length);
+	console.log("ADD KIND INDEX", selection);
+	return kindness[selection];
+}
+
 })
 
-///authentication service using UI ROUTER 
-.service('AuthService',function ($http) {
 
-  this.isAuthenticated = function (params) {
-      if(typeof localStorage.token === 'undefined'){
-        return false;    
-      }else if(localStorage.token == null){
-          return false;
-      }else{
-          return true;
-      }
-  }
-});
 

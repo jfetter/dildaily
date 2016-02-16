@@ -14,6 +14,7 @@ angular.module("myApp")
 
 	$rootScope.category = $rootScope.category ? $rootScope.category :'Today';
   UtilityService.loadData();
+  UtilityService.addKind();
 
 //myData is set in Utility service
   $rootScope.$watch('myData', function(newData, oldData){
@@ -105,14 +106,14 @@ angular.module("myApp")
 	 			$scope.r_5 = "company_name";
 	 			$scope.rowData = UtilityService.contacts;
 	 			$scope.tHeads = tHeads;
-	 	} else if ($rootScope.currentView === 'Archives'){
+	 	} else if ($rootScope.currentView === 'Completed'){
 	 			tHeads.col1= "Name";
 	 			tHeads.col2= "Description/Company"; 
 	 			tHeads.col3= "Frequency"; 
 	 			tHeads.col4= "Complete By"; 
 	 			tHeads.col5= "Return To Agenda";
 	 			tHeads.col6= "Edit/Delete"; 
-	 			tHeads.col7= "un-archive";
+	 			tHeads.col7= "Not Done!";
 	 			// if(){
 	 			// 	$scope.r_1 = "task_name";
 	 			// }
@@ -120,18 +121,12 @@ angular.module("myApp")
 	 			$scope.r_2 = "task_description";
 	 			$scope.r_3 = "frequency";
 	 			$scope.r_4 = "completeBy";
-	 			$scope.rowData = UtilityService.archives;
+	 			$scope.rowData = UtilityService.Completed;
 	 			$scope.tHeads = tHeads;
 	 	} 
 
 	 }
 	}
-
-
-	UtilityService.cleanOldTasks();
-	UtilityService.addKind();
-
-	
 
 	$scope.viewDetails = function(){
 		console.log("make a directive to show details")
@@ -234,7 +229,7 @@ angular.module("myApp")
 	// $scope.striker = 'un-strike';
 	$scope.checkOff = function(item){
 		item.completed = !item.completed;
-		if (item.completed){
+		if (item.completion_date == null){
 			$timeout(function(){
 			UtilityService.archive(item)}, 1000)
 		} else {
@@ -269,8 +264,8 @@ $scope.sortTasks = function(col){
 	 if ($rootScope.currentView === 'Appointments'){
 		sortData = UtilityService.appointments;;
 	} 	
-	 if ($rootScope.currentView === 'Archives'){
-		sortData = UtilityService.archives;;
+	 if ($rootScope.currentView === 'Completed'){
+		sortData = UtilityService.Completed;;
 	} 
 	if (col === "date"){
 		$scope.sorted2 = !$scope.sorted2;
