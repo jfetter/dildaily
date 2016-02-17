@@ -8,12 +8,6 @@
 	</div>	
 	<div class="row">
 		<div class="col-sm-12">
-		
-			<!-- <a ng-hide="addEdit" class=" btn btn-info add-button"  ui-sref="main.add"><span ng-show="true">Add New Task</span></a>
-			<a ui-sref="main.add"><span class=" btn btn-warning add-button" ng-show="true">Add New Appointment</span></a>	
-			<a ui-sref="main.add" ng-click="newContact; !newAppointment; !newTask"><span class=" btn btn-success add-button" ng-show="true">Add New contact</span></a> -->
-
-		<!-- 	<a class=" btn btn-success addAppt-button" ui-sref="main.add" ng-click="addAppt()">Add New Appointment</a> -->
 			
 			<div ui-view class="add-edit-view"></div>
 		<span class="row">
@@ -34,19 +28,16 @@
 	</div> -->
 
 		<div class="col-sm-10 col-md-10 col-lg-10 daily">
-			<div class="row daily-row">
-				</div>
-				<div ng-hide="toolBelt">
-					<left-view />
-				</div>
-				<div> 
-					<right-view />
-				</div >
-		<div class="col-sm-10 col-md-10 col-lg-10">
-			<div ng-show="toolBelt">
-			<tools />
+			<div ng-hide="toolBelt">
+				<left-view />
 			</div>
-
+			<div> 
+				<right-view />
+			</div >
+		<div class="col-sm-10 col-md-10 col-lg-10">
+		<div ng-show="toolBelt">
+			<tools />
+		</div>
 
 		</div>
 	<div class="row">

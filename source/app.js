@@ -21,7 +21,6 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	.state("register", {url:"/register", templateUrl:"templates/register.html", controller:"AuthCtrl"})
 	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
-	.state("main.completed", {url:"/completed", templateUrl:"templates/completed.html", controller:"mainCtrl"})	
 	.state("main.edit", {url:"/edit", templateUrl:"templates/input-form.html", controller:"editCtrl"})
 	.state("main.add", {url:"/add", templateUrl:"templates/input-form.html", controller:"addCtrl"})
 	.state("main.tools", {url:"/tools", templateUrl:"directives/tools.html", controller:"toolsCtrl"})

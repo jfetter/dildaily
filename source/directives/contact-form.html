@@ -21,9 +21,9 @@
 					<label for="time">Appt Time</label>
 					<input required ng-model="appt_time" type="time" class="input-date" required>
 				</td>
-					<td ng-show="addThis.name === 'Contact'">
-						<label for="addContact">Add To Appt Schedule?</label>
-						<input type="checkbox" ng-model="both" ng-change="both = !both">
+					<td ng-show="addThis.name === 'Appointment'">
+						<label for="addContact">Add To Contacts?</label>
+						<input type="checkbox" ng-model="both">
 					</td>
 				<td ng-hide="addThis.name ==='Contact'" class="add-task-recurrence">
 					<label for="method">Contact method</label>
@@ -56,10 +56,10 @@
 					<label ng-show="addThis.name === 'Appointment' || editThis.category === 'Appointment'" for="followup_date">Follow Up Date</label>
 					<input ng-model="followup_date" type="date" class="input-date" required>
 				</td>
-				<td ng-show="addThis.name === 'Appointment' || editThis.category ==='Appointment'">
+			<!-- 	<td ng-show="addThis.name === 'Appointment' || editThis.category ==='Appointment'">
 						<label for="addContact">Save As Contact?</label>
 						<input type="checkbox" ng-model="both" ng-change="both = !both" >
-					</td>
+					</td> -->
 			</tr>
 			<tr>
 <!-- 				</td>

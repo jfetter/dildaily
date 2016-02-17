@@ -45,7 +45,7 @@ angular.module("myApp")
 		newContact.category = 'Appointment';
 		newContact.appt_notes = $scope.appt_notes;
 		newContact.recurrence = $scope.recurrence;
-		newCOntact.followup_date = $scope.followup_date;
+		newContact.followup_date = $scope.followup_date;
 	}
 	if ($scope.both){
 		newContact.category = 'both';

@@ -103,7 +103,6 @@ if ($rootScope.editThis.category === "Contact"){
 		}
 
 
-
 })
 
 
