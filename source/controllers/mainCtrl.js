@@ -1,10 +1,10 @@
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log, $cookies){
 	var cookies = $cookies.get('token');
-	var satToken = localStorage.satellizer_token
+	var satToken = localStorage.satellizer_token;
 	 if (!cookies && !satToken){
 			$state.go("home");
 			return;

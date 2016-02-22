@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 
 .controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http, UtilityService){
@@ -8,7 +8,8 @@ angular.module("myApp")
 			$state.go("main");
 			return;
 	} 
-
+	$rootScope.presentState = $state.current.name;
+	console.log($rootScope.presentState)
 	//job hunting tasks to inject upon signup
 	var plusWeek = Date.now() + (86400 * 1000 * 7);
 	var plusDay = Date.now() + (86400 * 1000);

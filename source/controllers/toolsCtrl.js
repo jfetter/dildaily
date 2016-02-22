@@ -1,6 +1,8 @@
-angular.module("myApp")
+"use strict";
 
-.controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
+angular.module("toWork")
+
+.controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, ToolsService, $http, $log){
 	console.log("make flash cards, contact list, company list, email templates etc...")
 	
 	$scope.cards = $rootScope.flashCards || [];
@@ -28,7 +30,7 @@ angular.module("myApp")
 	// {angellist: UtilityService.socialLinks.angellist}
 	//]
 
-	$rootScope.toolBelt = $rootScope.toolBelt || "Flash Cards"
+	$scope.toolBelt = ToolsService.toolBelt || "Flash Cards";
 
 	$rootScope.$watch('flashCards', function(newData, oldData){
 		console.log("new cards", newData);
@@ -40,7 +42,7 @@ angular.module("myApp")
 	})
 
 	$scope.showInputForm = function(){
-		console.log("SHOW INPUT")
+		console.log("SHOW INPUT");
 		$scope.addCards = true;
 	}
 
@@ -56,7 +58,7 @@ angular.module("myApp")
 			toolType = "social_media";
 			array = $scope.Socials;
 		}
-		UtilityService.modifyTools(toolType, array, $rootScope.myData._id)
+		ToolsService.modifyTools(toolType, array, $rootScope.myData._id)
 	}
 
 	$scope.addFlash = function(){
@@ -148,7 +150,8 @@ angular.module("myApp")
 		console.log("CLOSE TOOLs")
 		$scope.playCards = null;
 		$scope.addCards= null;
-		$rootScope.toolBelt = null;
+		$rootScope.toolBelt = "";
+		ToolsService.selectedTools = "";
 		$state.go("home");
 	}
 

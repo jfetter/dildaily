@@ -1,5 +1,5 @@
 <!DOCTYPE html>
- <html lang="en" ng-app="myApp" class="no-js"> 
+ <html lang="en" ng-app="toWork" class="no-js"> 
 <head>
   
   <title>Get To Work</title>
@@ -19,20 +19,21 @@
 <!--       <a ng-sref="home" class="btn col-sm-1">Home</a> -->
 
 <!--  need to set up login logout hide show to actually mean something -->
-   
-      <a ng-show="onRegister" ng-hide="loginButton()" ng-click="onRegister = false" ui-sref="home" class="btn col-sm-1 login-btn">Login</a>
-      <a ng-hide="onRegister || loginButton()"  ng-click="onRegister = true" ui-sref="register" class="reg-btn pull-right">Register</a>
+      <span ng-show="presentState === 'register'">
+      <a  ui-sref="home" class=" col-sm-1 login-btn">Login</a>
+      <p class="signupand">sign up and ... {{appTitle}}</p>
+      </span>
       <div class="row">
-      <span ng-show="loginButton()"class="col-sm-12 col-md-12 col-lg-6">
+      <span ng-show="_myId" class="col-sm-12 col-md-12 col-lg-6">
         <a ng-click="logOut()" class=" col-sm-3 col-md-2 col-lg-2">Log Out</a>
-        <a ui-sref="main" ng-click="goToMyTasks()" class="my-tasks-btn col-sm-3 col-md-3 col-lg-3">{{appTitle}}</a>
+        <a ui-sref="main" ng-sref="main" class="my-tasks-btn col-sm-3 col-md-3 col-lg-3">{{appTitle}}</a>
         <label for="toolBelt" class="col-sm-2 col-md-2 col-lg-2">Tools:</label>
         <select ng-model="toolBelt" class="col-sm-3 col-md-3 col-lg-3" placeholder="tools">
-        <option ng-repeat="tool in selectTools track by $index" value="{{tool}}">{{tool}}</option>
+        <option ng-repeat="tool in toolsArray track by $index" value="{{tool}}">{{tool}}</option>
         </select>
       </span>
    
-      <span ng-show="loginButton()" class="searchBar pull-right col-sm-12 col-md-12 col-lg-6">
+      <span ng-show="_myId" class="searchBar pull-right col-sm-12 col-md-12 col-lg-6">
           <label for="cat" class="col-sm-1 col-md-1 col-lg-2">view:</label>
           <select ng-model="cat" class="dropdown-toggle select-search input-sm col-sm-4 col-md-4 col-lg-3" name="cat" id="cat">
             <option class="search-opt" ng-repeat="category in cats track by $index" value="{{category.name}}">{{category.name}}</option>

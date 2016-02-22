@@ -1,7 +1,7 @@
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 	.controller("addCtrl", function($scope, $rootScope, $state, $http, UtilityService){
 	console.log("IN ADD CTRL"); 

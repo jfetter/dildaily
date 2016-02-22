@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller("modalCtrl", function($scope, $state, $uibModalInstance){
 

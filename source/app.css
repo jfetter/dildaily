@@ -148,6 +148,11 @@ LOGIN/REGISTER
 	margin-bottom: 10%;
 }
 
+.signupand{
+	margin-top: 5%;
+	float: right;
+}
+
 .reg-btn{
 /*	margin:;*/
 	font-size: 25px;
@@ -155,10 +160,15 @@ LOGIN/REGISTER
 	border-radius: 10px;
 	border: 2px solid white;
 	padding: 2%;
+	margin-top: -12%;
 }
 
 .reg-btn:hover{
 	text-decoration: none;
+	background-color: white;
+	border: 3px solid #56bedf;
+	color: #56bedf;
+	padding: 4%;
 }
 
 .oauth-logins{

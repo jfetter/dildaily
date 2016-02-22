@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller("subCtrl1", function($scope, $rootScope, UtilityService){
 	  $rootScope.$watch('currentView', function(newView, oldView){

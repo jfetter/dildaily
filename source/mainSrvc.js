@@ -1,8 +1,9 @@
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
+	
 	this.userData;
 	$rootScope.myData;
 	this.contacts = []
@@ -10,7 +11,6 @@ angular.module("myApp")
 	this.appointments =[];
 	this.Completed = [];
 	this.companies = [];
-	this.socialLinks = {};
 	$rootScope.appTitle = "Get To Work";
 	$rootScope.tagLine = "the agenda for job seekers"
 	
@@ -20,21 +20,7 @@ angular.module("myApp")
 	//There are only x more hours left today...
 	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-	this.modifyTools = (toolType, array, id) =>{
-	console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
-	var newArray = {}; 
-	newArray.array = array;
-	newArray.toolType = toolType;
-	newArray.modify = {toolType: array}
-	newArray.userId = id;
-	console.log(newArray)
-	$http.post("users/tools/update", newArray)
-	.then(res=>{
-		console.log("res.data", res.data);
-	},err=>{
-		console.log(err);
-	})
-}
+
 
 	this.thisweek = {};
  	this.today = {};
@@ -118,7 +104,7 @@ angular.module("myApp")
 				item.completion_date = null;
 			}
 			//add current tasks to weekly and daily view
-				console.log("complete by",new Date(item.completeBy), "plus day", plusDay, "completion date", item.completion_date )
+				//console.log("complete by",new Date(item.completeBy), "plus day", plusDay, "completion date", item.completion_date )
 			if (new Date(item.completeBy) <= plusDay && item.completion_date == null){
 		 		todayTasks.push(item);
 		 	}
@@ -206,12 +192,6 @@ this.loadData = () => {
 		{name: "Contacts"}] 
 		// {name: "Companies"}, 
 		// {name: "All"} ];	
-
-	this.loggedIn = function(){
-		if ($rootScope._myId){
-			return true;
-		} return false; 
-	}
 
 $rootScope.closePopUp = function(){
 	$rootScope.addThis = null;

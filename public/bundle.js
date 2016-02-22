@@ -1,7 +1,7 @@
 'use strict';
 
 //take out nganimate and ngstorage if I dont end up using them in final product
-angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies', 'angularMoment']) 
+angular.module("toWork", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate", 'angular-jwt', 'ngCookies', 'angularMoment']) 
 
 .config(function($stateProvider, $urlRouterProvider, $authProvider){
 	
@@ -19,7 +19,6 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	$stateProvider
 	.state("home", {url: "/home", templateUrl:"templates/home.html" , controller:"AuthCtrl"})
 	.state("register", {url:"/register", templateUrl:"templates/register.html", controller:"AuthCtrl"})
-	.state("details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})
 	.state("main", {url:"/main", templateUrl:"templates/main.html", controller: "mainCtrl"})
 	.state("main.edit", {url:"/edit", templateUrl:"templates/input-form.html", controller:"editCtrl"})
 	.state("main.add", {url:"/add", templateUrl:"templates/input-form.html", controller:"addCtrl"})
@@ -28,6 +27,242 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 	.state("main.details", {url:"/details", templateUrl:"templates/details.html", controller:"detailsCtrl"})	
 })
 
+
+
+
+
+"use strict";
+
+angular.module("toWork")
+
+.service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
+	
+	this.userData;
+	$rootScope.myData;
+	this.contacts = []
+	this.tasks = [];
+	this.appointments =[];
+	this.Completed = [];
+	this.companies = [];
+	$rootScope.appTitle = "Get To Work";
+	$rootScope.tagLine = "the agenda for job seekers"
+	
+	//var today = new Date().getDay();
+	//var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	//$rootScope.today = weekdays[today]; 
+	//There are only x more hours left today...
+	$rootScope.hoursLeft = 24 - (new Date().getHours());
+
+
+
+	this.thisweek = {};
+ 	this.today = {};
+	var plusDay = new Date(Date.now() + (86400 * 1000));
+	var minusDay = new Date (Date.now() - (86400 * 1000));
+	var plusWeek = new Date(Date.now() + (86400 * 1000 * 7));
+	var minusWeek = new Date(Date.now() - (86400 * 1000 * 7));
+
+	let buildContacts = (newData) => {
+		var contactData = newData.contacts; 
+		var appointments = []; var contacts = [];
+		var todayAppts = []; var todayFollowUps = []; var weekAppts = []; var weekFollowUps = [];
+ 		//after last item has been put into appropriate array trigger watched scope change
+ 		for (var i =0; i < contactData.length + 1; i ++){
+ 			var item = contactData[i];
+ 		if (i == contactData.length){
+ 			this.today.appointments = todayAppts;
+ 			this.today.followUps = todayFollowUps;
+ 			this.thisweek.appointments = weekAppts;
+ 			this.thisweek.followUps = weekFollowUps;
+ 			this.contacts = contacts;
+ 			this.appointments = appointments;
+ 			//in main ctrl, the change in rootScope.my data will trigger update view function 
+ 			// which will update the scope.
+ 			//buildDay(appointments, tasks, newData);
+ 			$rootScope.myData = newData;
+ 			return;
+ 		}
+ 		if (item.category === 'both'){
+ 			contacts.push(item);
+ 			appointments.push(item);
+ 			}
+ 		if (item.category === 'Contact'){
+ 			contacts.push(item);
+ 		} 
+ 		if (item.category === 'Appointment') {
+ 			appointments.push(item)
+ 		}
+ 		if (item.recurrence === 'daily') {
+				item.next_appt_date = Date().now();
+		}
+		if (item.recurrence === 'weekly' && (new Date(item.next_appt_date) <= minusWeek)) {
+				item.next_appt_date = plusWeek;
+		}
+ 		if (new Date(item.next_appt_date) <= plusWeek){
+			weekAppts.push(item);
+		} if (new Date(item.followup_date) <= plusWeek){
+			weekFollowUps.push(item);
+		} 		
+		if (new Date(item.next_appt_date) <= plusDay){
+			todayAppts.push(item);
+		} if (new Date(item.followup_date) <= plusDay){
+			todayFollowUps.push(item);
+		}
+	}
+}
+
+ let buildTasks = (newData) =>{
+ 	console.log("MY DATA", newData)
+ 	var taskData = newData.todos;
+	var todayTasks = [];var weekTasks = []; var tasks = []; var Completed = [];
+		for (var i =0; i < taskData.length + 1; i ++){
+			var item = taskData[i];
+			//after done setting up Completed for tasks, build contacts
+			// (do not know which build will finish first so must do them sequentially)
+			if(i === taskData.length){
+				this.today.tasks = todayTasks;
+				this.thisweek.tasks = weekTasks;
+				this.tasks = tasks;
+				this.Completed = Completed;
+				buildContacts(newData);
+				return;		
+			}
+			// keep daily and weekly tasks in circulation unless they have been marked as complete
+			if (item.frequency === 'daily' && new Date(item.completeBy) <= Date.now() ) {
+				item.completeBy = plusDay;
+				item.completion_date = null;
+			}
+			if (item.frequency === 'weekly' && new Date(item.completeBy) <= Date.now()) {
+				item.completeBy = plusWeek;
+				item.completion_date = null;
+			}
+			//add current tasks to weekly and daily view
+				//console.log("complete by",new Date(item.completeBy), "plus day", plusDay, "completion date", item.completion_date )
+			if (new Date(item.completeBy) <= plusDay && item.completion_date == null){
+		 		todayTasks.push(item);
+		 	}
+		 	if (new Date(item.completeBy) <= plusWeek && item.completion_date == null){
+		 		weekTasks.push(item);
+		 	}
+			if (item.completion_date != null){
+				Completed.push(item);
+			} else {
+				tasks.push(item);
+			}
+		}
+	}
+
+	let	setUserInfo  = () =>{
+		$http.get(`users/login/${$rootScope._myId}`)
+			.then(res=>{
+			var newData = res.data;
+			$rootScope.flashCards = res.data.flash_cards;
+			var newLinks = newData.social_media || {};
+			var socialLinks = {};
+			socialLinks.twitter = newLinks.twitter || "?";
+			socialLinks.git = newLinks.git || "?";
+			socialLinks.wordPress = newLinks.wordPress || "?";
+			socialLinks.linkedin = newLinks.stackOverflow || "?";
+			socialLinks.angellist = newLinks.angellist || "?";
+			$rootScope.socialLinks= socialLinks;
+			console.log("RES BODY IN SERVICE",  res.data)
+			buildTasks(newData);
+		}, function(err){ 
+			console.error(err)
+		})
+  }
+
+this.loadData = () => {
+	 var token = $cookies.get('token');
+	 if (!$rootScope.myData){
+	 	if(token ){
+	 	var allMyInfo = (jwtHelper.decodeToken(token))
+		$rootScope._myId = allMyInfo._id;
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+	}
+		setUserInfo();
+	}
+
+
+	this.archive = (item) =>{
+		// on back end I assign complete date and complete by
+		console.log(item, "ARCHIVING THIS GUY");
+		$http.put("tasks/archive", item) 
+		.then((res) =>{
+			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)
+		})			
+	}
+	 
+	this.unArchive = (item)=>{
+		console.log(item, "UNARCHIVING THIS GUY")
+		$http.put("tasks/unarchive", {taskId: item._id}) 
+		.then((res)=>{
+			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
+			this.loadData();
+		}, (err)=>{console.log(err)})			
+	}
+
+	this.removeCookies = function(){
+		var token = $cookies.get('token');
+		if(token){
+		$cookies.remove('token')
+		$rootScope._myId = null;
+		console.log("IN REMOVE COOKIES IF $rootScope._myId", $rootScope._myId);
+	} else if (localStorage.satellizer_token){
+		$rootScope._myId = localStorage.satellizer_token;
+		}
+	}
+
+		this.cats = [ {name: "Today" }, 
+		{name: "This Week" }, 
+		{name: 'Appointments' }, 
+		{name: 'Tasks' },
+		{name: "Completed"}, 
+		{name: "Contacts"}] 
+		// {name: "Companies"}, 
+		// {name: "All"} ];	
+
+$rootScope.closePopUp = function(){
+	$rootScope.addThis = null;
+	$rootScope.editThis = null;
+	$state.go('main');
+}
+
+this.sortTasks = (sortData, sortBy, reverseOrder) =>{
+		console.log("sortData2", sortData )
+		console.log("sortBy", sortBy )
+		console.log("reverseOrder", reverseOrder)
+		console.log("zeroth", sortData[0][sortBy] )
+	if (sortBy === "completeBy" || "appointment_date"){
+		sortData.sort(function(a,b){
+			if (reverseOrder){
+				return new Date(a[sortBy]) - new Date(b[sortBy]);
+			}
+  	return new Date(b[sortBy]) - new Date(a[sortBy]);
+	});
+	} else {
+			sortData.sort(function(a,b){
+				 b[sortBy].toLowerCase() > a[sortBy].toLowerCase();
+			})
+			if(reverseOrder){
+				 sortData.reverse();
+			}
+		}
+	return sortData;
+	}
+
+	this.addKind = function (){
+ 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
+	var selection = Math.floor(Math.random()*kindness.length);
+	console.log("ADD KIND INDEX", selection);
+	return kindness[selection];
+}
+
+})
 
 
 
@@ -3640,27 +3875,15 @@ angular.module("myApp", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate",
 }));
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
-.service("UtilityService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
-	this.userData;
-	$rootScope.myData;
-	this.contacts = []
-	this.tasks = [];
-	this.appointments =[];
-	this.Completed = [];
-	this.companies = [];
+.service("ToolsService", function($http, $state, $timeout, $rootScope, $cookies, jwtHelper){
+
+	this.toolsArray = ["", "Flash Cards"];
+	this.selectedTools;
 	this.socialLinks = {};
-	$rootScope.appTitle = "Get To Work";
-	$rootScope.tagLine = "the agenda for job seekers"
-	
-	//var today = new Date().getDay();
-	//var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-	//$rootScope.today = weekdays[today]; 
-	//There are only x more hours left today...
-	$rootScope.hoursLeft = 24 - (new Date().getHours());
 
-	this.modifyTools = (toolType, array, id) =>{
+		this.modifyTools = (toolType, array, id) =>{
 	console.log(`IN MODIFY ${toolType} for ${id} sending ${array}`)
 	var newArray = {}; 
 	newArray.array = array;
@@ -3676,228 +3899,58 @@ angular.module("myApp")
 	})
 }
 
-	this.thisweek = {};
- 	this.today = {};
-	var plusDay = new Date(Date.now() + (86400 * 1000));
-	var minusDay = new Date (Date.now() - (86400 * 1000));
-	var plusWeek = new Date(Date.now() + (86400 * 1000 * 7));
-	var minusWeek = new Date(Date.now() - (86400 * 1000 * 7));
 
-	let buildContacts = (newData) => {
-		var contactData = newData.contacts; 
-		var appointments = []; var contacts = [];
-		var todayAppts = []; var todayFollowUps = []; var weekAppts = []; var weekFollowUps = [];
- 		//after last item has been put into appropriate array trigger watched scope change
- 		for (var i =0; i < contactData.length + 1; i ++){
- 			var item = contactData[i];
- 		if (i == contactData.length){
- 			this.today.appointments = todayAppts;
- 			this.today.followUps = todayFollowUps;
- 			this.thisweek.appointments = weekAppts;
- 			this.thisweek.followUps = weekFollowUps;
- 			this.contacts = contacts;
- 			this.appointments = appointments;
- 			//in main ctrl, the change in rootScope.my data will trigger update view function 
- 			// which will update the scope.
- 			//buildDay(appointments, tasks, newData);
- 			$rootScope.myData = newData;
- 			return;
- 		}
- 		if (item.category === 'both'){
- 			contacts.push(item);
- 			appointments.push(item);
- 			}
- 		if (item.category === 'Contact'){
- 			contacts.push(item);
- 		} 
- 		if (item.category === 'Appointment') {
- 			appointments.push(item)
- 		}
- 		if (item.recurrence === 'daily') {
-				item.next_appt_date = Date().now();
-		}
-		if (item.recurrence === 'weekly' && (new Date(item.next_appt_date) <= minusWeek)) {
-				item.next_appt_date = plusWeek;
-		}
- 		if (new Date(item.next_appt_date) <= plusWeek){
-			weekAppts.push(item);
-		} if (new Date(item.followup_date) <= plusWeek){
-			weekFollowUps.push(item);
-		} 		
-		if (new Date(item.next_appt_date) <= plusDay){
-			todayAppts.push(item);
-		} if (new Date(item.followup_date) <= plusDay){
-			todayFollowUps.push(item);
-		}
+
+
+});
+"use strict";
+
+angular.module("toWork")
+
+.directive("right-view",function(){
+	return{
+		templateUrl: "templates/right-view.html"
 	}
-}
-
- let buildTasks = (newData) =>{
- 	console.log("MY DATA", newData)
- 	var taskData = newData.todos;
-	var todayTasks = [];var weekTasks = []; var tasks = []; var Completed = [];
-		for (var i =0; i < taskData.length + 1; i ++){
-			var item = taskData[i];
-			//after done setting up Completed for tasks, build contacts
-			// (do not know which build will finish first so must do them sequentially)
-			if(i === taskData.length){
-				this.today.tasks = todayTasks;
-				this.thisweek.tasks = weekTasks;
-				this.tasks = tasks;
-				this.Completed = Completed;
-				buildContacts(newData);
-				return;		
-			}
-			// keep daily and weekly tasks in circulation unless they have been marked as complete
-			if (item.frequency === 'daily' && new Date(item.completeBy) <= Date.now() ) {
-				item.completeBy = plusDay;
-				item.completion_date = null;
-			}
-			if (item.frequency === 'weekly' && new Date(item.completeBy) <= Date.now()) {
-				item.completeBy = plusWeek;
-				item.completion_date = null;
-			}
-			//add current tasks to weekly and daily view
-				console.log("complete by",new Date(item.completeBy), "plus day", plusDay, "completion date", item.completion_date )
-			if (new Date(item.completeBy) <= plusDay && item.completion_date == null){
-		 		todayTasks.push(item);
-		 	}
-		 	if (new Date(item.completeBy) <= plusWeek && item.completion_date == null){
-		 		weekTasks.push(item);
-		 	}
-			if (item.completion_date != null){
-				Completed.push(item);
-			} else {
-				tasks.push(item);
-			}
-		}
-	}
-
-	let	setUserInfo  = () =>{
-		$http.get(`users/login/${$rootScope._myId}`)
-			.then(res=>{
-			var newData = res.data;
-			$rootScope.flashCards = res.data.flash_cards;
-			var newLinks = newData.social_media || {};
-			var socialLinks = {};
-			socialLinks.twitter = newLinks.twitter || "?";
-			socialLinks.git = newLinks.git || "?";
-			socialLinks.wordPress = newLinks.wordPress || "?";
-			socialLinks.linkedin = newLinks.stackOverflow || "?";
-			socialLinks.angellist = newLinks.angellist || "?";
-			$rootScope.socialLinks= socialLinks;
-			console.log("RES BODY IN SERVICE",  res.data)
-			buildTasks(newData);
-		}, function(err){ 
-			console.error(err)
-		})
-  }
-
-this.loadData = () => {
-	 var token = $cookies.get('token');
-	 if (!$rootScope.myData){
-	 	if(token ){
-	 	var allMyInfo = (jwtHelper.decodeToken(token))
-		$rootScope._myId = allMyInfo._id;
-	} else if (localStorage.satellizer_token){
-		$rootScope._myId = localStorage.satellizer_token;
-		}
-	}
-		setUserInfo();
-	}
-
-
-	this.archive = (item) =>{
-		// on back end I assign complete date and complete by
-		console.log(item, "ARCHIVING THIS GUY");
-		$http.put("tasks/archive", item) 
-		.then((res) =>{
-			console.log("RESPONSE FROM NEWARCHIVE REQ", res.data);
-			this.loadData();
-		}, (err)=>{console.log(err)
-		})			
-	}
-	 
-	this.unArchive = (item)=>{
-		console.log(item, "UNARCHIVING THIS GUY")
-		$http.put("tasks/unarchive", {taskId: item._id}) 
-		.then((res)=>{
-			console.log("RESPONSE FROM UNARCHIVE REQ", res.data);
-			this.loadData();
-		}, (err)=>{console.log(err)})			
-	}
-
-	this.removeCookies = function(){
-		var token = $cookies.get('token');
-		if(token){
-		$cookies.remove('token')
-		$rootScope._myId = null;
-		console.log("IN REMOVE COOKIES IF $rootScope._myId", $rootScope._myId);
-	} else if (localStorage.satellizer_token){
-		$rootScope._myId = localStorage.satellizer_token;
-		}
-	}
-
-		this.cats = [ {name: "Today" }, 
-		{name: "This Week" }, 
-		{name: 'Appointments' }, 
-		{name: 'Tasks' },
-		{name: "Completed"}, 
-		{name: "Contacts"}] 
-		// {name: "Companies"}, 
-		// {name: "All"} ];	
-
-	this.loggedIn = function(){
-		if ($rootScope._myId){
-			return true;
-		} return false; 
-	}
-
-$rootScope.closePopUp = function(){
-	$rootScope.addThis = null;
-	$rootScope.editThis = null;
-	$state.go('main');
-}
-
-this.sortTasks = (sortData, sortBy, reverseOrder) =>{
-		console.log("sortData2", sortData )
-		console.log("sortBy", sortBy )
-		console.log("reverseOrder", reverseOrder)
-		console.log("zeroth", sortData[0][sortBy] )
-	if (sortBy === "completeBy" || "appointment_date"){
-		sortData.sort(function(a,b){
-			if (reverseOrder){
-				return new Date(a[sortBy]) - new Date(b[sortBy]);
-			}
-  	return new Date(b[sortBy]) - new Date(a[sortBy]);
-	});
-	} else {
-			sortData.sort(function(a,b){
-				 b[sortBy].toLowerCase() > a[sortBy].toLowerCase();
-			})
-			if(reverseOrder){
-				 sortData.reverse();
-			}
-		}
-	return sortData;
-	}
-
-	this.addKind = function (){
- 	var kindness = ["send a card or letter to a loved one", "leave a helium balloon outside a strangers house", "offer a snack to a homeless person", "compliment someone on something nice you notice about them", "do something good for an animal"];
-	var selection = Math.floor(Math.random()*kindness.length);
-	console.log("ADD KIND INDEX", selection);
-	return kindness[selection];
-}
-
 })
 
+.directive('leftView', function(){
+  return{
+    templateUrl: "directives/left-view.html"
+  }
+})
 
+.directive('taskForm', function(){
+  return{
+    templateUrl: "directives/task-form.html"
+  }
+})
+  .directive('contactForm', function(){
+  return{
+    templateUrl: "directives/contact-form.html"
+  }
+})
 
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
 
+// .directive('tools', function(){
+//   return{
+//     templateUrl: "directives/tools.html"
+//   }
+// })
+
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 	.controller("addCtrl", function($scope, $rootScope, $state, $http, UtilityService){
 	console.log("IN ADD CTRL"); 
@@ -4000,7 +4053,7 @@ angular.module("myApp")
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 
 .controller("AuthCtrl", function($scope, $rootScope, $state, $auth, $http, UtilityService){
@@ -4008,7 +4061,8 @@ angular.module("myApp")
 			$state.go("main");
 			return;
 	} 
-
+	$rootScope.presentState = $state.current.name;
+	console.log($rootScope.presentState)
 	//job hunting tasks to inject upon signup
 	var plusWeek = Date.now() + (86400 * 1000 * 7);
 	var plusDay = Date.now() + (86400 * 1000);
@@ -4202,7 +4256,7 @@ $http.post('/auth/pwLogin', user)
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http, UtilityService) {
 	if (!$rootScope.editThis){
@@ -4313,11 +4367,11 @@ if ($rootScope.editThis.category === "Contact"){
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller("mainCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log, $cookies){
 	var cookies = $cookies.get('token');
-	var satToken = localStorage.satellizer_token
+	var satToken = localStorage.satellizer_token;
 	 if (!cookies && !satToken){
 			$state.go("home");
 			return;
@@ -4605,7 +4659,7 @@ $scope.sortTasks = function(col){
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller("modalCtrl", function($scope, $state, $uibModalInstance){
 
@@ -4669,42 +4723,24 @@ angular.module("myApp")
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
-.controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService, $cookies){
-	// hide login or logout button
+.controller("navCtrl", function($scope,$timeout, $rootScope, $state, UtilityService, ToolsService, $cookies){
 
 	$scope.cats = UtilityService.cats;
 	
-	$scope.selectTools = ["", "Flash Cards"]; //, "Social Media"
+	$scope.toolsArray = ToolsService.toolsArray; //, "Social Media"
 
 	$scope.$watch('toolBelt', function(newVal, oldVal ){
-		console.log("NEW TOOL", newVal);
 		goToTool();
 	})
 
 	var goToTool = function(){
-		console.log("toolBelt", $scope.toolBelt);
-		$rootScope.toolBelt = $scope.toolBelt;
+		ToolsService.selectedTool = $scope.toolBelt;
 		$state.go("main.tools");
 	}
 
-	$scope.loginButton = function(){
-		return UtilityService.loggedIn();
-	} 
-
-	$scope.goToMyTasks =function(){
-		console.log("my tasks button clicked")
-		if (localStorage.satellizer_token){
-			$state.go("main");
-		} else {
-			console.log("login or register modal coming soon")
-		}
-	}
-
 	$scope.logOut = function(){
-		//localStorage.removeItem("satellizer_token");
-		//localStorage.removeItem("dd_id");
 		$scope.cat = null;
 		localStorage.clear();
 		UtilityService.removeCookies();
@@ -4718,46 +4754,38 @@ function assembleSearch(searchArray, searchTerm){
 		console.log("searchArray", searchArray)
 		$scope.searchArray = [];
 		searchArray.forEach(function(item){
-			$scope.searchArray.push(item[searchTerm])	
+		$scope.searchArray.push(item[searchTerm])	
 	})
 }
 
 var searchCases = function(cat){
-	//var data = $rootScope.myData; 
-	console.log("SEARCH CAT", cat);
 		if (cat === 'Tasks'){
 			var searchArray = UtilityService.tasks;
 			var searchTerm = "task_name";
-			console.log("SEARCH ARRAY1", searchArray);
 		} else if (cat === 'Completed'){
 			var searchArray = UtilityService.Completed;
 			var searchTerm = "contact_name"
-			console.log("Completed coming soon")
 		} else if (cat === 'Today'){
 			var searchArray = UtilityService.today;
 			var searchTerm = "task_name";
-			console.log("TODAY coming soon")
 		} else if (cat === 'This Week'){
 			var searchArray = UtilityService.thisweek;
 			var searchTerm = "contact_name";
-			console.log("THIS WEEK coming soon")
 		} else if (cat === 'Appointments'){
 			var searchArray = UtilityService.appointments;
 			var searchTerm = "contact_name";
-			console.log("appointments coming soon")
 		}else if (cat === 'Contacts'){
 			var searchArray = UtilityService.contacts;
 			var searchTerm = "contact_name";
-			console.log("contacts coming soon")
 		}else if (cat === 'Companies'){
 			var searchArray = UtilityService.companies;
 			var searchTerm = "company_name";
-			console.log("prolly be a while til I have tools")
 		}
 		return {searchArray: searchArray, searchTerm: searchTerm}
 }
+
 var searchAllCats = function(){
-		console.log("when there are more categories set up this function")
+		console.log("set up this function")
 		// console.log("combine all arrays for search")
 		// ["tasks", "Completed", "contacts", "tools"].forEach(function(category){
 		// var cat = category;
@@ -4791,13 +4819,8 @@ $scope.$watch("searchFor", function(newS, oldS){
 	}
 		})
 
-
 $scope.searchAllCats = function(){
 	searchAllCats();
-}
-
-$scope.showAll = function(){
-	console.log("write logic to show all tasks of a certain category")
 }
 
 	$scope.clearSearch = function(){
@@ -4808,7 +4831,6 @@ $scope.showAll = function(){
 		}
 	}
 
-
 	$scope.showDetails=function(result){
 		//$state.go(detailsPage);
 		console.log("build details view")
@@ -4818,7 +4840,7 @@ $scope.showAll = function(){
 
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller("subCtrl1", function($scope, $rootScope, UtilityService){
 	  $rootScope.$watch('currentView', function(newView, oldView){
@@ -4892,9 +4914,11 @@ angular.module("myApp")
 
 
 
-angular.module("myApp")
+"use strict";
 
-.controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, $http, $log){
+angular.module("toWork")
+
+.controller("toolsCtrl", function($scope, $rootScope, $timeout, $state, UtilityService, ToolsService, $http, $log){
 	console.log("make flash cards, contact list, company list, email templates etc...")
 	
 	$scope.cards = $rootScope.flashCards || [];
@@ -4922,7 +4946,7 @@ angular.module("myApp")
 	// {angellist: UtilityService.socialLinks.angellist}
 	//]
 
-	$rootScope.toolBelt = $rootScope.toolBelt || "Flash Cards"
+	$scope.toolBelt = ToolsService.toolBelt || "Flash Cards";
 
 	$rootScope.$watch('flashCards', function(newData, oldData){
 		console.log("new cards", newData);
@@ -4934,7 +4958,7 @@ angular.module("myApp")
 	})
 
 	$scope.showInputForm = function(){
-		console.log("SHOW INPUT")
+		console.log("SHOW INPUT");
 		$scope.addCards = true;
 	}
 
@@ -4950,7 +4974,7 @@ angular.module("myApp")
 			toolType = "social_media";
 			array = $scope.Socials;
 		}
-		UtilityService.modifyTools(toolType, array, $rootScope.myData._id)
+		ToolsService.modifyTools(toolType, array, $rootScope.myData._id)
 	}
 
 	$scope.addFlash = function(){
@@ -5042,54 +5066,11 @@ angular.module("myApp")
 		console.log("CLOSE TOOLs")
 		$scope.playCards = null;
 		$scope.addCards= null;
-		$rootScope.toolBelt = null;
+		$rootScope.toolBelt = "";
+		ToolsService.selectedTools = "";
 		$state.go("home");
 	}
 
 
 
 })
-"use strict";
-
-angular.module("myApp")
-
-.directive("right-view",function(){
-	return{
-		templateUrl: "templates/right-view.html"
-	}
-})
-
-.directive('leftView', function(){
-  return{
-    templateUrl: "directives/left-view.html"
-  }
-})
-
-.directive('taskForm', function(){
-  return{
-    templateUrl: "directives/task-form.html"
-  }
-})
-  .directive('contactForm', function(){
-  return{
-    templateUrl: "directives/contact-form.html"
-  }
-})
-
-.directive('mainTable', function(){
-  return{
-    templateUrl: "directives/main-table.html"
-  }
-})
-
-// .directive('tools', function(){
-//   return{
-//     templateUrl: "directives/tools.html"
-//   }
-// })
-
-// .directive('taskModal', function(){
-//   return{
-//     templateUrl: "partials/task-modal.html"
-//   }
-// })

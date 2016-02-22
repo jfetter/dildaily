@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("myApp")
+angular.module("toWork")
 
 .controller('editCtrl', function($scope, $timeout, $rootScope, $state, $http, UtilityService) {
 	if (!$rootScope.editThis){
