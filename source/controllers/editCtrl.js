@@ -8,7 +8,7 @@ angular.module("toWork")
 	}
 
 	//direct to appointment or task if sent from search bar
-	UtilityService.grabItem();
+	UtilityService.findTask();
 
 	// hide or show modal
 	//$scope.addEdit = true;

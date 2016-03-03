@@ -23,10 +23,7 @@ angular.module("toWork")
 
 	$scope.logOut = function(){
 		$scope.cat = null;
-		localStorage.clear();
 		UtilityService.removeCookies();
-		//UtilityService.loggedIn();
-		$state.go('home');
 	};
 
 	//if ($scope.searchArray.length){$scope.searchArray.sort()};
