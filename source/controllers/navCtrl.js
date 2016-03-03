@@ -12,6 +12,10 @@ angular.module("toWork")
 		goToTool();
 	})
 
+	$rootScope.$watch('_myId', function(newVal, oldVal){
+		$scope._myId = newVal; 
+	})
+
 	var goToTool = function(){
 		ToolsService.selectedTool = $scope.toolBelt;
 		$state.go("main.tools");
@@ -21,7 +25,7 @@ angular.module("toWork")
 		$scope.cat = null;
 		localStorage.clear();
 		UtilityService.removeCookies();
-		UtilityService.loggedIn();
+		//UtilityService.loggedIn();
 		$state.go('home');
 	};
 

@@ -115,7 +115,7 @@ angular.module("toWork")
 					//localStorage.dd_id = res.data.user;
 					var myId = localStorage.satellizer_token;
 					injectJobHunt(myId);
-					UtilityService.loadData();
+					UtilityService.loadData(res.data);
 					$state.go("main");
 				} // if satellizer token in local storage
 			})
@@ -170,7 +170,7 @@ $http.post('/auth/pwLogin', user)
 		console.log("RES AFTER LOGIN",res);
 		//localStorage.setItem('satellizer_token', res.data.id)
 		//localStorage.setItem('dd_id', res.data.id)
-		UtilityService.loadData();
+		UtilityService.loadData(res.data);
 		$state.go('main')
 	}).catch(function(err){
 		swal({

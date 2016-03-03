@@ -175,12 +175,12 @@ this.loadData = () => {
 
 	this.removeCookies = function(){
 		var token = $cookies.get('token');
+		$rootScope._myId = null;
 		if(token){
 		$cookies.remove('token')
-		$rootScope._myId = null;
 		console.log("IN REMOVE COOKIES IF $rootScope._myId", $rootScope._myId);
 	} else if (localStorage.satellizer_token){
-		$rootScope._myId = localStorage.satellizer_token;
+		localStorage.removeItem(satellizer_token);
 		}
 	}
 
