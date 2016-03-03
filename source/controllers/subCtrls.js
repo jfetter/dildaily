@@ -12,7 +12,7 @@ angular.module("toWork")
 		$scope.colH5 = 'Done?';
 		$scope.colH6 = "Edit/Delete"
 		$scope.colH7 = "done"
-		$scope.td_1 = "task_name";
+		$scope.td_1 = "item_name";
 		$scope.td_2 = "task_description";
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
@@ -34,7 +34,7 @@ angular.module("toWork")
 		$scope.colH4 = 'Date';
 		$scope.colH5 = 'Time';
 		$scope.colH6 = "Edit/Delete"
-		$scope.td_1 = "contact_name";
+		$scope.td_1 = "item_name";
 		$scope.td_2 = "company_name";
 		$scope.td_3 = "contact_method";
 		$scope.td_4 = "next_appt_date";
@@ -56,7 +56,7 @@ angular.module("toWork")
 		$scope.colH4 = 'Date';
 		$scope.colH5 = 'Time';
 		$scope.colH6 = "Edit/Delete"
-		$scope.td_1 = "contact_name";
+		$scope.td_1 = "item_name";
 		$scope.td_2 = "company_name";
 		$scope.td_3 = "contact_method";
 		$scope.td_4 = "next_appt_date";

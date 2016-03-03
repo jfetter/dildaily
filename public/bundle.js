@@ -3637,50 +3637,6 @@ angular.module("toWork", ["ui.router", "ui.bootstrap", "satellizer", "ngAnimate"
     return _moment;
 
 }));
-"use strict";
-
-angular.module("toWork")
-
-.directive("right-view",function(){
-	return{
-		templateUrl: "templates/right-view.html"
-	}
-})
-
-.directive('leftView', function(){
-  return{
-    templateUrl: "directives/left-view.html"
-  }
-})
-
-.directive('taskForm', function(){
-  return{
-    templateUrl: "directives/task-form.html"
-  }
-})
-  .directive('contactForm', function(){
-  return{
-    templateUrl: "directives/contact-form.html"
-  }
-})
-
-.directive('mainTable', function(){
-  return{
-    templateUrl: "directives/main-table.html"
-  }
-})
-
-// .directive('tools', function(){
-//   return{
-//     templateUrl: "directives/tools.html"
-//   }
-// })
-
-// .directive('taskModal', function(){
-//   return{
-//     templateUrl: "partials/task-modal.html"
-//   }
-// })
 
 "use strict";
 
@@ -3757,7 +3713,7 @@ angular.module("toWork")
 		var task = {};
 		$scope.todo = true;
 		task.user_id = $rootScope._myId;
-		task.task_name = $scope.task_name;
+		task.item_name = $scope.task_name;
 		task.task_description = $scope.task_description;
 		task.frequency = $scope.frequency;
 		task.completeBy = $scope.completeBy;
@@ -3818,7 +3774,7 @@ angular.module("toWork")
 
 	let injectJobHunt = (myId)=>{
 				var tasks = [
-	{task_name: "5 tweets", 
+	{item_name: "5 tweets", 
 	task_description: "use #, @  links to articles etcto get more attention", 
 	frequency: "daily", 
 	completeBy: plusDay,
@@ -3827,7 +3783,7 @@ angular.module("toWork")
 	completed: false,
 	completion_date: null,
 	user_id: myId},
-	{task_name: "Linked In", 
+	{item_name: "Linked In", 
 	task_description: "send 35 connect requests", 
 	frequency: "daily", 
 	completeBy: plusDay,
@@ -3836,7 +3792,7 @@ angular.module("toWork")
 	completed: false,
 	completion_date: null,
 	user_id: myId},
-	{task_name: "Angel List", 
+	{item_name: "Angel List", 
 	task_description: "follow 10 companies", 
 	frequency: "daily", 
 	completeBy: plusDay,
@@ -3845,7 +3801,7 @@ angular.module("toWork")
 	completed: false,
 	completion_date: null,
 	user_id: myId},
-	{task_name: "Git Hub", 
+	{item_name: "Git Hub", 
 	task_description: "keep punch-card green", 
 	frequency: "daily", 
 	completeBy: plusDay,
@@ -3854,7 +3810,7 @@ angular.module("toWork")
 	completed: false,
 	completion_date: null,
 	user_id: myId},
-	{task_name: "Quora and Stack Overflow", 
+	{item_name: "Quora and Stack Overflow", 
 	task_description: "pose or answer a question", 
 	frequency: "daily", 
 	completeBy: plusDay,
@@ -3863,7 +3819,7 @@ angular.module("toWork")
 	completed: false,
 	completion_date: null,
 	user_id: myId},
-	{task_name: "Apply to job postings", 
+	{item_name: "Apply to job postings", 
 	task_description: "Apply to as many companies as you have time to thoroughly follow up with", 
 	frequency: "daily", 
 	completeBy: plusDay,
@@ -3872,7 +3828,7 @@ angular.module("toWork")
 	completed: false,
 	completion_date: null,
 	user_id: myId},
-	{task_name: "Blog", 
+	{item_name: "Blog", 
 	task_description: "write a blog entry about something you've used or learned", 
 	frequency: "weekly", 
 	completeBy: plusWeek,
@@ -3996,12 +3952,16 @@ angular.module("toWork")
 	if (!$rootScope.editThis){
 		$state.go('main');
 	}
+
+	//direct to appointment or task if sent from search bar
+	UtilityService.grabItem();
+
 	// hide or show modal
 	//$scope.addEdit = true;
 	//console.log("ADDEDIT", $scope.addEdit)
 
 	//console.log("$rootScope.editThis", $rootScope.editThis);
-  $scope.task_name = $rootScope.editThis.task_name;
+  $scope.item_name = $rootScope.editThis.item_name;
   $scope.task_description = $rootScope.editThis.task_description;
   console.log($scope.completeBy, "$scope.completeBy")
   $scope.completeBy = new Date($rootScope.editThis.completeBy) || Date.now();
@@ -4014,7 +3974,7 @@ angular.module("toWork")
 			$scope.todo = true;
 			task.taskId = $rootScope.editThis._id;
 			task.user_id = localStorage.dd_id || "";
-			task.task_name = $scope.task_name || "";
+			task.item_name = $scope.task_name || "";
 			task.task_description = $scope.task_description || "";
 			task.frequency = $scope.frequency || "";
 			task.completeBy = $scope.completeBy || "";
@@ -4035,7 +3995,7 @@ angular.module("toWork")
 			})
 		}
 
-		$scope.contact_name = $rootScope.editThis.contact_name;
+		$scope.contact_name = $rootScope.editThis.item_name;
 		$scope.company_name = $rootScope.editThis.company_name;
 		$scope.contact_method = $rootScope.editThis.contact_method;
 		$scope.appt_date = new Date($rootScope.editThis.next_appt_date) || Date.now();
@@ -4072,7 +4032,7 @@ if ($rootScope.editThis.category === "Contact"){
 		newContact.contactId = $rootScope.editThis._id;
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
-		newContact.contact_name = $scope.contact_name;
+		newContact.item_name = $scope.contact_name;
 		newContact.company_name = $scope.company_name;
 		newContact.appointment_time = $scope.appt_time;
 		newContact.contact_phn = $scope.contact_phn;
@@ -4171,7 +4131,7 @@ angular.module("toWork")
 	 			tHeads.col6= "Edit/Delete"; 
 	 			tHeads.col7= "done";
 	 			//rowData.task_name = $rootScope.task.task_name;
-	 			$rootScope.r_1 = "task_name";
+	 			$rootScope.r_1 = "item_name";
 	 			$rootScope.r_2 = "task_description";
 	 			$rootScope.r_3 = "frequency";
 	 			$rootScope.r_4 = "completeBy";
@@ -4186,7 +4146,7 @@ angular.module("toWork")
 	 			tHeads.col4= "Date";
 	 			tHeads.col5= "Time";
 	 			tHeads.col6= "Edit/Delete";  
-	 			$rootScope.r_1 = "contact_name";
+	 			$rootScope.r_1 = "item_name";
 	 			$rootScope.r_2 = "company_name";
 	 			$rootScope.r_3 = "contact_method";
 	 			$rootScope.r_4 = "next_appt_date";
@@ -4200,7 +4160,7 @@ angular.module("toWork")
 	 			tHeads.col4= "next Contact Date";
 	 			tHeads.col5= "Company";
 	 			tHeads.col6= "Edit/Delete";  
-	 			$scope.r_1 = "contact_name";
+	 			$scope.r_1 = "item_name";
 	 			$scope.r_2 = "contact_phn";
 	 			$scope.r_3 = "contact_email";
 	 			$scope.r_4 = "next_appt_date";
@@ -4218,7 +4178,7 @@ angular.module("toWork")
 	 			// if(){
 	 			// 	$scope.r_1 = "task_name";
 	 			// }
-	 			$scope.r_1 = "task_name";
+	 			$scope.r_1 = "item_name";
 	 			$scope.r_2 = "task_description";
 	 			$scope.r_3 = "frequency";
 	 			$scope.r_4 = "completeBy";
@@ -4380,9 +4340,9 @@ $scope.sortTasks = function(col){
 			$scope.sorted = !$scope.sorted;
 			reverseOrder = $scope.sorted ? true : false;
 			if ($rootScope.currentView === "Tasks"){
-				col = 'task_name';
+				col = 'item_name';
 			} else if ($rootScope.currentView === "Tasks"){
-				col = 'contact_name';
+				col = 'item_name';
 			} else if ($rootScope.currentView === "Companies"){
 				col = 'company_name';
 			}
@@ -4499,26 +4459,35 @@ function assembleSearch(searchArray, searchTerm){
 var searchCases = function(cat){
 		if (cat === 'Tasks'){
 			var searchArray = UtilityService.tasks;
-			var searchTerm = "task_name";
+			var searchTerm = "item_name";
 		} else if (cat === 'Completed'){
 			var searchArray = UtilityService.Completed;
-			var searchTerm = "contact_name"
+			var searchTerm = "item_name"
 		} else if (cat === 'Today'){
-			var searchArray = UtilityService.today;
-			var searchTerm = "task_name";
+			var tsks = UtilityService.today.tasks;
+			var appts = UtilityService.today.appointments;
+			var apptsPlusTasks = tsks.concat(appts);
+			var searchArray = apptsPlusTasks;
+			var searchTerm = "item_name";
 		} else if (cat === 'This Week'){
-			var searchArray = UtilityService.thisweek;
-			var searchTerm = "contact_name";
+			var tsksW = UtilityService.thisweek.tasks;
+			var apptsW = UtilityService.thisweek.appointments;
+			var apptsPlusTasksW = tsksW.concat(apptsW);
+			var searchArray = apptsPlusTasksW;
+			var searchTerm = "item_name";
 		} else if (cat === 'Appointments'){
 			var searchArray = UtilityService.appointments;
-			var searchTerm = "contact_name";
+			var searchTerm = "item_name";
 		}else if (cat === 'Contacts'){
 			var searchArray = UtilityService.contacts;
-			var searchTerm = "contact_name";
+			var searchTerm = "item_name";
 		}else if (cat === 'Companies'){
 			var searchArray = UtilityService.companies;
 			var searchTerm = "company_name";
-		}
+		}else if (cat === 'All'){
+			//var searchArray = UtilityService.companies;
+			//var searchTerm = "company_name";
+		} 
 		return {searchArray: searchArray, searchTerm: searchTerm}
 }
 
@@ -4570,8 +4539,8 @@ $scope.searchAllCats = function(){
 	}
 
 	$scope.showDetails=function(result){
-		//$state.go(detailsPage);
-		console.log("build details view")
+		console.log("TAKING YOU TO EDIT", result.name);
+		UtilityService.findTask(result);
 	}
 
 })
@@ -4590,7 +4559,7 @@ angular.module("toWork")
 		$scope.colH5 = 'Done?';
 		$scope.colH6 = "Edit/Delete"
 		$scope.colH7 = "done"
-		$scope.td_1 = "task_name";
+		$scope.td_1 = "item_name";
 		$scope.td_2 = "task_description";
 		$scope.td_3 = "frequency";
 		$scope.td_4 = "completeBy";
@@ -4612,7 +4581,7 @@ angular.module("toWork")
 		$scope.colH4 = 'Date';
 		$scope.colH5 = 'Time';
 		$scope.colH6 = "Edit/Delete"
-		$scope.td_1 = "contact_name";
+		$scope.td_1 = "item_name";
 		$scope.td_2 = "company_name";
 		$scope.td_3 = "contact_method";
 		$scope.td_4 = "next_appt_date";
@@ -4634,7 +4603,7 @@ angular.module("toWork")
 		$scope.colH4 = 'Date';
 		$scope.colH5 = 'Time';
 		$scope.colH6 = "Edit/Delete"
-		$scope.td_1 = "contact_name";
+		$scope.td_1 = "item_name";
 		$scope.td_2 = "company_name";
 		$scope.td_3 = "contact_method";
 		$scope.td_4 = "next_appt_date";
@@ -4812,6 +4781,50 @@ angular.module("toWork")
 
 
 })
+"use strict";
+
+angular.module("toWork")
+
+.directive("right-view",function(){
+	return{
+		templateUrl: "templates/right-view.html"
+	}
+})
+
+.directive('leftView', function(){
+  return{
+    templateUrl: "directives/left-view.html"
+  }
+})
+
+.directive('taskForm', function(){
+  return{
+    templateUrl: "directives/task-form.html"
+  }
+})
+  .directive('contactForm', function(){
+  return{
+    templateUrl: "directives/contact-form.html"
+  }
+})
+
+.directive('mainTable', function(){
+  return{
+    templateUrl: "directives/main-table.html"
+  }
+})
+
+// .directive('tools', function(){
+//   return{
+//     templateUrl: "directives/tools.html"
+//   }
+// })
+
+// .directive('taskModal', function(){
+//   return{
+//     templateUrl: "partials/task-modal.html"
+//   }
+// })
 
 "use strict";
 
@@ -4997,6 +5010,9 @@ this.loadData = () => {
 		setUserInfo();
 	}
 
+	this.grabItem = function(item){
+		console.log("GOING TO GO BACK AND GRAB", item)
+	}
 
 	this.archive = (item) =>{
 		// on back end I assign complete date and complete by

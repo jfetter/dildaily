@@ -112,7 +112,7 @@ router.put("/edit", (req, res) =>{
 	console.log("EDIT REQ BODY !!!!!", req.body)
 	var task = req.body;
 	Todo.findByIdAndUpdate(task.taskId, {
-		$set:{ task_name: task.task_name ,
+		$set:{ item_name: task.item_name ,
 		task_description: task.task_description, 
 		frequency: task.frequency,
 		 completeBy: task.completeBy, 

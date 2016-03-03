@@ -70,7 +70,7 @@ angular.module("toWork")
 	 			tHeads.col6= "Edit/Delete"; 
 	 			tHeads.col7= "done";
 	 			//rowData.task_name = $rootScope.task.task_name;
-	 			$rootScope.r_1 = "task_name";
+	 			$rootScope.r_1 = "item_name";
 	 			$rootScope.r_2 = "task_description";
 	 			$rootScope.r_3 = "frequency";
 	 			$rootScope.r_4 = "completeBy";
@@ -85,7 +85,7 @@ angular.module("toWork")
 	 			tHeads.col4= "Date";
 	 			tHeads.col5= "Time";
 	 			tHeads.col6= "Edit/Delete";  
-	 			$rootScope.r_1 = "contact_name";
+	 			$rootScope.r_1 = "item_name";
 	 			$rootScope.r_2 = "company_name";
 	 			$rootScope.r_3 = "contact_method";
 	 			$rootScope.r_4 = "next_appt_date";
@@ -99,7 +99,7 @@ angular.module("toWork")
 	 			tHeads.col4= "next Contact Date";
 	 			tHeads.col5= "Company";
 	 			tHeads.col6= "Edit/Delete";  
-	 			$scope.r_1 = "contact_name";
+	 			$scope.r_1 = "item_name";
 	 			$scope.r_2 = "contact_phn";
 	 			$scope.r_3 = "contact_email";
 	 			$scope.r_4 = "next_appt_date";
@@ -117,7 +117,7 @@ angular.module("toWork")
 	 			// if(){
 	 			// 	$scope.r_1 = "task_name";
 	 			// }
-	 			$scope.r_1 = "task_name";
+	 			$scope.r_1 = "item_name";
 	 			$scope.r_2 = "task_description";
 	 			$scope.r_3 = "frequency";
 	 			$scope.r_4 = "completeBy";
@@ -279,9 +279,9 @@ $scope.sortTasks = function(col){
 			$scope.sorted = !$scope.sorted;
 			reverseOrder = $scope.sorted ? true : false;
 			if ($rootScope.currentView === "Tasks"){
-				col = 'task_name';
+				col = 'item_name';
 			} else if ($rootScope.currentView === "Tasks"){
-				col = 'contact_name';
+				col = 'item_name';
 			} else if ($rootScope.currentView === "Companies"){
 				col = 'company_name';
 			}

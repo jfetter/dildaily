@@ -74,7 +74,7 @@ angular.module("toWork")
 		var task = {};
 		$scope.todo = true;
 		task.user_id = $rootScope._myId;
-		task.task_name = $scope.task_name;
+		task.item_name = $scope.task_name;
 		task.task_description = $scope.task_description;
 		task.frequency = $scope.frequency;
 		task.completeBy = $scope.completeBy;

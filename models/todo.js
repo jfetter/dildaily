@@ -7,7 +7,7 @@ var Todo;
 
 var todoSchema = Schema({
 	user_id: {type: String, required: true},
-	task_name: {type: String}, 
+	item_name: {type: String}, 
 	task_description: {type: String},
 	frequency: {type: String},
 	completeBy: {type: Date},

@@ -42,26 +42,35 @@ function assembleSearch(searchArray, searchTerm){
 var searchCases = function(cat){
 		if (cat === 'Tasks'){
 			var searchArray = UtilityService.tasks;
-			var searchTerm = "task_name";
+			var searchTerm = "item_name";
 		} else if (cat === 'Completed'){
 			var searchArray = UtilityService.Completed;
-			var searchTerm = "contact_name"
+			var searchTerm = "item_name"
 		} else if (cat === 'Today'){
-			var searchArray = UtilityService.today;
-			var searchTerm = "task_name";
+			var tsks = UtilityService.today.tasks;
+			var appts = UtilityService.today.appointments;
+			var apptsPlusTasks = tsks.concat(appts);
+			var searchArray = apptsPlusTasks;
+			var searchTerm = "item_name";
 		} else if (cat === 'This Week'){
-			var searchArray = UtilityService.thisweek;
-			var searchTerm = "contact_name";
+			var tsksW = UtilityService.thisweek.tasks;
+			var apptsW = UtilityService.thisweek.appointments;
+			var apptsPlusTasksW = tsksW.concat(apptsW);
+			var searchArray = apptsPlusTasksW;
+			var searchTerm = "item_name";
 		} else if (cat === 'Appointments'){
 			var searchArray = UtilityService.appointments;
-			var searchTerm = "contact_name";
+			var searchTerm = "item_name";
 		}else if (cat === 'Contacts'){
 			var searchArray = UtilityService.contacts;
-			var searchTerm = "contact_name";
+			var searchTerm = "item_name";
 		}else if (cat === 'Companies'){
 			var searchArray = UtilityService.companies;
 			var searchTerm = "company_name";
-		}
+		}else if (cat === 'All'){
+			//var searchArray = UtilityService.companies;
+			//var searchTerm = "company_name";
+		} 
 		return {searchArray: searchArray, searchTerm: searchTerm}
 }
 
@@ -113,8 +122,8 @@ $scope.searchAllCats = function(){
 	}
 
 	$scope.showDetails=function(result){
-		//$state.go(detailsPage);
-		console.log("build details view")
+		console.log("TAKING YOU TO EDIT", result.name);
+		UtilityService.findTask(result);
 	}
 
 })
