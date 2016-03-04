@@ -3691,7 +3691,7 @@ angular.module("toWork")
 	}
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
-		newContact.contact_name = $scope.contact_name;
+		newContact.item_name = $scope.contact_name;
 		newContact.company_name = $scope.company_name;
 		newContact.appointment_time = $scope.appt_time;
 		newContact.contact_phn = $scope.contact_phn;
@@ -4344,7 +4344,7 @@ $scope.sortTasks = function(col){
 			} else if ($rootScope.currentView === "Tasks"){
 				col = 'item_name';
 			} else if ($rootScope.currentView === "Companies"){
-				col = 'company_name';
+				col = 'item_name';
 			}
 	}
 	$scope.rowData = UtilityService.sortTasks(sortData, col, reverseOrder);

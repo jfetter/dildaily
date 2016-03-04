@@ -283,7 +283,7 @@ $scope.sortTasks = function(col){
 			} else if ($rootScope.currentView === "Tasks"){
 				col = 'item_name';
 			} else if ($rootScope.currentView === "Companies"){
-				col = 'company_name';
+				col = 'item_name';
 			}
 	}
 	$scope.rowData = UtilityService.sortTasks(sortData, col, reverseOrder);

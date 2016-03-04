@@ -52,7 +52,7 @@ angular.module("toWork")
 	}
 	  newContact.user_id = $rootScope._myId;
 		newContact.next_appt_date = $scope.appt_date;
-		newContact.contact_name = $scope.contact_name;
+		newContact.item_name = $scope.contact_name;
 		newContact.company_name = $scope.company_name;
 		newContact.appointment_time = $scope.appt_time;
 		newContact.contact_phn = $scope.contact_phn;
