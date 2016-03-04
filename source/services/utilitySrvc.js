@@ -183,7 +183,7 @@ this.loadData = () => {
 		$cookies.remove('token')
 		console.log("IN REMOVE COOKIES IF $rootScope._myId", $rootScope._myId);
 	} else if (localStorage.satellizer_token){
-		localStorage.removeItem(satellizer_token);
+		localStorage.clear();
 		}
 		//$state.go('home');
 		document.location.reload(true);
